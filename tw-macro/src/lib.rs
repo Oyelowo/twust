@@ -4,7 +4,10 @@ use syn::parse::{Parse, ParseStream, Result};
 use syn::Token;
 use syn::{parse_macro_input, LitStr};
 mod tailwind;
-use tailwind::{class_type, modifiers};
+use tailwind::{
+    class_type::{self, TAILWIND_CSS},
+    modifiers,
+};
 
 // use tailwind::;
 
@@ -49,6 +52,7 @@ pub fn tw(input: TokenStream) -> TokenStream {
     let mut valid_class_names = [
         class_type::TAILWIND_CSS.margin,
         class_type::TAILWIND_CSS.padding,
+        TAILWIND_CSS.columns,
     ]
     .concat();
     valid_class_names.extend_from_slice(&class_type::TAILWIND_CSS.columns);
@@ -72,6 +76,7 @@ pub fn tw(input: TokenStream) -> TokenStream {
         // prefixes should also be valid class names.
         // Use official tailwind rust run function to further check integrity of the class name.
         // Complete the classes list
+        // prefixing with minus sign should be allowed i.e -.
         if valid_class_names.contains(&last_word) && is_valid_modifier {
         } else {
             return syn::Error::new_spanned(input, format!("Invalid string: {}", word))
