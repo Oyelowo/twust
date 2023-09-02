@@ -55,7 +55,7 @@ pub fn tw(input: TokenStream) -> TokenStream {
 
     for word in input.value().split_whitespace() {
         let modifiers_and_class = word.split(':');
-        let word = modifiers_and_class.clone().last().unwrap();
+        let last_word = modifiers_and_class.clone().last().unwrap();
 
         let modifiers_from_word = modifiers_and_class
             .clone()
@@ -65,14 +65,14 @@ pub fn tw(input: TokenStream) -> TokenStream {
             .iter()
             .all(|modifier| modifiers::MODIFIERS.contains(&modifier));
 
-        let is_valid_class = valid_class_names.contains(&word);
+        let is_valid_class = valid_class_names.contains(&last_word);
 
         // TODO:
         // Check arbitrary class names and also one with shash(/). Those can be exempted but the
         // prefixes should also be valid class names.
         // Use official tailwind rust run function to further check integrity of the class name.
         // Complete the classes list
-        if valid_class_names.contains(&word) && is_valid_modifier {
+        if valid_class_names.contains(&last_word) && is_valid_modifier {
         } else {
             return syn::Error::new_spanned(input, format!("Invalid string: {}", word))
                 .to_compile_error()
