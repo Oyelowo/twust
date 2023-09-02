@@ -1,9 +1,12 @@
-extern crate proc_macro;
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::parse::{Parse, ParseStream, Result};
 use syn::Token;
 use syn::{parse_macro_input, LitStr};
+mod tailwind;
+use tailwind::{class_type, modifiers};
+
+// use tailwind::;
 
 // struct CheckInput(Vec<LitStr>);
 // // fn xx() -> Token![^] {
@@ -23,7 +26,7 @@ use syn::{parse_macro_input, LitStr};
 // }
 
 // #[proc_macro]
-// pub fn check(input: TokenStream) -> TokenStream {
+// pub fn tw(input: TokenStream) -> TokenStream {
 //     let CheckInput(strings) = parse_macro_input!(input as CheckInput);
 
 //     let valid = ["lowo", "dayo"];
@@ -40,18 +43,42 @@ use syn::{parse_macro_input, LitStr};
 // }
 
 #[proc_macro]
-pub fn check(input: TokenStream) -> TokenStream {
+pub fn tw(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    let valid = ["lowo", "dayo"];
+    let mut valid_class_names = [
+        class_type::TAILWIND_CSS.margin,
+        class_type::TAILWIND_CSS.padding,
+    ]
+    .concat();
+    valid_class_names.extend_from_slice(&class_type::TAILWIND_CSS.columns);
 
     for word in input.value().split_whitespace() {
-        if !valid.contains(&word) {
+        let modifiers_and_class = word.split(':');
+        let word = modifiers_and_class.clone().last().unwrap();
+
+        let modifiers_from_word = modifiers_and_class
+            .clone()
+            .take(modifiers_and_class.count() - 1)
+            .collect::<Vec<&str>>();
+        let is_valid_modifier = modifiers_from_word
+            .iter()
+            .all(|modifier| modifiers::MODIFIERS.contains(&modifier));
+
+        let is_valid_class = valid_class_names.contains(&word);
+
+        // TODO:
+        // Check arbitrary class names and also one with shash(/). Those can be exempted but the
+        // prefixes should also be valid class names.
+        // Use official tailwind rust run function to further check integrity of the class name.
+        // Complete the classes list
+        if valid_class_names.contains(&word) && is_valid_modifier {
+        } else {
             return syn::Error::new_spanned(input, format!("Invalid string: {}", word))
                 .to_compile_error()
                 .into();
         }
     }
 
-    TokenStream::from(quote! {})
+    TokenStream::from(quote! {#input})
 }

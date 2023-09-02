@@ -1,6 +1,6 @@
 [workspace]
 workspace.resolver = "2"
-members = ["tw-macro", "test-macro"]
+members = ["tw-macro", "tailwind"]
 
 # name = "tailwind-rust"
 # version = "0.1.0"
@@ -20,7 +20,8 @@ documentation = "https://codebreather.com/oyelowo"
 
 
 [workspace.dependencies]
-tw-macro = { path = "tw-macro"}
+tw-macro = { path = "tw-macro" }
+# tailwind = { path = "tailwind" }
 
 proc-macro2 = "1.0.66"
 quote = "1.0.33"

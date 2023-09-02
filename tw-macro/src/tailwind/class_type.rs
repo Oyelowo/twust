@@ -1,8 +1,8 @@
 #[derive(Debug, Clone, Copy)]
 pub struct TailWindCss {
-    aspect_ratio: [&'static str; 3],
-    container: [&'static str; 4],
-    columns: [&'static str; 26],
+    pub aspect_ratio: [&'static str; 3],
+    pub container: [&'static str; 4],
+    pub columns: [&'static str; 26],
     break_after: [&'static str; 8],
     break_before: [&'static str; 8],
     break_inside: [&'static str; 4],
@@ -52,8 +52,8 @@ pub struct TailWindCss {
     grid_row_start: [&'static str; 8],
     grid_row_end: [&'static str; 8],
     grid_auto_flow: [&'static str; 5],
-    padding: [&'static str; 315],
-    margin: [&'static str; 315],
+    pub padding: [&'static str; 315],
+    pub margin: [&'static str; 315],
     space: [&'static str; 72],
     width: [&'static str; 67],
     min_width: [&'static str; 5],
