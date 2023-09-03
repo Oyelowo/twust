@@ -7,6 +7,7 @@ mod tailwind;
 use tailwind::{
     class_type::{self, TAILWIND_CSS},
     modifiers,
+    valid_baseclass_names::{ VALID_BASECLASS_NAMES},
 };
 
 // use tailwind::;
@@ -77,7 +78,7 @@ macro_rules! concat_arrays {
 }
 
 fn get_class_names() -> Vec<&'static str> {
-    let mut valid_class_names = concat_arrays![
+    let valid_class_names = concat_arrays![
         aspect_ratio,
         container,
         columns,
@@ -252,15 +253,53 @@ fn get_class_names() -> Vec<&'static str> {
     valid_class_names
 }
 
+// const ARBITRARY_BASE_CLASS_NAMES: [&'static str; 160] = [];
+
 #[proc_macro]
 pub fn tw(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    // let mut valid_class_names = [
-    // valid_class_names.extend_from_slice(&class_type::TAILWIND_CSS.columns);
-
     for word in input.value().split_whitespace() {
         let modifiers_and_class = word.split(':');
+        // TODO:  check the first and the last character are not open and close brackets
+        // respectively i.e arbitrary property e.g [mask_type:aplha];
+        let mut word_for_arb_prop = word.split(":[");
+
+        // modifiers e.g hover: in
+        // hover:[mask-type:alpha]
+        let is_valid_arb_prop = word_for_arb_prop
+            .next()
+            .is_some_and(|modifiers_or_full_arb_prop| {
+                let is_arbitrary_property = modifiers_or_full_arb_prop.starts_with('[')
+                    && modifiers_or_full_arb_prop.ends_with(']');
+                
+                let is_valid = if is_arbitrary_property {
+                    let is_valid_arb_property = modifiers_or_full_arb_prop
+                        .starts_with('[') && modifiers_or_full_arb_prop.ends_with(']') && modifiers_or_full_arb_prop.matches('[').count() == 1 && modifiers_or_full_arb_prop.matches(']').count() == 1 && 
+                     modifiers_or_full_arb_prop
+                        .trim_start_matches('[')
+                        .trim_end_matches(']').split(':').count() == 2;
+                    is_valid_arb_property
+                } else {
+                modifiers_or_full_arb_prop
+                    .split(':')
+                    .all(|modifier| modifiers::MODIFIERS.contains(&modifier))
+                };
+                is_valid
+            })
+            ||
+        // value e.g [mask-type:alpha] in hover:[mask-type:alpha]
+        // potential addition checks(probably not a good idea. Imagine a new css property, we would
+        // have to open a PR for every new or esoteric css property.)
+         word_for_arb_prop.next().is_some_and(|value| {
+            value.ends_with(']')
+                && value.split(':').count() == 2
+            // We had already split by ":[", so there should be no "[" anymore
+                && value.matches('[').count() == 0
+                && value.matches(']').count() == 1
+        });
+
+        // let is_arbitrary_property = word.starts_with('[') && word.ends_with(']');
         let last_word = modifiers_and_class.clone().last().unwrap();
 
         let modifiers_from_word = modifiers_and_class
@@ -273,15 +312,72 @@ pub fn tw(input: TokenStream) -> TokenStream {
 
         let valid_class_names = get_class_names();
 
-        let is_valid_class = valid_class_names.contains(&last_word);
+        let is_arb_prop = |string: &str| {
+            string.starts_with('[') && string.ends_with(']') && string.split(':').count() == 2
+        };
+        let is_valid_class = !is_valid_arb_prop && valid_class_names.contains(&last_word);
+
+        // let is_valid_class = word.split(':').last()
+        //     // .next()
+        //     .is_some_and(|class_name| {
+        //         let is_arbitrary_property = class_name.starts_with('[')
+        //             && class_name.ends_with(']');
+        //
+        //         let is_valid = if is_arbitrary_property {
+        //             let is_valid_arb_property = class_name
+        //                 .starts_with('[') && class_name.ends_with(']') && class_name.matches('[').count() == 1 && class_name.matches(']').count() == 1 && 
+        //              class_name
+        //                 .trim_start_matches('[')
+        //                 .trim_end_matches(']').split(':').count() == 2;
+        //             is_valid_arb_property
+        //         } else {
+        //         class_name
+        //             .split(':')
+        //             .all(|modifier| modifiers::MODIFIERS.contains(&modifier))
+        //         };
+        //         is_valid
+        //     })
+        //     ||
+        // // value e.g [mask-type:alpha] in hover:[mask-type:alpha]
+        // // potential addition checks(probably not a good idea. Imagine a new css property, we would
+        // // have to open a PR for every new or esoteric css property.)
+        //  word_for_arb_prop.next().is_some_and(|value| {
+        //     value.ends_with(']')
+        //         && value.split(':').count() == 2
+        //     // We had already split by ":[", so there should be no "[" anymore
+        //         && value.matches('[').count() == 0
+        //         && value.matches(']').count() == 1
+        // });
+        let (base_classname, arbitrary_value_with_bracket) =
+            last_word.split_once("-").unwrap_or_default();
+        // TODO: Validate the base class name.
+        // TODO: Check if valid tailwind keyword. e.g
+                                                    // pb etc
+                                                    // TODO: Validate at least spacing dimensions. e.g px, em, rem, cm, mm, in, pt, for
+                                                    // classes that support spacing e.g padding, margin, width, height, min-width etc
+                                                    //
+        let prefix_is_valid_tailwind_keyword = VALID_BASECLASS_NAMES.contains(&base_classname);
+        let is_arbitrary_value = prefix_is_valid_tailwind_keyword
+            && arbitrary_value_with_bracket.starts_with('[')
+            && arbitrary_value_with_bracket.ends_with(']');
 
         // TODO:
         // Check arbitrary class names and also one with shash(/). Those can be exempted but the
         // prefixes should also be valid class names.
+        // Support arbitrary variant selector:     e.g: <li
+        // class="lg:[&:nth-child(3)]:hover:underline">{item}</li>,
+        // arbitrary values, aribitrary properties.
+        //
         // Use official tailwind rust run function to further check integrity of the class name.
         // Complete the classes list
         // prefixing with minus sign should be allowed i.e -.
-        if valid_class_names.contains(&last_word) && is_valid_modifier {
+
+        // Validate artbitrary css values, especially for spacing. i.e px, em, rem, cm, mm, in,
+        // pt,
+        if (is_valid_class && is_valid_modifier)
+            || is_arbitrary_value
+            || is_valid_arb_prop
+        {
         } else {
             return syn::Error::new_spanned(input, format!("Invalid string: {}", word))
                 .to_compile_error()
