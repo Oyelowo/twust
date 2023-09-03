@@ -1,4 +1,4 @@
-pub const VALID_BASECLASS_NAMES: [&str; 108] = [
+pub const VALID_BASECLASS_NAMES: [&str; 109] = [
     "stroke",
     "columns",
     "duration",
@@ -12,6 +12,7 @@ pub const VALID_BASECLASS_NAMES: [&str; 108] = [
     "pb",
     "pl",
     "translate-y",
+    "translate-x",
     "drop-shadow",
     "content",
     "outline",
