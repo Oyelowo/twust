@@ -13,5 +13,6 @@ import screen from "./screen.json";
 module.exports = {
   theme: {
     screens: screen,
-  }
-}
+  },
+};
+

@@ -1,0 +1,31 @@
+{
+  "theme": {
+    "screens": {},
+    "colors": {},
+    "spacing": {},
+    "backgroundPosition": {},
+    "backgroundSize": {},
+    "borderColors": {},
+    "borderWidths": {},
+    "borderRadius": {},
+    "width": {},
+    "height": {},
+    "minWidth": {},
+    "minHeight": {},
+    "maxWidth": {},
+    "maxHeight": {},
+    "padding": {},
+    "margin": {},
+    "negativeMargin": {},
+    "shadows": {},
+    "zIndex": {},
+    "opacity": {},
+    "fill": {},
+    "stroke": {},
+    "extend": {
+      "screens": {}
+    }
+  },
+  "variants": {},
+  "plugins": {}
+}

@@ -1,9 +1,13 @@
+use std::error::Error;
+use std::fs;
+
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::parse::{Parse, ParseStream, Result};
 use syn::Token;
 use syn::{parse_macro_input, LitStr};
 mod tailwind;
+use tailwind::tailwind_config::TailwindConfig;
 use tailwind::{
     class_type::{self, TAILWIND_CSS},
     modifiers,
@@ -45,6 +49,15 @@ use tailwind::{
 
 //     TokenStream::from(quote! {})
 // }
+
+
+pub fn read_tailwind_config(path: &str) -> Result<TailwindConfig, Error> {
+    let content = fs::read_to_string(path)?;
+    let config: TailwindConfig = serde_json::from_str(&content)?;
+    Ok(config)
+}
+
+
 
 fn concatenate_arrays(arrays: &[&[&'static str]]) -> Vec<&'static str> {
     arrays.iter().cloned().flatten().cloned().collect()
