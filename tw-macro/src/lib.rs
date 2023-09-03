@@ -78,6 +78,18 @@ macro_rules! concat_arrays {
 }
 
 fn get_class_names() -> Vec<&'static str> {
+    let has_break_after = true;
+    let break_after_custom_overwrite = vec!["break-after-avoid", "break-after-auto", "break-after-all"];
+    let break_after_custom_extend = vec!["break-after-avoid", "break-after-auto", "break-after-all"];
+    
+    let break_after = if has_break_after { 
+        break_after_custom_overwrite
+    } else {
+        // Concatenate the default break_after classes with the custom ones from extend field.
+        // TODO: Check if the custom ones are valid
+        vec![TAILWIND_CSS.break_after.to_vec(), break_after_custom_extend].concat() 
+    };
+    
     let valid_class_names = concat_arrays![
         aspect_ratio,
         container,
@@ -255,6 +267,22 @@ fn get_class_names() -> Vec<&'static str> {
 
 // const ARBITRARY_BASE_CLASS_NAMES: [&'static str; 160] = [];
 
+//
+// Spacing:
+// border_radius
+// flex_basis
+// gap
+// border_spacing
+// height
+// inset
+// margin
+// width
+// padding
+// max_height
+// space
+// scroll_padding
+// text_indent
+// translate
 #[proc_macro]
 pub fn tw(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
