@@ -26,3 +26,4 @@ tw-macro = { path = "tw-macro" }
 proc-macro2 = "1.0.66"
 quote = "1.0.33"
 syn = "2.0.29"
+static_assertions = "1.1.0"

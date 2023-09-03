@@ -15,8 +15,8 @@ documentation = { workspace = true }
 syn = { workspace = true }
 proc-macro2 = { workspace = true }
 quote = { workspace = true }
+static_assertions = { workspace = true }
 
 
 [lib]
 proc-macro = true
-
