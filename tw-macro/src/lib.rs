@@ -3,7 +3,7 @@ use std::fs;
 
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::parse::{Parse, ParseStream, Result};
+use syn::parse::{Parse, ParseStream};
 use syn::Token;
 use syn::{parse_macro_input, LitStr};
 mod tailwind;
@@ -51,7 +51,7 @@ use tailwind::{
 // }
 
 
-pub fn read_tailwind_config(path: &str) -> Result<TailwindConfig, Error> {
+fn read_tailwind_config(path: &str) -> Result<TailwindConfig, std::io::Error> {
     let content = fs::read_to_string(path)?;
     let config: TailwindConfig = serde_json::from_str(&content)?;
     Ok(config)
@@ -299,7 +299,12 @@ fn get_class_names() -> Vec<&'static str> {
 #[proc_macro]
 pub fn tw(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
-
+    // let tw_config_file = match read_tailwind_config("tailwind.config.json") {
+    //     Ok(config) => println!("{:#?}", config),
+    //     Err(e) => eprintln!("Error reading config: {}", e),
+    // };
+    let tw_config_file = read_tailwind_config("tailwind.config.json").unwrap_or_default();
+    
     for word in input.value().split_whitespace() {
         let modifiers_and_class = word.split(':');
         // TODO:  check the first and the last character are not open and close brackets
