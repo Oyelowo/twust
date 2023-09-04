@@ -304,32 +304,47 @@ pub fn tw(input: TokenStream) -> TokenStream {
     //     Err(e) => eprintln!("Error reading config: {}", e),
     // };
     let tw_config_file = read_tailwind_config("tailwind.config.json").unwrap_or_default();
+
     
     for word in input.value().split_whitespace() {
         let modifiers_and_class = word.split(':');
         // TODO:  check the first and the last character are not open and close brackets
         // respectively i.e arbitrary property e.g [mask_type:aplha];
+        // hover:[mask-type:alpha];
         let mut word_for_arb_prop = word.split(":[");
 
         // modifiers e.g hover: in
         // hover:[mask-type:alpha]
         let is_valid_arb_prop = word_for_arb_prop
             .next()
+            // e.g for hover:[mask-type:alpha], this will be hover,
+            // for [mask-type:alpha], this will be [mask-type:alpha]
             .is_some_and(|modifiers_or_full_arb_prop| {
                 let is_arbitrary_property = modifiers_or_full_arb_prop.starts_with('[')
                     && modifiers_or_full_arb_prop.ends_with(']');
                 
                 let is_valid = if is_arbitrary_property {
-                    let is_valid_arb_property = modifiers_or_full_arb_prop
-                        .starts_with('[') && modifiers_or_full_arb_prop.ends_with(']') && modifiers_or_full_arb_prop.matches('[').count() == 1 && modifiers_or_full_arb_prop.matches(']').count() == 1 && 
-                     modifiers_or_full_arb_prop
+                    modifiers_or_full_arb_prop.matches('[').count() == 1 && 
+                    modifiers_or_full_arb_prop.matches(']').count() == 1 && 
+                    modifiers_or_full_arb_prop
                         .trim_start_matches('[')
-                        .trim_end_matches(']').split(':').count() == 2;
-                    is_valid_arb_property
+                        .trim_end_matches(']')
+                        .split(':')
+                        .count() == 2
                 } else {
+                    // e.g mask-type:alpha] in hover:[mask-type:alpha]
+                    let full_arb_prop = word_for_arb_prop.next().unwrap_or_default();
+                // e.g for single, hover in hover:[mask-type:alpha]
+                    // for multiple, hover:first:last, in hover:first:last:[mask-type:alpha]
                 modifiers_or_full_arb_prop
                     .split(':')
-                    .all(|modifier| modifiers::MODIFIERS.contains(&modifier))
+                    .all(|modifier| modifiers::MODIFIERS.contains(&modifier)) &&
+                    full_arb_prop.matches(']').count() == 1 && 
+                    full_arb_prop
+                        .trim_end_matches(']')
+                        .split(':')
+                        .count() == 2
+                    
                 };
                 is_valid
             })
