@@ -1,4 +1,4 @@
-pub const VALID_BASECLASS_NAMES: [&str; 109] = [
+pub const VALID_BASECLASS_NAMES: [&str; 111] = [
     "stroke",
     "columns",
     "duration",
@@ -40,6 +40,7 @@ pub const VALID_BASECLASS_NAMES: [&str; 109] = [
     "backdrop-grayscale",
     "flex",
     "shrink",
+    "skew-x",
     "skew-y",
     "contrast",
     "backdrop-contrast",
@@ -49,6 +50,7 @@ pub const VALID_BASECLASS_NAMES: [&str; 109] = [
     "bg",
     "order",
     "border-t",
+    "space-x",
     "space-y",
     "stroke",
     "w",

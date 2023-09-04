@@ -8,6 +8,7 @@ use syn::parse::{Parse, ParseStream};
 use syn::Token;
 use syn::{parse_macro_input, LitStr};
 mod tailwind;
+use tailwind::lengthy::LENGTHY;
 use tailwind::tailwind_config::TailwindConfig;
 use tailwind::{
     class_type::{self, TAILWIND_CSS},
@@ -335,8 +336,7 @@ pub fn tw(input: TokenStream) -> TokenStream {
             // e.g for hover:[mask-type:alpha], this will be hover,
             // for [mask-type:alpha], this will be [mask-type:alpha]
             .is_some_and(|modifiers_or_full_arb_prop| {
-                let is_arbitrary_property = modifiers_or_full_arb_prop.starts_with('[')
-                    && modifiers_or_full_arb_prop.ends_with(']');
+                let is_arbitrary_property = modifiers_or_full_arb_prop.starts_with('[') && modifiers_or_full_arb_prop.ends_with(']');
                 
                 let is_valid = if is_arbitrary_property {
                     modifiers_or_full_arb_prop.matches('[').count() == 1 && 
@@ -391,15 +391,19 @@ pub fn tw(input: TokenStream) -> TokenStream {
         let is_valid_class = !is_valid_arb_prop && valid_class_names.contains(&last_word);
 
         let (base_classname, arbitrary_value_with_bracket) =
-            last_word.split_once("-").unwrap_or_default();
+            last_word.split_once("-[").unwrap_or_default();
         // TODO: Validate the base class name.
         // TODO: Check if valid tailwind keyword. e.g pb etc
         // TODO: Validate at least spacing dimensions. e.g px, em, rem, cm, mm, in, pt, for
         // classes that support spacing e.g padding, margin, width, height, min-width etc
         let prefix_is_valid_tailwind_keyword = VALID_BASECLASS_NAMES.contains(&base_classname);
         let is_arbitrary_value = prefix_is_valid_tailwind_keyword
-            && arbitrary_value_with_bracket.starts_with('[')
             && arbitrary_value_with_bracket.ends_with(']');
+        let arbitrary_value = arbitrary_value_with_bracket.trim_end_matches(']');
+        let is_lengthy_class = LENGTHY.contains(&base_classname);
+        let is_valid_length = is_arbitrary_value 
+            && is_lengthy_class
+            && (is_valid_length(arbitrary_value) || is_valid_calc(arbitrary_value));
 
         // TODO:
         // Check arbitrary class names and also one with shash(/). Those can be exempted but the
@@ -415,7 +419,8 @@ pub fn tw(input: TokenStream) -> TokenStream {
         // Validate artbitrary css values, especially for spacing. i.e px, em, rem, cm, mm, in,
         // pt,
         if (is_valid_class && is_valid_modifier)
-            || is_arbitrary_value
+            || (!is_lengthy_class && is_arbitrary_value)
+            || is_valid_length
             || is_valid_arb_prop
         {
         } else {
@@ -423,6 +428,7 @@ pub fn tw(input: TokenStream) -> TokenStream {
                 .to_compile_error()
                 .into();
         }
+
     }
 
     TokenStream::from(quote! {#input})
