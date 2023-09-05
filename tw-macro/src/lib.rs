@@ -1,6 +1,21 @@
 use std::error::Error;
 use std::fs;
 use regex;
+use tailwind::signable::SIGNABLES;
+use tailwindcss_core::parser::{Extractor, ExtractorOptions};
+
+
+    fn run(input: &str, loose: bool) -> Vec<&str> {
+        Extractor::unique_ord(
+            input.as_bytes(),
+            ExtractorOptions {
+                preserve_spaces_in_arbitrary: loose,
+            },
+        )
+        .into_iter()
+        .map(|s| unsafe { std::str::from_utf8_unchecked(s) })
+        .collect()
+    }
 
 use proc_macro::TokenStream;
 use quote::quote;
@@ -333,6 +348,7 @@ pub fn tw(input: TokenStream) -> TokenStream {
         // hover:[mask-type:alpha]
         let is_valid_arb_prop = word_for_arb_prop
             .next()
+            .map(|s|s.trim_start_matches('-'))
             // e.g for hover:[mask-type:alpha], this will be hover,
             // for [mask-type:alpha], this will be [mask-type:alpha]
             .is_some_and(|modifiers_or_full_arb_prop| {
@@ -376,7 +392,7 @@ pub fn tw(input: TokenStream) -> TokenStream {
         });
 
         // let is_arbitrary_property = word.starts_with('[') && word.ends_with(']');
-        let last_word = modifiers_and_class.clone().last().unwrap();
+        let last_word = modifiers_and_class.clone().last().map(|s|s.strip_prefix('-').unwrap_or(s)).unwrap_or_default();
 
         let modifiers_from_word = modifiers_and_class
             .clone()
@@ -388,41 +404,80 @@ pub fn tw(input: TokenStream) -> TokenStream {
 
         let valid_class_names = get_class_names();
 
-        let is_valid_class = !is_valid_arb_prop && valid_class_names.contains(&last_word);
+        let is_valid_class = {
+            
+            !is_valid_arb_prop && valid_class_names.contains(&last_word)
+        };
+
 
         let (base_classname, arbitrary_value_with_bracket) =
             last_word.split_once("-[").unwrap_or_default();
-        // TODO: Validate the base class name.
-        // TODO: Check if valid tailwind keyword. e.g pb etc
-        // TODO: Validate at least spacing dimensions. e.g px, em, rem, cm, mm, in, pt, for
-        // classes that support spacing e.g padding, margin, width, height, min-width etc
+        
+        let is_valid_negative_baseclass = {
+    // // tw!("-m-4 p-4 p-4");
+    //         (get_class_names().contains(&last_word.trim_start_matches('-'))  && last_word.starts_with("-") && SIGNABLES.iter().any(|s| (last_word.trim_start_matches('-').starts_with(s))))
+    //         (get_class_names().contains(&last_word)  && word.starts_with("-") && SIGNABLES.iter().any(|s| (last_word.starts_with(s))))
+    //         // || (get_class_names().contains(&last_word.trim_start_matches('-'))  && last_word.starts_with("-") )
+    //         ||
+    //         (is_valid_arb_prop && word.starts_with('-') && SIGNABLES.iter().any(|s| last_word.starts_with(s)))
+        };
+        
         let prefix_is_valid_tailwind_keyword = VALID_BASECLASS_NAMES.contains(&base_classname);
         let is_arbitrary_value = prefix_is_valid_tailwind_keyword
             && arbitrary_value_with_bracket.ends_with(']');
+        
         let arbitrary_value = arbitrary_value_with_bracket.trim_end_matches(']');
         let is_lengthy_class = LENGTHY.contains(&base_classname);
         let is_valid_length = is_arbitrary_value 
             && is_lengthy_class
             && (is_valid_length(arbitrary_value) || is_valid_calc(arbitrary_value));
 
-        // TODO:
-        // Check arbitrary class names and also one with shash(/). Those can be exempted but the
-        // prefixes should also be valid class names.
-        // Support arbitrary variant selector:     e.g: <li
-        // class="lg:[&:nth-child(3)]:hover:underline">{item}</li>,
-        // arbitrary values, aribitrary properties.
-        //
+
+        // lg:[&:nth-child(3)]:hover:underline
+        // [&_p]:mt-4
+        // flex [@supports(display:grid)]:grid
+        // [@media(any-hover:hover){&:hover}]:opacity-100
+        let has_arb_variant = {
+            // lg:[&:nth-child(3)]:hover:underline => :nth-child(3)
+            // [&_p]:mt-4 => _p
+            let mut ampersand_variant_selector = word.split("[@").last().unwrap_or_default().split("]:");
+            let mut and_variant_selector = word.split("[&").last().unwrap_or_default().split("]:");
+            let is_valid_arbitrary_variant_selector = ampersand_variant_selector.clone().count() >= 2 && !ampersand_variant_selector.next().unwrap_or_default().is_empty();
+            let is_valid_arbitrary_variant_queries = and_variant_selector.clone().count() >= 2 && !and_variant_selector.last().unwrap_or_default().split("]:").next().unwrap_or_default().is_empty();
+            is_valid_arbitrary_variant_selector || is_valid_arbitrary_variant_queries
+        };
+
+        let is_valid_opacity = {
+            let (class_name, opacity_raw) = last_word.split_once("/").unwrap_or_default();
+            let opacity_arb = opacity_raw.trim_start_matches('[').trim_end_matches(']').parse::<f32>();
+            let is_valid_number = opacity_arb.is_ok_and(|opacity_num| {
+                let is_valid_number =  opacity_num >= 0.0 && opacity_num <= 100.0;
+                is_valid_number
+            });
+            get_class_names().contains(&class_name) && is_valid_number 
+        };
+
+
         // Use official tailwind rust run function to further check integrity of the class name.
         // Complete the classes list
         // prefixing with minus sign should be allowed i.e -.
 
-        // Validate artbitrary css values, especially for spacing. i.e px, em, rem, cm, mm, in,
-        // pt,
         if (is_valid_class && is_valid_modifier)
+            // || is_valid_negative_baseclass
             || (!is_lengthy_class && is_arbitrary_value)
             || is_valid_length
             || is_valid_arb_prop
+            || has_arb_variant
+        || is_valid_opacity
+            // || !run(word, false).is_empty()
         {
+        if run(word, false).is_empty() {
+            return syn::Error::new_spanned(input, format!("Invalid string: {}", word))
+                .to_compile_error()
+                .into();
+
+        }
+
         } else {
             return syn::Error::new_spanned(input, format!("Invalid string: {}", word))
                 .to_compile_error()

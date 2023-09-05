@@ -1,4 +1,4 @@
-pub const LENGTHY: [&str; 49] = [
+pub const LENGTHY: [&str; 50] = [
     "p",
     "pt",
     "pr",
@@ -48,4 +48,5 @@ pub const LENGTHY: [&str; 49] = [
     "rotate",
     "skew-x",
     "skew-y",
+    "underline-offset",
 ];
