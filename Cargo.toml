@@ -30,3 +30,5 @@ static_assertions = "1.1.0"
 serde = "1.0.188"
 serde_json = "1.0.105"
 regex = "1.9.5"
+tailwindcss-core = { git = "https://github.com/Oyelowo/tailwindcss.git", rev = "696810fd5a3d30ee8225913af268be1d2c9dbced" }
+# tailwindcss-core = { git = "https://github.com/Oyelowo/tailwindcss/oxide/crates/core.git", rev = "696810fd5a3d30ee8225913af268be1d2c9dbced" }

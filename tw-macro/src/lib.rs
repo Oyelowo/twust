@@ -348,7 +348,6 @@ pub fn tw(input: TokenStream) -> TokenStream {
         // hover:[mask-type:alpha]
         let is_valid_arb_prop = word_for_arb_prop
             .next()
-            .map(|s|s.trim_start_matches('-'))
             // e.g for hover:[mask-type:alpha], this will be hover,
             // for [mask-type:alpha], this will be [mask-type:alpha]
             .is_some_and(|modifiers_or_full_arb_prop| {
@@ -392,7 +391,8 @@ pub fn tw(input: TokenStream) -> TokenStream {
         });
 
         // let is_arbitrary_property = word.starts_with('[') && word.ends_with(']');
-        let last_word = modifiers_and_class.clone().last().map(|s|s.strip_prefix('-').unwrap_or(s)).unwrap_or_default();
+        let last_word_signed = modifiers_and_class.clone().last().unwrap_or_default();
+        let last_word_unsigned = last_word_signed.strip_prefix('-').unwrap_or(last_word_signed);
 
         let modifiers_from_word = modifiers_and_class
             .clone()
@@ -406,20 +406,18 @@ pub fn tw(input: TokenStream) -> TokenStream {
 
         let is_valid_class = {
             
-            !is_valid_arb_prop && valid_class_names.contains(&last_word)
+            !is_valid_arb_prop && valid_class_names.contains(&last_word_unsigned)
         };
 
 
         let (base_classname, arbitrary_value_with_bracket) =
-            last_word.split_once("-[").unwrap_or_default();
+            last_word_unsigned.split_once("-[").unwrap_or_default();
         
         let is_valid_negative_baseclass = {
-    // // tw!("-m-4 p-4 p-4");
-    //         (get_class_names().contains(&last_word.trim_start_matches('-'))  && last_word.starts_with("-") && SIGNABLES.iter().any(|s| (last_word.trim_start_matches('-').starts_with(s))))
-    //         (get_class_names().contains(&last_word)  && word.starts_with("-") && SIGNABLES.iter().any(|s| (last_word.starts_with(s))))
-    //         // || (get_class_names().contains(&last_word.trim_start_matches('-'))  && last_word.starts_with("-") )
-    //         ||
-    //         (is_valid_arb_prop && word.starts_with('-') && SIGNABLES.iter().any(|s| last_word.starts_with(s)))
+            // tw!("-m-4 p-4 p-4");
+            (get_class_names().contains(&last_word_unsigned)  && last_word_signed.starts_with("-") && SIGNABLES.iter().any(|s| (last_word_unsigned.starts_with(s))))
+            ||
+            (is_valid_arb_prop && last_word_signed.starts_with('-') && SIGNABLES.iter().any(|s| last_word_unsigned.starts_with(s)))
         };
         
         let prefix_is_valid_tailwind_keyword = VALID_BASECLASS_NAMES.contains(&base_classname);
@@ -443,12 +441,16 @@ pub fn tw(input: TokenStream) -> TokenStream {
             let mut ampersand_variant_selector = word.split("[@").last().unwrap_or_default().split("]:");
             let mut and_variant_selector = word.split("[&").last().unwrap_or_default().split("]:");
             let is_valid_arbitrary_variant_selector = ampersand_variant_selector.clone().count() >= 2 && !ampersand_variant_selector.next().unwrap_or_default().is_empty();
-            let is_valid_arbitrary_variant_queries = and_variant_selector.clone().count() >= 2 && !and_variant_selector.last().unwrap_or_default().split("]:").next().unwrap_or_default().is_empty();
-            is_valid_arbitrary_variant_selector || is_valid_arbitrary_variant_queries
+            let is_valid_arbitrary_variant_queries = and_variant_selector.clone().count() >= 2 && !and_variant_selector.clone().last().unwrap_or_default().split("]:").next().unwrap_or_default().is_empty();
+            let is_query = word.starts_with("[@");
+        
+            (is_valid_arbitrary_variant_selector || is_valid_arbitrary_variant_queries) 
+            // && 
+            // ((!is_query  && !word.split("[&").next().unwrap_or_default().is_empty() && word.split(":[&").count() >= 2)  || is_query)
         };
 
         let is_valid_opacity = {
-            let (class_name, opacity_raw) = last_word.split_once("/").unwrap_or_default();
+            let (class_name, opacity_raw) = last_word_unsigned.split_once("/").unwrap_or_default();
             let opacity_arb = opacity_raw.trim_start_matches('[').trim_end_matches(']').parse::<f32>();
             let is_valid_number = opacity_arb.is_ok_and(|opacity_num| {
                 let is_valid_number =  opacity_num >= 0.0 && opacity_num <= 100.0;
@@ -463,7 +465,7 @@ pub fn tw(input: TokenStream) -> TokenStream {
         // prefixing with minus sign should be allowed i.e -.
 
         if (is_valid_class && is_valid_modifier)
-            // || is_valid_negative_baseclass
+            || is_valid_negative_baseclass
             || (!is_lengthy_class && is_arbitrary_value)
             || is_valid_length
             || is_valid_arb_prop

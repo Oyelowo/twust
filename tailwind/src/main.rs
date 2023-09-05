@@ -2,6 +2,8 @@ use tw_macro::tw;
 
 fn main() {
     tw!("m-4 p-4 p-4");
+    tw!("-m-[4px] p-4 p-4");
+    tw!("-m-4 p-4 p-4");
     tw!("lg:[&:nth-child(3)]:hover:underline");
     // tw!("[0]");
     // tw!("[color:red]/dark");
@@ -12,6 +14,7 @@ fn main() {
     tw!("underline-offset-[3px]");
 
     tw!("[&_p]:mt-4");
+    // tw!("-[&_p]:mt-4");
     tw!("lg:[&:nth-child(3)]:hover:underline");
     tw!("outline-blue-500/50");
     tw!("text-blue-600/[.07]");
@@ -42,7 +45,8 @@ fn main() {
     tw!("px-[45vmax]");
     tw!("px-[45mm]");
     tw!("px-[45pc]");
-    tw!("px-[0]");
+    tw!("py-[0]");
+    tw!("-px-[45pc]");
     tw!("hover:[mask-type:alpha]");
     tw!(
         "m-4 last:first:invalid:last:first:p-4 last:m-4 pb-[calc(100%-34px)] pb-[23px] [mask-type:luminance] 
