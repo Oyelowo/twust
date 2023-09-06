@@ -87,7 +87,7 @@ define_tailwind_field!(
 );
 define_tailwind_field!(TextColor, "text", text_color, []);
 define_tailwind_field!(TextDecorationColor, "decoration", text_decoration_color, []);
-// define_tailwind_field!(PlaceholderColor, "placeholder", placeholder_color, []);
+define_tailwind_field!(PlaceholderColor, "placeholder", placeholder_color, []);
 define_tailwind_field!(RingColor, "ring", ring_color, []);
 define_tailwind_field!(RingOffsetColor, "ring-offset", ring_offset_color, []);
 define_tailwind_field!(BoxShadowColor, "shadow", box_shadow_color, []);
