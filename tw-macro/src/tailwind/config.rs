@@ -156,7 +156,9 @@ fn read_tailwind_config() -> Result<TailwindConfig, std::io::Error> {
     if !config_path.exists() {
         return Err(std::io::Error::new(
             std::io::ErrorKind::NotFound,
-            "tailwind.config.json was not found in the top-level directory. Ensure it exists.",
+            format!(
+                "tailwind.config.json was not found in the top-level directory - \n{config_path:?}. Ensure it exists."
+            ),
         ));
     }
 
