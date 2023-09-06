@@ -1,5 +1,4 @@
 pub mod class_type;
-pub mod config;
 pub mod lengthy;
 pub mod modifiers;
 pub mod signable;

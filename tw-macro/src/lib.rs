@@ -2,6 +2,7 @@
 use syn::parse::{Parse, ParseStream};
 use syn::Token;
 use syn::{parse_macro_input, LitStr};
+mod config;
 mod tailwind;
 use tailwind::lengthy::LENGTHY;
 use tailwind::tailwind_config::TailwindConfig;
@@ -12,9 +13,9 @@ use tailwind::{
 };
 
 // // use tailwind::;
+use config::get_classes;
 use regex;
 use std::{env, fs};
-use tailwind::config::get_classes;
 use tailwind::signable::SIGNABLES;
 use tailwindcss_core::parser::{Extractor, ExtractorOptions};
 
