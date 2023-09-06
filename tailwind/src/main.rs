@@ -2,7 +2,7 @@ use tw_macro::tw;
 
 fn main() {
     // tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-red-50");
-    tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-purple bg-red-50");
+    tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-purple bg-red-50 border-s-tahiti-800");
     // tw!("m-4 p-4 p-4");
     // tw!("-m-[4px] p-4 p-4");
     // tw!("-m-4 p-4 p-4");

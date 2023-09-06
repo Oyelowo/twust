@@ -35,6 +35,74 @@ fn extract_keys_from_colors(colors: &Option<HashMap<String, ColorValue>>) -> Vec
     keys
 }
 
+fn add_classes_for_field(
+    field: &dyn TailwindField,
+    config: &TailwindConfig,
+    classes: &mut Vec<String>,
+) {
+    let overrides = field.get_override(&config);
+    if !overrides.is_empty() {
+        classes.extend(generate_classes_for_keys(field, &overrides));
+    } else {
+        let default = field.get_default();
+        classes.extend(default.iter().map(|x| x.to_string()));
+    }
+    let extend = field.get_extend(&config);
+    classes.extend(generate_classes_for_keys(field, &extend));
+    classes.extend(field.handle_special_cases(&config));
+}
+
+fn read_tailwind_config() -> Result<TailwindConfig, std::io::Error> {
+    let current_dir = std::env::current_dir()?;
+
+    // Construct the path to tailwind.config.json relative to the current directory
+    // typically, top-level directory.
+    let config_path = current_dir.join("tailwind.config.json");
+
+    if !config_path.exists() {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::NotFound,
+            format!(
+                "tailwind.config.json was not found in the top-level directory - \n{config_path:?}. Ensure it exists."
+            ),
+        ));
+    }
+
+    let content = fs::read_to_string(config_path)?;
+    let config: TailwindConfig = serde_json::from_str(&content)?;
+    Ok(config)
+}
+
+pub fn get_classes() -> Result<Vec<String>, std::io::Error> {
+    let config = read_tailwind_config()?;
+    let bg = Bg;
+    let border_color = BorderColor;
+    let mut classes = Vec::new();
+
+    add_classes_for_field(&bg, &config, &mut classes);
+    add_classes_for_field(&border_color, &config, &mut classes);
+
+    Ok(classes)
+}
+
+fn generate_classes_for_keys(field: &dyn TailwindField, keys: &Vec<String>) -> Vec<String> {
+    let mut classes = Vec::new();
+    let variants = field.get_variants();
+    let prefix = field.get_prefix();
+
+    for key in keys.iter() {
+        // e.g bg-red
+        classes.push(format!("{prefix}-{key}"));
+        for variant in variants.iter() {
+            // e.g border-t-red, border-r-red-500,
+            classes.push(format!("{prefix}-{variant}-{key}"));
+        }
+    }
+
+    classes
+}
+
+// Define Color Fields implementations
 struct Bg;
 
 impl TailwindField for Bg {
@@ -111,73 +179,4 @@ impl TailwindField for BorderColor {
         // You can implement any special cases for borders here
         vec![]
     }
-}
-
-fn generate_classes_for_keys(field: &dyn TailwindField, keys: &Vec<String>) -> Vec<String> {
-    let mut classes = Vec::new();
-    let variants = field.get_variants();
-    let prefix = field.get_prefix();
-
-    for key in keys.iter() {
-        // e.g bg-red
-        classes.push(format!("{prefix}-{key}"));
-        for variant in variants.iter() {
-            // e.g border-t-red, border-r-red-500,
-            classes.push(format!("{prefix}-{variant}-{key}"));
-        }
-    }
-
-    classes
-}
-
-fn add_classes_for_field(
-    field: &dyn TailwindField,
-    config: &TailwindConfig,
-    classes: &mut Vec<String>,
-) {
-    let overrides = field.get_override(&config);
-    if !overrides.is_empty() {
-        classes.extend(generate_classes_for_keys(field, &overrides));
-    } else {
-        let default = field.get_default();
-        classes.extend(default.iter().map(|x| x.to_string()));
-    }
-    let extend = field.get_extend(&config);
-    classes.extend(generate_classes_for_keys(field, &extend));
-    classes.extend(field.handle_special_cases(&config));
-}
-
-fn read_tailwind_config() -> Result<TailwindConfig, std::io::Error> {
-    let current_dir = std::env::current_dir()?;
-
-    // Construct the path to tailwind.config.json relative to the current directory
-    let config_path = current_dir.join("tailwind.config.json");
-
-    if !config_path.exists() {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::NotFound,
-            format!(
-                "tailwind.config.json was not found in the top-level directory - \n{config_path:?}. Ensure it exists."
-            ),
-        ));
-    }
-
-    let content = fs::read_to_string(config_path)?;
-    let config: TailwindConfig = serde_json::from_str(&content)?;
-    Ok(config)
-}
-
-pub fn get_classes() -> Result<Vec<String>, std::io::Error> {
-    let config = read_tailwind_config()?;
-    let bg = Bg;
-    let border_color = BorderColor;
-    let mut classes = Vec::new();
-
-    add_classes_for_field(&bg, &config, &mut classes);
-    add_classes_for_field(&border_color, &config, &mut classes);
-
-    // for class in classes.iter() {
-    //     println!("{}", class);
-    // }
-    Ok(classes)
 }
