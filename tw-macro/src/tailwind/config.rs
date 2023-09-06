@@ -167,6 +167,7 @@ pub fn get_classes() -> Result<Vec<String>, std::io::Error> {
     add_classes_for_field(&OutlineColor, &config, &mut classes);
     add_classes_for_field(&FillColor, &config, &mut classes);
     add_classes_for_field(&StrokeColor, &config, &mut classes);
+    add_classes_for_field(&PlaceholderColor, &config, &mut classes);
 
     Ok(classes)
 }
