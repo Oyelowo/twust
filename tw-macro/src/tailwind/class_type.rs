@@ -146,6 +146,8 @@ pub struct TailWindCss {
     pub scroll_margin: [&'static str; 315],
     pub transform_origin: [&'static str; 9],
     pub accent_color: [&'static str; 248],
+    // pub placeholder_color: [&'static str; 248],
+    // pub placeholder_opacity: [&'static str; 248],
     pub scale: [&'static str; 30],
     pub rotate: [&'static str; 9],
     pub translate: [&'static str; 84],
