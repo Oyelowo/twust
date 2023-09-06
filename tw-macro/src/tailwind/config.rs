@@ -155,19 +155,38 @@ fn read_tailwind_config() -> Result<TailwindConfig, std::io::Error> {
 pub fn get_classes() -> Result<Vec<String>, std::io::Error> {
     let config = read_tailwind_config()?;
     let mut classes = Vec::new();
+    let colors: [Box<dyn TailwindField>; 13] = [
+        Box::new(AccentColor),
+        Box::new(BgColor),
+        Box::new(BorderColor),
+        Box::new(TextColor),
+        Box::new(TextDecorationColor),
+        Box::new(PlaceholderColor),
+        Box::new(RingColor),
+        Box::new(RingOffsetColor),
+        Box::new(BoxShadowColor),
+        Box::new(DivideColor),
+        Box::new(OutlineColor),
+        Box::new(FillColor),
+        Box::new(StrokeColor),
+    ];
 
-    add_classes_for_field(&AccentColor, &config, &mut classes);
-    add_classes_for_field(&BgColor, &config, &mut classes);
-    add_classes_for_field(&BorderColor, &config, &mut classes);
-    add_classes_for_field(&TextColor, &config, &mut classes);
-    add_classes_for_field(&TextDecorationColor, &config, &mut classes);
-    add_classes_for_field(&RingColor, &config, &mut classes);
-    add_classes_for_field(&RingOffsetColor, &config, &mut classes);
-    add_classes_for_field(&DivideColor, &config, &mut classes);
-    add_classes_for_field(&OutlineColor, &config, &mut classes);
-    add_classes_for_field(&FillColor, &config, &mut classes);
-    add_classes_for_field(&StrokeColor, &config, &mut classes);
-    add_classes_for_field(&PlaceholderColor, &config, &mut classes);
+    for color in colors {
+        add_classes_for_field(color.as_ref(), &config, &mut classes);
+    }
+
+    // add_classes_for_field(&AccentColor, &config, &mut classes);
+    // add_classes_for_field(&BgColor, &config, &mut classes);
+    // add_classes_for_field(&BorderColor, &config, &mut classes);
+    // add_classes_for_field(&TextColor, &config, &mut classes);
+    // add_classes_for_field(&TextDecorationColor, &config, &mut classes);
+    // add_classes_for_field(&RingColor, &config, &mut classes);
+    // add_classes_for_field(&RingOffsetColor, &config, &mut classes);
+    // add_classes_for_field(&DivideColor, &config, &mut classes);
+    // add_classes_for_field(&OutlineColor, &config, &mut classes);
+    // add_classes_for_field(&FillColor, &config, &mut classes);
+    // add_classes_for_field(&StrokeColor, &config, &mut classes);
+    // add_classes_for_field(&PlaceholderColor, &config, &mut classes);
 
     Ok(classes)
 }
