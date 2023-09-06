@@ -2,6 +2,7 @@ use super::tailwind_config::{ColorValue, TailwindConfig};
 use crate::tailwind::class_type::TAILWIND_CSS;
 use serde_json;
 use std::env;
+use std::path::Path;
 use std::{collections::HashMap, fs};
 
 trait TailwindField {
@@ -146,46 +147,26 @@ fn add_classes_for_field(
     classes.extend(field.handle_special_cases(&config));
 }
 
-// fn read_tailwind_config(path: &str) -> Result<TailwindConfig, std::io::Error> {
-//     let content = fs::read_to_string(path)?;
-//     let config: TailwindConfig = serde_json::from_str(&content)?;
-//     Ok(config)
-// }
+fn read_tailwind_config() -> Result<TailwindConfig, std::io::Error> {
+    let current_dir = std::env::current_dir()?;
 
-fn read_tailwind_config(filename: &str) -> Result<TailwindConfig, std::io::Error> {
-    // Construct the path to the file relative to the directory containing Cargo.toml
-    // let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(filename);
+    // Construct the path to tailwind.config.json relative to the current directory
+    let config_path = current_dir.join("tailwind.config.json");
 
-    // let config_path = capture_path!();
+    if !config_path.exists() {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::NotFound,
+            "tailwind.config.json was not found in the top-level directory. Ensure it exists.",
+        ));
+    }
 
-    let content = fs::read_to_string(filename)?;
-    // let content = fs::read_to_string(path)?;
+    let content = fs::read_to_string(config_path)?;
     let config: TailwindConfig = serde_json::from_str(&content)?;
     Ok(config)
 }
 
-// fn read_tailwind_config(path: &str) -> Result<TailwindConfig, Box<dyn std::error::Error>> {
-//     let content = fs::read_to_string(path)?;
-//     let config: TailwindConfig = serde_json::from_str(&content)?;
-//     Ok(config)
-// }
-pub fn get_classes() -> Vec<String> {
-    // let content = fs::read_to_string("tailwind.config.json").expect("Unable to read file");
-    // let config: TailwindConfig = read_tailwind_config("tailwind.config.json").unwrap_or_default();
-
-    // let config: TailwindConfig =
-    //     read_tailwind_config("tailwind.config.json").expect("Unable to read file");
-    // let config_path = capture_path!();
-
-    let path = env::current_dir()
-        .expect("mapow")
-        .join("tailwind.config.json");
-    // let path = path.ancestors();
-
-    // let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("tailwind.config.json");
-    let config: TailwindConfig = read_tailwind_config("tailwind.config.json")
-        .expect(format!("Unable to read file - path: {:?}", path).as_str());
-
+pub fn get_classes() -> Result<Vec<String>, std::io::Error> {
+    let config = read_tailwind_config()?;
     let bg = Bg;
     let border_color = BorderColor;
     let mut classes = Vec::new();
@@ -196,5 +177,5 @@ pub fn get_classes() -> Vec<String> {
     // for class in classes.iter() {
     //     println!("{}", class);
     // }
-    classes
+    Ok(classes)
 }
