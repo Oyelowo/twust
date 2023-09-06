@@ -22,7 +22,11 @@ fn extract_keys_from_colors(colors: &Option<HashMap<String, ColorValue>>) -> Vec
                 ColorValue::Simple(_) => keys.push(key.clone()),
                 ColorValue::Shades(shades) => {
                     for shade_key in shades.keys() {
-                        keys.push(format!("{}-{}", key, shade_key));
+                        if shade_key == "DEFAULT" {
+                            keys.push(key.clone());
+                            continue;
+                        }
+                        keys.push(format!("{key}-{shade_key}"));
                     }
                 }
             }
@@ -111,7 +115,7 @@ impl TailwindField for BorderColor {
 
 fn generate_classes_for_keys(field: &dyn TailwindField, keys: &Vec<String>) -> Vec<String> {
     let mut classes = Vec::new();
-    let mut variants = field.get_variants();
+    let variants = field.get_variants();
     let prefix = field.get_prefix();
 
     for key in keys.iter() {
@@ -160,7 +164,9 @@ fn read_tailwind_config(filename: &str) -> Result<TailwindConfig, std::io::Error
 
 pub fn get_classes() -> Vec<String> {
     // let content = fs::read_to_string("tailwind.config.json").expect("Unable to read file");
-    let config: TailwindConfig = read_tailwind_config("tailwind.config.json").unwrap_or_default();
+    // let config: TailwindConfig = read_tailwind_config("tailwind.config.json").unwrap_or_default();
+    let config: TailwindConfig =
+        read_tailwind_config("tailwind.config.json").expect("Unable to read file");
     let bg = Bg;
     let border_color = BorderColor;
     let mut classes = Vec::new();

@@ -412,7 +412,7 @@ pub fn tw(input: TokenStream) -> TokenStream {
 
         let is_valid_class = {
             
-            !is_valid_arb_prop && valid_class_names.contains(&last_word_unsigned)
+            !is_valid_arb_prop && valid_class_names.contains(&last_word_unsigned.to_string())
         };
 
 
@@ -421,7 +421,7 @@ pub fn tw(input: TokenStream) -> TokenStream {
         
         let is_valid_negative_baseclass = {
             // tw!("-m-4 p-4 p-4");
-            (valid_class_names.contains(&last_word_unsigned)  && last_word_signed.starts_with("-") && SIGNABLES.iter().any(|s| (last_word_unsigned.starts_with(s))))
+            (valid_class_names.contains(&last_word_unsigned.to_string())  && last_word_signed.starts_with("-") && SIGNABLES.iter().any(|s| (last_word_unsigned.starts_with(s))))
             ||
             (is_valid_arb_prop && last_word_signed.starts_with('-') && SIGNABLES.iter().any(|s| last_word_unsigned.starts_with(s)))
         };
@@ -462,7 +462,7 @@ pub fn tw(input: TokenStream) -> TokenStream {
                 let is_valid_number =  opacity_num >= 0.0 && opacity_num <= 100.0;
                 is_valid_number
             });
-            valid_class_names.contains(&class_name) && is_valid_number 
+            valid_class_names.contains(&class_name.to_string()) && is_valid_number 
         };
 
 

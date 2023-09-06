@@ -124,7 +124,7 @@ pub struct CustomisableClasses {
     pub box_shadow: Option<HashMap<String, String>>,
     pub box_shadow_color: Option<HashMap<String, String>>,
     pub box_sizing: Option<HashMap<String, String>>,
-    pub break_after: HashMap<String, String>,
+    pub break_after: Option<HashMap<String, String>>,
     pub break_before: Option<HashMap<String, String>>,
     pub break_inside: Option<HashMap<String, String>>,
     pub brightness: Option<HashMap<String, String>>,
