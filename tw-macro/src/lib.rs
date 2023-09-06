@@ -1,5 +1,5 @@
 use std::error::Error;
-use std::fs;
+use std::{fs, env};
 use regex;
 use tailwind::config::get_classes;
 use tailwind::signable::SIGNABLES;
@@ -496,3 +496,20 @@ pub fn tw(input: TokenStream) -> TokenStream {
 
     TokenStream::from(quote! {#input})
 }
+
+
+#[proc_macro]
+pub fn print_current_dir(_input: TokenStream) -> TokenStream {
+    let dir = env::current_dir().expect("cant get cur dir");
+    let path = dir.to_str().expect("cant covert to str");
+
+    let output = quote! {
+        compile_error!(#path);
+    };
+    output.into()
+}
+
+
+
+
+
