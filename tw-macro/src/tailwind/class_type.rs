@@ -1,3 +1,6 @@
+// placeholder-shown
+// placeholder-slate-400
+
 #[derive(Debug, Clone, Copy)]
 pub struct TailWindCss {
     pub aspect_ratio: [&'static str; 3],
