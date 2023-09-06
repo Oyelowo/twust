@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::fs;
 use regex;
+use tailwind::config::get_classes;
 use tailwind::signable::SIGNABLES;
 use tailwindcss_core::parser::{Extractor, ExtractorOptions};
 
@@ -67,6 +68,10 @@ use tailwind::{
 //     TokenStream::from(quote! {})
 // }
 
+fn concatenate_arrays(arrays: &[&[&'static str]]) -> Vec<&'static str> {
+    arrays.iter().cloned().flatten().cloned().collect()
+}
+
 fn is_valid_length(value: &str) -> bool {
     let re = regex::Regex::new(r"^(-?\d+(\.?\d+)?(px|em|rem|%|cm|mm|in|pt|pc|vh|vw|vmin|vmax)|0)$").expect("Invalid regex");
     re.is_match(value)
@@ -90,9 +95,6 @@ fn read_tailwind_config(path: &str) -> Result<TailwindConfig, std::io::Error> {
 
 
 
-fn concatenate_arrays(arrays: &[&[&'static str]]) -> Vec<&'static str> {
-    arrays.iter().cloned().flatten().cloned().collect()
-}
 
 // use static_assertions::
 macro_rules! concat_arrays {
@@ -122,19 +124,21 @@ macro_rules! concat_arrays {
 }
 
 fn get_class_names() -> Vec<&'static str> {
-    let has_break_after = true;
-    let break_after_custom_overwrite = vec!["break-after-avoid", "break-after-auto", "break-after-all"];
-    let break_after_custom_extend = vec!["break-after-avoid", "break-after-auto", "break-after-all"];
+    let config = read_tailwind_config("tailwind.config.json").unwrap_or_default();
+    let theme = config.theme;
+    let mut xx = TAILWIND_CSS;
     
-    let break_after = if has_break_after { 
-        break_after_custom_overwrite
-    } else {
-        // Concatenate the default break_after classes with the custom ones from extend field.
-        // TODO: Check if the custom ones are valid
-        vec![TAILWIND_CSS.break_after.to_vec(), break_after_custom_extend].concat() 
-    };
+    // let break_after = if theme.overrides.break_after.is_empty() { 
+    //     // Concatenate the default break_after classes with the custom ones from extend field.
+    //     // TODO: Check if the custom ones are valid
+    //     // vec![TAILWIND_CSS.break_after.to_vec(), theme.extend.break_after.into_keys().collect()].concat() 
+    //     xx.break_after.extend(theme.extend.break_after.into_keys().collect::<Vec<&str>>());
+    // } else {
+    //     // break_after_overwrite
+    //    theme.overrides.break_after.into_keys().collect::<Vec<&str>>();
+    // };
     
-    let valid_class_names = concat_arrays![
+    let mut valid_class_names = concat_arrays![
         aspect_ratio,
         container,
         columns,
@@ -306,6 +310,7 @@ fn get_class_names() -> Vec<&'static str> {
     ]
     .concat();
 
+    // valid_class_names.extend(break_after);
     valid_class_names
 }
 
@@ -335,6 +340,8 @@ pub fn tw(input: TokenStream) -> TokenStream {
     //     Err(e) => eprintln!("Error reading config: {}", e),
     // };
     let tw_config_file = read_tailwind_config("tailwind.config.json").unwrap_or_default();
+    // let valid_class_names = get_class_names();
+    let valid_class_names = get_classes();
 
     
     for word in input.value().split_whitespace() {
@@ -402,7 +409,6 @@ pub fn tw(input: TokenStream) -> TokenStream {
             .iter()
             .all(|modifier| modifiers::MODIFIERS.contains(&modifier));
 
-        let valid_class_names = get_class_names();
 
         let is_valid_class = {
             
@@ -415,7 +421,7 @@ pub fn tw(input: TokenStream) -> TokenStream {
         
         let is_valid_negative_baseclass = {
             // tw!("-m-4 p-4 p-4");
-            (get_class_names().contains(&last_word_unsigned)  && last_word_signed.starts_with("-") && SIGNABLES.iter().any(|s| (last_word_unsigned.starts_with(s))))
+            (valid_class_names.contains(&last_word_unsigned)  && last_word_signed.starts_with("-") && SIGNABLES.iter().any(|s| (last_word_unsigned.starts_with(s))))
             ||
             (is_valid_arb_prop && last_word_signed.starts_with('-') && SIGNABLES.iter().any(|s| last_word_unsigned.starts_with(s)))
         };
@@ -456,7 +462,7 @@ pub fn tw(input: TokenStream) -> TokenStream {
                 let is_valid_number =  opacity_num >= 0.0 && opacity_num <= 100.0;
                 is_valid_number
             });
-            get_class_names().contains(&class_name) && is_valid_number 
+            valid_class_names.contains(&class_name) && is_valid_number 
         };
 
 

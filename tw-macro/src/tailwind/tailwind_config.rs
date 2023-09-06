@@ -17,14 +17,48 @@ pub struct Theme {
     pub extend: CustomisableClasses,
 }
 
+// Represents a color which can either be a simple string or a nested structure.
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[serde(untagged)]
+pub enum ColorValue {
+    Simple(String),
+    Shades(HashMap<String, String>),
+}
+
+// #[derive(Debug, Deserialize)]
+// struct Theme {
+//     colors: Option<HashMap<String, ColorValue>>,
+// }
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ScreenValue {
+    Simple(String),
+    Range(RangeBreakpoint),
+    MultiRange(Vec<RangeBreakpoint>),
+    Raw(RawBreakpoint),
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RangeBreakpoint {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    min: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    max: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RawBreakpoint {
+    raw: String,
+}
+
 #[derive(Serialize, Deserialize, Default, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct CustomisableClasses {
-    pub screens: Option<HashMap<String, String>>,
-    pub colors: Option<HashMap<String, String>>,
+    // pub screens: Option<HashMap<String, String>>,
+    pub screens: HashMap<String, ScreenValue>,
+    pub colors: Option<HashMap<String, ColorValue>>,
     pub spacing: Option<HashMap<String, String>>,
-
-    pub border_colors: HashMap<String, HashMap<String, String>>,
 
     pub border_widths: Option<HashMap<String, String>>,
 
@@ -71,7 +105,7 @@ pub struct CustomisableClasses {
     pub background_attachment: Option<HashMap<String, String>>,
     pub background_blend_mode: Option<HashMap<String, String>>,
     pub background_clip: Option<HashMap<String, String>>,
-    pub background_color: Option<HashMap<String, String>>,
+    pub background_color: Option<HashMap<String, ColorValue>>,
     pub background_image: Option<HashMap<String, String>>,
     pub background_opacity: Option<HashMap<String, String>>,
     pub background_origin: Option<HashMap<String, String>>,
@@ -80,7 +114,7 @@ pub struct CustomisableClasses {
     pub background_size: Option<HashMap<String, String>>,
     pub blur: Option<HashMap<String, String>>,
     pub border_collapse: Option<HashMap<String, String>>,
-    pub border_color: Option<HashMap<String, String>>,
+    pub border_color: Option<HashMap<String, ColorValue>>,
     pub border_opacity: Option<HashMap<String, String>>,
     pub border_radius: Option<HashMap<String, String>>,
     pub border_spacing: Option<HashMap<String, String>>,
@@ -90,7 +124,7 @@ pub struct CustomisableClasses {
     pub box_shadow: Option<HashMap<String, String>>,
     pub box_shadow_color: Option<HashMap<String, String>>,
     pub box_sizing: Option<HashMap<String, String>>,
-    pub break_after: Option<HashMap<String, String>>,
+    pub break_after: HashMap<String, String>,
     pub break_before: Option<HashMap<String, String>>,
     pub break_inside: Option<HashMap<String, String>>,
     pub brightness: Option<HashMap<String, String>>,
