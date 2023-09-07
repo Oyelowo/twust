@@ -6,7 +6,7 @@ use crate::tailwind::tailwind_config::TailwindConfig;
 
 macro_rules! define_tailwind_field {
     ($name:ident, $prefix:expr, /* $inherited:ident, */ $field_name:ident, $variants:expr) => {
-        struct $name;
+        pub struct $name;
 
         impl TailwindField for $name {
             fn get_prefix(&self) -> &'static str {
@@ -183,7 +183,6 @@ define_tailwind_field!(
     ["x", "y", "t", "r", "b", "l", "s", "e"]
 );
 
-define_tailwind_field!(BorderColor, "border", border_color, []);
 // define_tailwind_field!(BorderStyle, "border", border_style, []);
 
 // TODO: Divide width inherits from border width. I can include a new inherited
@@ -235,7 +234,6 @@ define_tailwind_field!(
     []
 );
 define_tailwind_field!(BackdropContrast, "backdrop-contrast", backdrop_contrast, []);
-define_tailwind_field!(BackdropFilter, "backdrop-filter", backdrop_filter, []);
 define_tailwind_field!(
     BackdropGrayscale,
     "backdrop-grayscale",

@@ -1,18 +1,10 @@
-// use std::error::Error;
-use syn::parse::{Parse, ParseStream};
-use syn::Token;
 use syn::{parse_macro_input, LitStr};
 mod config;
 mod tailwind;
 use tailwind::lengthy::LENGTHY;
 use tailwind::tailwind_config::TailwindConfig;
-use tailwind::{
-    class_type::{self, TAILWIND_CSS},
-    modifiers,
-    valid_baseclass_names::VALID_BASECLASS_NAMES,
-};
+use tailwind::{class_type::TAILWIND_CSS, modifiers, valid_baseclass_names::VALID_BASECLASS_NAMES};
 
-// // use tailwind::;
 use config::get_classes;
 use regex;
 use std::{env, fs};
@@ -34,63 +26,15 @@ fn run(input: &str, loose: bool) -> Vec<&str> {
 use proc_macro::TokenStream;
 use quote::quote;
 
-// // struct CheckInput(Vec<LitStr>);
-// // // fn xx() -> Token![^] {
-// // //     todo!()
-// // // }
-// // impl Parse for CheckInput {
-// //     fn parse(input: ParseStream) -> Result<Self> {
-// //         // let x = xx();
-// //         let mut strings = Vec::new();
-// //         while !input.is_empty() {
-// //             let s = input.parse::<LitStr>()?;
-// //             strings.push(s);
-// //             let _ = input.parse::<Token![,]>();
-// //         }
-// //         Ok(CheckInput(strings))
-// //     }
-// // }
-
-// // #[proc_macro]
-// // pub fn tw(input: TokenStream) -> TokenStream {
-// //     let CheckInput(strings) = parse_macro_input!(input as CheckInput);
-
-// //     let valid = ["lowo", "dayo"];
-
-// //     for s in strings {
-// //         if !valid.contains(&s.value().as_str()) {
-// //             return syn::Error::new_spanned(s, "Invalid string")
-// //                 .to_compile_error()
-// //                 .into();
-// //         }
-// //     }
-
-// //     TokenStream::from(quote! {})
-// // }
-
-fn concatenate_arrays(arrays: &[&[&'static str]]) -> Vec<&'static str> {
-    arrays.iter().cloned().flatten().cloned().collect()
-}
-
 fn is_valid_length(value: &str) -> bool {
     let re = regex::Regex::new(r"^(-?\d+(\.?\d+)?(px|em|rem|%|cm|mm|in|pt|pc|vh|vw|vmin|vmax)|0)$")
         .expect("Invalid regex");
     re.is_match(value)
 }
-//     let value = "-10px";
-//     println!("{}", is_valid_length(value));
 
 fn is_valid_calc(value: &str) -> bool {
     let re = regex::Regex::new(r"^calc\([^)]+\)$").expect("Invalid regex");
     re.is_match(value)
-}
-// //     let value = "calc(100% - 80px)";
-// //     println!("{}", is_valid_calc(value));
-
-fn read_tailwind_config(path: &str) -> Result<TailwindConfig, std::io::Error> {
-    let content = fs::read_to_string(path)?;
-    let config: TailwindConfig = serde_json::from_str(&content)?;
-    Ok(config)
 }
 
 // use static_assertions::
@@ -120,20 +64,6 @@ macro_rules! concat_arrays {
 }
 
 fn get_class_names() -> Vec<&'static str> {
-    let config = read_tailwind_config("tailwind.config.json").unwrap_or_default();
-    let theme = config.theme;
-    let mut xx = TAILWIND_CSS;
-
-    //     // let break_after = if theme.overrides.break_after.is_empty() {
-    //     //     // Concatenate the default break_after classes with the custom ones from extend field.
-    //     //     // TODO: Check if the custom ones are valid
-    //     //     // vec![TAILWIND_CSS.break_after.to_vec(), theme.extend.break_after.into_keys().collect()].concat()
-    //     //     xx.break_after.extend(theme.extend.break_after.into_keys().collect::<Vec<&str>>());
-    //     // } else {
-    //     //     // break_after_overwrite
-    //     //    theme.overrides.break_after.into_keys().collect::<Vec<&str>>();
-    //     // };
-
     let mut valid_class_names = concat_arrays![
         aspect_ratio,
         container,
@@ -205,9 +135,9 @@ fn get_class_names() -> Vec<&'static str> {
         letter_spacing,
         line_clamp,
         line_height,
-        line_style_image,
-        line_style_position,
-        line_style_type,
+        list_style_image,
+        list_style_position,
+        list_style_type,
         text_align,
         text_color,
         text_decoration,
@@ -260,7 +190,7 @@ fn get_class_names() -> Vec<&'static str> {
         brightness,
         contrast,
         drop_shadow,
-        gray_scale,
+        grayscale,
         hue_rotate,
         invert,
         saturate,
@@ -302,7 +232,7 @@ fn get_class_names() -> Vec<&'static str> {
         scroll_snap_type,
         touch_action,
         will_change,
-        scree_readers
+        screen_readers
     ]
     .concat();
 
@@ -310,24 +240,8 @@ fn get_class_names() -> Vec<&'static str> {
     valid_class_names
 }
 
-// // const ARBITRARY_BASE_CLASS_NAMES: [&'static str; 160] = [];
-
 //
 // Spacing:
-// border_radius
-// flex_basis
-// gap
-// border_spacing
-// height
-// inset
-// margin
-// width
-// padding
-// max_height
-// space
-// scroll_padding
-// text_indent
-// translate
 #[proc_macro]
 pub fn tw(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
@@ -507,15 +421,4 @@ pub fn tw(input: TokenStream) -> TokenStream {
     }
 
     TokenStream::from(quote! {#input})
-}
-
-#[proc_macro]
-pub fn print_current_dir(_input: TokenStream) -> TokenStream {
-    let dir = env::current_dir().expect("cant get cur dir");
-    let path = dir.to_str().expect("cant covert to str");
-
-    let output = quote! {
-        compile_error!(#path);
-    };
-    output.into()
 }

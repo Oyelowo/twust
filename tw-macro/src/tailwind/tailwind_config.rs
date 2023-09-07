@@ -160,7 +160,6 @@ pub struct CustomisableClasses {
     pub font_weight: Option<HashMap<String, String>>,
     pub gap: Option<HashMap<String, String>>,
     pub gradient_color_stops: Option<HashMap<String, ColorValue>>,
-    pub grayscale: Option<HashMap<String, String>>,
     pub grid_auto_columns: Option<HashMap<String, String>>,
     pub grid_auto_flow: Option<HashMap<String, String>>,
     pub grid_auto_rows: Option<HashMap<String, String>>,

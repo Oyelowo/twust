@@ -3,7 +3,6 @@
 
 #[derive(Debug, Clone, Copy)]
 pub struct TailWindCss {
-    pub backdrop_filter: [&'static str; 2],
     pub aspect_ratio: [&'static str; 3],
     pub container: [&'static str; 4],
     pub columns: [&'static str; 26],
@@ -76,9 +75,9 @@ pub struct TailWindCss {
     pub letter_spacing: [&'static str; 6],
     pub line_clamp: [&'static str; 7],
     pub line_height: [&'static str; 14],
-    pub line_style_image: [&'static str; 1],
-    pub line_style_position: [&'static str; 2],
-    pub line_style_type: [&'static str; 3],
+    pub list_style_image: [&'static str; 1],
+    pub list_style_position: [&'static str; 2],
+    pub list_style_type: [&'static str; 3],
     pub text_align: [&'static str; 6],
     pub text_color: [&'static str; 247],
     pub text_decoration: [&'static str; 4],
@@ -131,7 +130,7 @@ pub struct TailWindCss {
     pub brightness: [&'static str; 11],
     pub contrast: [&'static str; 7],
     pub drop_shadow: [&'static str; 7],
-    pub gray_scale: [&'static str; 2],
+    pub grayscale: [&'static str; 2],
     pub hue_rotate: [&'static str; 6],
     pub invert: [&'static str; 2],
     pub saturate: [&'static str; 5],
@@ -1794,13 +1793,13 @@ pub const TAILWIND_CSS: TailWindCss = TailWindCss {
     ],
 
     /* List Style Image */
-    line_style_image: ["list-image-none"],
+    list_style_image: ["list-image-none"],
 
     /* List Style Position */
-    line_style_position: ["list-inside", "list-outside"],
+    list_style_position: ["list-inside", "list-outside"],
 
     /* List Style Type */
-    line_style_type: ["list-none", "list-disc", "list-decimal"],
+    list_style_type: ["list-none", "list-disc", "list-decimal"],
 
     /* Text Align */
     text_align: [
@@ -6617,7 +6616,7 @@ pub const TAILWIND_CSS: TailWindCss = TailWindCss {
     ],
 
     /* Grayscale */
-    gray_scale: ["grayscale-0", "grayscale"],
+    grayscale: ["grayscale-0", "grayscale"],
 
     /* Hue Rotate */
     hue_rotate: [

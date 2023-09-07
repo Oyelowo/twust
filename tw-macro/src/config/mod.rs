@@ -2,7 +2,7 @@ use std::fs;
 
 use crate::tailwind::tailwind_config::TailwindConfig;
 
-use self::{colors::*, spacings::*};
+use self::{colors::*, others::*, spacings::*};
 
 mod colors;
 mod others;
@@ -76,7 +76,7 @@ fn read_tailwind_config() -> Result<TailwindConfig, std::io::Error> {
 pub fn get_classes() -> Result<Vec<String>, std::io::Error> {
     let config = read_tailwind_config()?;
     let mut classes = Vec::new();
-    let colors: [Box<dyn TailwindField>; 25] = [
+    let colors: [Box<dyn TailwindField>; 100] = [
         // Colors
         Box::new(AccentColor),
         Box::new(BgColor),
@@ -104,6 +104,82 @@ pub fn get_classes() -> Result<Vec<String>, std::io::Error> {
         Box::new(BorderSpacing),
         Box::new(ScrollMargin),
         Box::new(ScrollPadding),
+        // Others
+        Box::new(AspectRatio),
+        Box::new(Columns),
+        Box::new(ObjectPosition),
+        Box::new(ZIndex),
+        Box::new(Flex),
+        Box::new(FlexGrow),
+        Box::new(FlexShrink),
+        Box::new(Order),
+        Box::new(GridTemplateColumns),
+        Box::new(GridColumn),
+        Box::new(GridColumnStart),
+        Box::new(GridColumnEnd),
+        Box::new(GridTemplateRows),
+        Box::new(GridRow),
+        Box::new(GridRowStart),
+        Box::new(GridRowEnd),
+        Box::new(GridAutoColumns),
+        Box::new(GridAutoRows),
+        Box::new(MinWidth),
+        Box::new(MaxWidth),
+        Box::new(MinHeight),
+        Box::new(PlaceholderOpacity),
+        Box::new(FontFamily),
+        Box::new(FontSize),
+        Box::new(FontWeight),
+        Box::new(LetterSpacing),
+        Box::new(LineClamp),
+        Box::new(LineHeight),
+        Box::new(ListStyleImage),
+        Box::new(ListStyleType),
+        Box::new(TextDecorationThickness),
+        Box::new(TextUnderlineOffset),
+        Box::new(Content),
+        Box::new(BackgroundPosition),
+        Box::new(BackgroundSize),
+        Box::new(BackgroundImage),
+        Box::new(BorderRadius),
+        Box::new(BorderWidth),
+        Box::new(DivideWidth),
+        Box::new(OutlineWidth),
+        Box::new(OutlineOffset),
+        Box::new(RingWidth),
+        Box::new(RingOffsetWidth),
+        Box::new(BoxShadow),
+        Box::new(Opacity),
+        Box::new(Blur),
+        Box::new(Brightness),
+        Box::new(Contrast),
+        Box::new(DropShadow),
+        Box::new(Grayscale),
+        Box::new(HueRotate),
+        Box::new(Invert),
+        Box::new(Saturate),
+        Box::new(Sepia),
+        Box::new(BackdropBlur),
+        Box::new(BackdropBrightness),
+        Box::new(BackdropContrast),
+        Box::new(BackdropGrayscale),
+        Box::new(BackdropHueRotate),
+        Box::new(BackdropInvert),
+        Box::new(BackdropOpacity),
+        Box::new(BackdropSaturate),
+        Box::new(BackdropSepia),
+        Box::new(TransitionProperty),
+        Box::new(TransitionDuration),
+        Box::new(TransitionTimingFunction),
+        Box::new(TransitionDelay),
+        Box::new(Animation),
+        Box::new(Scale),
+        Box::new(Rotate),
+        Box::new(Skew),
+        Box::new(TransformOrigin),
+        Box::new(Cursor),
+        Box::new(WillChange),
+        Box::new(StrokeWidth),
     ];
 
     for color in colors {
