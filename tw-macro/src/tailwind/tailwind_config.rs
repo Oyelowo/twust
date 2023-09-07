@@ -56,7 +56,7 @@ pub struct RawBreakpoint {
 #[serde(rename_all = "camelCase")]
 pub struct CustomisableClasses {
     // pub screens: Option<HashMap<String, String>>,
-    pub screens: HashMap<String, ScreenValue>,
+    pub screens: Option<HashMap<String, ScreenValue>>,
     pub colors: Option<HashMap<String, ColorValue>>,
     pub spacing: Option<HashMap<String, String>>,
 
@@ -158,7 +158,7 @@ pub struct CustomisableClasses {
     pub font_variant_numeric: Option<HashMap<String, String>>,
     pub font_weight: Option<HashMap<String, String>>,
     pub gap: Option<HashMap<String, String>>,
-    pub gradient_color_stops: Option<HashMap<String, String>>,
+    pub gradient_color_stops: Option<HashMap<String, ColorValue>>,
     pub grayscale: Option<HashMap<String, String>>,
     pub grid_auto_columns: Option<HashMap<String, String>>,
     pub grid_auto_flow: Option<HashMap<String, String>>,
@@ -249,6 +249,8 @@ pub struct CustomisableClasses {
     pub whitespace: Option<HashMap<String, String>>,
     pub will_change: Option<HashMap<String, String>>,
     pub word_break: Option<HashMap<String, String>>,
+
+    pub screen_readers: Option<HashMap<String, String>>,
     // pub extend: HashMap<String, HashMap<String, String>>,
 }
 

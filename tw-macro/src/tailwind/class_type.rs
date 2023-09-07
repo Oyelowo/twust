@@ -1,8 +1,9 @@
-// placeholder-shown
+// placescreen_readers-shown
 // placeholder-slate-400
 
 #[derive(Debug, Clone, Copy)]
 pub struct TailWindCss {
+    pub backdrop_filter: [&'static str; 2],
     pub aspect_ratio: [&'static str; 3],
     pub container: [&'static str; 4],
     pub columns: [&'static str; 26],
@@ -174,7 +175,7 @@ pub struct TailWindCss {
     pub scroll_snap_type: [&'static str; 6],
     pub touch_action: [&'static str; 10],
     pub will_change: [&'static str; 4],
-    pub scree_readers: [&'static str; 2], // sr_only: [&'static str; 2],
+    pub screen_readers: [&'static str; 2], // sr_only: [&'static str; 2],
 }
 
 //  grid_template_areas
@@ -8813,5 +8814,5 @@ pub const TAILWIND_CSS: TailWindCss = TailWindCss {
     // MARK: Accessibility
 
     /* Screen Readers */
-    scree_readers: ["sr-only", "not-sr-only"],
+    screen_readers: ["sr-only", "not-sr-only"],
 };

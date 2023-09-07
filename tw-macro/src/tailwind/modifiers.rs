@@ -72,7 +72,9 @@
 // ltr	[dir=“ltr”] &
 // open	&[open]
 
-pub const MODIFIERS: [&'static str; 69] = [
+use super::tailwind_config::TailwindConfig;
+
+pub const MODIFIERS: [&'static str; 57] = [
     "hover",
     "focus",
     "focus-within",
@@ -111,18 +113,6 @@ pub const MODIFIERS: [&'static str; 69] = [
     "file",
     "backdrop",
     "placeholder",
-    "sm",
-    "md",
-    "lg",
-    "xl",
-    "2xl",
-    "min-[…]",
-    "max-sm",
-    "max-md",
-    "max-lg",
-    "max-xl",
-    "max-2xl",
-    "max-[…]",
     "dark",
     "portrait",
     "landscape",
@@ -149,3 +139,45 @@ pub const MODIFIERS: [&'static str; 69] = [
     // ltr	[dir=“ltr”] &
     // open	&[open]
 ];
+
+pub fn get_modifiers(config: &TailwindConfig) -> Vec<&str> {
+    let mut modifiers = Vec::new();
+    modifiers.extend(MODIFIERS.iter().map(|x| *x));
+    let mut default_screens = vec![
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl",
+        "min-[…]",
+        "max-sm",
+        "max-md",
+        "max-lg",
+        "max-xl",
+        "max-2xl",
+        "max-[…]",
+    ];
+
+    if let Some(ref screens) = config.theme.overrides.screens {
+        if !screens.is_empty() {
+            // for (key, _) in screens.iter() {
+            //     default_screens.push(key.as_str());
+            // }
+            default_screens = screens.keys().into_iter().map(|x| x.as_str()).collect();
+        }
+    }
+
+    if let Some(ref screens) = config.theme.extend.screens {
+        if !screens.is_empty() {
+            let screens = screens
+                .keys()
+                .into_iter()
+                .map(|x| x.as_str())
+                .collect::<Vec<&str>>();
+            default_screens.extend(screens);
+        }
+    }
+
+    modifiers.extend(default_screens);
+    modifiers
+}

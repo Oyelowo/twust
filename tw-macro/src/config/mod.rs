@@ -5,6 +5,7 @@ use crate::tailwind::tailwind_config::TailwindConfig;
 use self::{colors::*, spacings::*};
 
 mod colors;
+mod others;
 mod spacings;
 
 trait TailwindField {

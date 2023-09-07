@@ -89,3 +89,12 @@ define_tailwind_field!(DivideColor, "divide", divide_color, []);
 define_tailwind_field!(OutlineColor, "outline", outline_color, []);
 define_tailwind_field!(FillColor, "fill", fill, []);
 define_tailwind_field!(StrokeColor, "stroke", stroke, []);
+define_tailwind_field!(BackgroundColor, "bg", background_color, []);
+
+// define_tailwind_field!(GradientColorStops, "gradient", gradient_color_stops);
+// If you want to customize the gradient color stops positions, you can add a
+// gradientColorStopPositions section to your theme.gradientColorStopPositions
+// or theme.extend.gradientColorStopPositions section
+define_tailwind_field!(GradientColorStopsFrom, "from", gradient_color_stops, []);
+define_tailwind_field!(GradientColorStopsVia, "via", gradient_color_stops, []);
+define_tailwind_field!(GradientColorStopsTo, "to", gradient_color_stops, []);
