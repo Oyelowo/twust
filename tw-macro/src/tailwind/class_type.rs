@@ -105,7 +105,7 @@ pub struct TailWindCss {
     pub border_radius: [&'static str; 135],
     pub border_width: [&'static str; 45],
     pub border_color: [&'static str; 2223],
-    pub border_syle: [&'static str; 6],
+    pub border_style: [&'static str; 6],
     pub border_collapse: [&'static str; 2],
     pub border_spacing: [&'static str; 105],
     pub table_layout: [&'static str; 2],
@@ -5154,7 +5154,7 @@ pub const TAILWIND_CSS: TailWindCss = TailWindCss {
     ],
 
     /* Border Style */
-    border_syle: [
+    border_style: [
         "border-solid",
         "border-dashed",
         "border-dotted",

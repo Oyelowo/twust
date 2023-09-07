@@ -5,7 +5,7 @@ use crate::tailwind::class_type::TAILWIND_CSS;
 use crate::tailwind::tailwind_config::TailwindConfig;
 
 macro_rules! define_tailwind_field {
-    ($name:ident, $prefix:expr, /* $inherited:ident, */ $field_name:ident, $variants:expr) => {
+    ({name : $name:ident, prefix: $prefix:expr, inherited: $inherited:ident,  field_name: $field_name:ident, variants: $variants:expr}) => {
         pub struct $name;
 
         impl TailwindField for $name {
@@ -25,13 +25,23 @@ macro_rules! define_tailwind_field {
                 if let Some(overrides) = &config.theme.overrides.$field_name {
                     return overrides.keys().cloned().collect();
                 }
+
+                if let Some(inherited) = &config.theme.overrides.$inherited {
+                    return inherited.keys().cloned().collect();
+                }
+
                 vec![]
             }
 
             fn get_extend(&self, config: &TailwindConfig) -> Vec<String> {
-                if let Some(extends) = &config.theme.extend.$field_name {
-                    return extends.keys().cloned().collect();
+                if let Some(overrides) = &config.theme.extend.$field_name {
+                    return overrides.keys().cloned().collect();
                 }
+
+                if let Some(inherited) = &config.theme.extend.$inherited {
+                    return inherited.keys().cloned().collect();
+                }
+
                 vec![]
             }
 
@@ -42,248 +52,1367 @@ macro_rules! define_tailwind_field {
     };
 }
 
+// LayOut
+//
+// Aspect Ratio
+// Container
+// Columns
+// Break After
+// Break Before
+// Break Inside
+// Box Decoration Break
+// Box Sizing
+// Display
+// Floats
+// Clear
+// Isolation
+// Object Fit
+// Object Position
+// Overflow
+// Overscroll Behavior
+// Position
+// Top / Right / Bottom / Left
+// Visibility
+// Z-Index
+
 // Tailwind doesn’t include a large set of aspect ratio values out of the box since it’s easier to
 // just use arbitrary values.
 // if you need a one-off custom def, u can use the square-bracket: class="aspect-[4/3]"
 // https://tailwindcss.com/docs/aspect-ratio
-define_tailwind_field!(AspectRatio, "aspect", aspect_ratio, []);
+define_tailwind_field!({
+    name: AspectRatio,
+    prefix: "aspect",
+    inherited: aspect_ratio,
+    field_name: aspect_ratio,
+    variants: []
+});
+
+// Configurable, non-configurable, non-changeable
+
+//
 // Configurable but not all values are predefined by tailwindcss
 // Which means you can change the behaviour within the config
 // but the namings are constant i.e: ["container", "mx-auto", "max-width", "min-width"].
-// define_tailwind_field!(Container, "container", container, []);
-// https://tailwindcss.com/docs/container
-define_tailwind_field!(Columns, "columns", columns, []);
-//
-// Not configurable - limited i.e only a few of them exists. So, custom not really useful.
-// define_tailwind_field!(BreakAfter, "break-after", break_after, []);
-// define_tailwind_field!(BreakBefore, "break-before", break_before, []);
-// define_tailwind_field!(BreakInside, "break-inside", break_inside, []);
-// define_tailwind_field!(BoxDecorationBreak, "box-decoration", box_decoration_break, []);
-// define_tailwind_field!(BoxSizing, "box-sizing", box_sizing, []);
-// define_tailwind_field!(Display, "display", display, []);
-// define_tailwind_field!(Float, "float", float, []);
-// define_tailwind_field!(Clear, "clear", clear, []);
-// define_tailwind_field!(Isolation, "isolation", isolation, []);
-// define_tailwind_field!(ObjectFit, "object", object_fit, []);
-// define_tailwind_field!(Overflow, "overflow", overflow, []);
-// define_tailwind_field!(
-//     OverscrollBehavior,
-//     "overscroll-behavior",
-//     overscroll_behavior
-// , []);
-// define_tailwind_field!(Position, "position", position, []);
-// define_tailwind_field!(Visibility, "visibility", visibility, []);
-// define_tailwind_field!(FlexDirection, "flex", flex_direction, []);
-// define_tailwind_field!(FlexWrap, "flex", flex_wrap, []);
-// define_tailwind_field!(GridAutoFlow, "grid-flow", grid_auto_flow, []);
-// define_tailwind_field!(JustifyContent, "justify", justify_content, []);
-// define_tailwind_field!(JustifyItems, "justify-items", justify_items, []);
-// define_tailwind_field!(JustifySelf, "justify-self", justify_self, []);
-// define_tailwind_field!(AlignContent, "align-content", align_content, []);
-// define_tailwind_field!(AlignItems, "align-items", align_items, []);
-// define_tailwind_field!(AlignSelf, "align-self", align_self, []);
-// define_tailwind_field!(PlaceContent, "place-content", place_content, []);
-// define_tailwind_field!(PlaceItems, "place-items", place_items, []);
-// define_tailwind_field!(PlaceSelf, "place-self", place_self, []);
-// define_tailwind_field!(FontSmoothing, "font-smoothing", font_smoothing, []);
-// define_tailwind_field!(FontStyle, "font-style", font_style, []);
-// define_tailwind_field!(
-//     FontVariantNumeric,
-//     "font-variant-numeric",
-//     font_variant_numeric
-// , []);
-// define_tailwind_field!(ListStylePosition, "list", list_style_position, []);
+define_tailwind_field!({
+    name: Container,
+    prefix: "container",
+    inherited: container,
+    field_name: container,
+    variants: []
+});
 
-// By default, Tailwind provides nine object position utilities. You can customize these values by editing theme.objectPosition or theme.extend.objectPosition in your tailwind.config.js file.
-// To use an arb value e.g: object-[center_bottom]
-define_tailwind_field!(ObjectPosition, "object", object_position, []);
-define_tailwind_field!(ZIndex, "z", z_index, []);
-define_tailwind_field!(Flex, "flex", flex, []);
-define_tailwind_field!(FlexGrow, "grow", flex_grow, []);
-define_tailwind_field!(FlexShrink, "shrink", flex_shrink, []);
-define_tailwind_field!(Order, "order", order, []);
-define_tailwind_field!(GridTemplateColumns, "grid-cols", grid_template_columns, []);
-define_tailwind_field!(GridColumn, "col", grid_column, []);
-define_tailwind_field!(GridColumnStart, "col-start", grid_column_start, []);
-define_tailwind_field!(GridColumnEnd, "col-end", grid_column_end, []);
+define_tailwind_field!({
+    name: Columns,
+    prefix: "columns",
+    inherited: columns,
+    field_name: columns,
+    variants: []
+});
 
-define_tailwind_field!(GridTemplateRows, "grid-rows", grid_template_rows, []);
-define_tailwind_field!(GridRow, "row", grid_row, []);
-define_tailwind_field!(GridRowStart, "row-start", grid_row_start, []);
-define_tailwind_field!(GridRowEnd, "row-end", grid_row_end, []);
-define_tailwind_field!(GridAutoColumns, "auto-cols", grid_auto_columns, []);
-define_tailwind_field!(GridAutoRows, "auto-rows", grid_auto_rows, []);
+define_tailwind_field!({
+    name: BreakAfter,
+    prefix: "break-after",
+    inherited: break_after,
+    field_name: break_after,
+    variants: []
+});
 
-define_tailwind_field!(MinWidth, "min-w", min_width, []);
-define_tailwind_field!(MaxWidth, "max-w", max_width, []);
-define_tailwind_field!(MinHeight, "min-h", min_height, []);
+define_tailwind_field!({
+    name: BreakBefore,
+    prefix: "break-before",
+    inherited: break_before,
+    field_name: break_before,
+    variants: []
+});
 
-define_tailwind_field!(
-    PlaceholderOpacity,
-    "placeholder-opacity",
-    placeholder_opacity,
-    []
-);
+define_tailwind_field!({
+    name: BreakInside,
+    prefix: "break-inside",
+    inherited: break_inside,
+    field_name: break_inside,
+    variants: []
+});
 
-// Typography
-define_tailwind_field!(FontFamily, "font", font_family, []);
-define_tailwind_field!(FontSize, "text", font_size, []);
-define_tailwind_field!(FontWeight, "font-weight", font_weight, []);
+define_tailwind_field!({
+    name: BoxDecorationBreak,
+    prefix: "box-decoration",
+    inherited: box_decoration_break,
+    field_name: box_decoration_break,
+    variants: []
+});
 
-define_tailwind_field!(LetterSpacing, "tracking", letter_spacing, []);
-define_tailwind_field!(LineClamp, "line-clamp", line_clamp, []);
-define_tailwind_field!(LineHeight, "leading", line_height, []);
-define_tailwind_field!(ListStyleImage, "list", list_style_image, []);
-define_tailwind_field!(ListStyleType, "list", list_style_type, []);
+define_tailwind_field!({
+    name: BoxSizing,
+    prefix: "box-sizing",
+    inherited: box_sizing,
+    field_name: box_sizing,
+    variants: []
+});
 
-// define_tailwind_field!(TextAlign, "text-align", text_align, []);
-// define_tailwind_field!(TextDecoration, "decoration", text_decoration, []);
-// define_tailwind_field!(TextDecorationStyle, "decoration", text_decoration_style, []);
-define_tailwind_field!(
-    TextDecorationThickness,
-    "decoration",
-    text_decoration_thickness,
-    []
-);
-define_tailwind_field!(TextUnderlineOffset, "decoration", text_underline_offset, []);
+define_tailwind_field!({
+    name: Display,
+    prefix: "display",
+    inherited: display,
+    field_name: display,
+    variants: []
+});
 
-// define_tailwind_field!(TextTransform, "text", text_transform, []);
+define_tailwind_field!({
+    name: Float,
+    prefix: "float",
+    inherited: float,
+    field_name: float,
+    variants: []
+});
 
-// define_tailwind_field!(TextOverflow, "overflow", text_overflow, []);
-// define_tailwind_field!(VerticalAlign, "align", vertical_align, []);
-// define_tailwind_field!(Whitespace, "whitespace", whitespace, []);
-// define_tailwind_field!(WordBreak, "break", word_break, []);
-// define_tailwind_field!(Hyphens, "hyphens", hyphens, []);
-define_tailwind_field!(Content, "content", content, []);
+define_tailwind_field!({
+    name: Clear,
+    prefix: "clear",
+    inherited: clear,
+    field_name: clear,
+    variants: []
+});
 
-// ---
-//
-// Backgrounds
-// define_tailwind_field!(BackgroundAttachment, "bg", background_attachment, []);
-// define_tailwind_field!(BackgroundClip, "bg", background_clip, []);
-// define_tailwind_field!(BackgroundOrigin, "bg", background_origin, []);
-define_tailwind_field!(BackgroundPosition, "bg", background_position, []);
-// define_tailwind_field!(BackgroundRepeat, "bg", background_repeat, []);
-define_tailwind_field!(BackgroundSize, "bg", background_size, []);
-define_tailwind_field!(BackgroundImage, "bg", background_image, []);
+define_tailwind_field!({
+    name: Isolation,
+    prefix: "isolation",
+    inherited: isolation,
+    field_name: isolation,
+    variants: []
+});
 
-/// ---
-// Borders
-define_tailwind_field!(
-    BorderRadius,
-    "rounded",
-    border_radius,
-    ["t", "r", "b", "l", "tl", "tr", "br", "bl", "s", "e", "ss", "se", "es", "ee"]
-);
+define_tailwind_field!({
+    name: ObjectFit,
+    prefix: "object",
+    inherited: object_fit,
+    field_name: object_fit,
+    variants: []
+});
 
-define_tailwind_field!(
-    BorderWidth,
-    "border",
-    border_width,
-    ["x", "y", "t", "r", "b", "l", "s", "e"]
-);
+define_tailwind_field!({
+    name: ObjectPosition,
+    prefix: "object",
+    inherited: object_position,
+    field_name: object_position,
+    variants: []
+});
 
-// define_tailwind_field!(BorderStyle, "border", border_style, []);
+define_tailwind_field!({
+    name: Overflow,
+    prefix: "overflow",
+    inherited: overflow,
+    field_name: overflow,
+    variants: []
+});
 
-// TODO: Divide width inherits from border width. I can include a new inherited
-// argument in the macro and use it to generate the code. but since
-// this is the first case, I dont want to hastily add a new argument
-// until I see another case.
-define_tailwind_field!(DivideWidth, "divide", divide_width, ["x", "y"]);
+define_tailwind_field!({
+    name: OverscrollBehavior,
+    prefix: "overscroll-behavior",
+    inherited: overscroll_behavior,
+    field_name: overscroll_behavior,
+    variants: []
+});
 
-// define_tailwind_field!(DivideStyle, "divide", divide_style, []);
-define_tailwind_field!(OutlineWidth, "outline", outline_width, []);
-// define_tailwind_field!(OutlineStyle, "outline", outline_style, []);
-define_tailwind_field!(OutlineOffset, "outline-offset", outline_offset, []);
-define_tailwind_field!(RingWidth, "ring", ring_width, []);
-define_tailwind_field!(RingOffsetWidth, "ring-offset", ring_offset_width, []);
+define_tailwind_field!({
+    name: Position,
+    prefix: "position",
+    inherited: position,
+    field_name: position,
+    variants: []
+});
 
-/// ---
-// Effects
+define_tailwind_field!({
+    name: Visibility,
+    prefix: "visibility",
+    inherited: visibility,
+    field_name: visibility,
+    variants: []
+});
+
+// z-index
+define_tailwind_field!({
+    name: ZIndex,
+    prefix: "z",
+    inherited: z_index,
+    field_name: z_index,
+    variants: []
+});
+
+// 2. Flexbox & Grid
+// Flex Basis
+// Flex Direction
+// Flex Wrap
+// Flex
+// Flex Grow
+// Flex Shrink
+// Order
+// Grid Template Columns
+// Grid Column Start / End
+// Grid Template Rows
+// Grid Row Start / End
+// Grid Auto Flow
+// Grid Auto Columns
+// Grid Auto Rows
+// Gap
+// Justify Content
+// Justify Items
+// Justify Self
+// Align Content
+// Align Items
+// Align Self
+// Place Content
+// Place Items
+// Place Self
+define_tailwind_field!({
+    name: FlexBasis,
+    prefix: "flex",
+    inherited: flex_basis,
+    field_name: flex_basis,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: FlexDirection,
+    prefix: "flex",
+    inherited: flex_direction,
+    field_name: flex_direction,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: FlexWrap,
+    prefix: "flex",
+    inherited: flex_wrap,
+    field_name: flex_wrap,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Flex,
+    prefix: "flex",
+    inherited: flex,
+    field_name: flex,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: FlexGrow,
+    prefix: "flex",
+    inherited: flex_grow,
+    field_name: flex_grow,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: FlexShrink,
+    prefix: "flex",
+    inherited: flex_shrink,
+    field_name: flex_shrink,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Grow,
+    prefix: "grow",
+    inherited: flex_grow,
+    field_name: flex_grow,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Shrink,
+    prefix: "shrink",
+    inherited: flex_shrink,
+    field_name: flex_shrink,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Order,
+    prefix: "order",
+    inherited: order,
+    field_name: order,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: GridTemplateColumns,
+    prefix: "grid-cols",
+    inherited: grid_template_columns,
+    field_name: grid_template_columns,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: GridColumn,
+    prefix: "col",
+    inherited: grid_column,
+    field_name: grid_column,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: GridColumnStart,
+    prefix: "col-start",
+    inherited: grid_column_start,
+    field_name: grid_column_start,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: GridColumnEnd,
+    prefix: "col-end",
+    inherited: grid_column_end,
+    field_name: grid_column_end,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: GridTemplateRows,
+    prefix: "grid-rows",
+    inherited: grid_template_rows,
+    field_name: grid_template_rows,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: GridRow,
+    prefix: "row",
+    inherited: grid_row,
+    field_name: grid_row,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: GridRowStart,
+    prefix: "row-start",
+    inherited: grid_row_start,
+    field_name: grid_row_start,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: GridRowEnd,
+    prefix: "row-end",
+    inherited: grid_row_end,
+    field_name: grid_row_end,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: GridAutoFlow,
+    prefix: "grid-flow",
+    inherited: grid_auto_flow,
+    field_name: grid_auto_flow,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: GridAutoColumns,
+    prefix: "auto-cols",
+    inherited: grid_auto_columns,
+    field_name: grid_auto_columns,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: GridAutoRows,
+    prefix: "auto-rows",
+    inherited: grid_auto_rows,
+    field_name: grid_auto_rows,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Gap,
+    prefix: "gap",
+    inherited: gap,
+    field_name: gap,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: JustifyContent,
+    prefix: "justify",
+    inherited: justify_content,
+    field_name: justify_content,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: JustifyItems,
+    prefix: "justify-items",
+    inherited: justify_items,
+    field_name: justify_items,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: JustifySelf,
+    prefix: "justify-self",
+    inherited: justify_self,
+    field_name: justify_self,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: AlignContent,
+    prefix: "align-content",
+    inherited: align_content,
+    field_name: align_content,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: AlignItems,
+    prefix: "align-items",
+    inherited: align_items,
+    field_name: align_items,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: AlignSelf,
+    prefix: "align-self",
+    inherited: align_self,
+    field_name: align_self,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: PlaceContent,
+    prefix: "place-content",
+    inherited: place_content,
+    field_name: place_content,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: PlaceItems,
+    prefix: "place-items",
+    inherited: place_items,
+    field_name: place_items,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: PlaceSelf,
+    prefix: "place-self",
+    inherited: place_self,
+    field_name: place_self,
+    variants: []
+});
+
+// 3. Spacing
+// Padding
+// Margin
+// Space Between
+define_tailwind_field!({
+    name: Padding,
+    prefix: "p",
+    inherited: spacing,
+    field_name: padding,
+    variants: ["x", "y", "t", "r", "b", "l"]
+});
+
+define_tailwind_field!({
+    name: Margin,
+    prefix: "m",
+    inherited: spacing,
+    field_name: margin,
+    variants: ["x", "y", "t", "r", "b", "l"]
+});
+
+define_tailwind_field!({
+    name: SpaceBetween,
+    prefix: "space",
+    inherited: spacing,
+    field_name: space,
+    variants: ["x", "y"]
+});
+
+// 4. Sizing
+// Width
+// Min-Width
+// Max-Width
+// Height
+// Min-Height
+// Max-Height
+define_tailwind_field!({
+    name: Width,
+    prefix: "w",
+    inherited: spacing,
+    field_name: width,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: MinWidth,
+    prefix: "min-w",
+    inherited: min_width,
+    field_name: min_width,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: MaxWidth,
+    prefix: "max-w",
+    inherited: max_width,
+    field_name: max_width,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Height,
+    prefix: "h",
+    inherited: spacing,
+    field_name: height,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: MinHeight,
+    prefix: "min-h",
+    inherited: min_height,
+    field_name: min_height,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: MaxHeight,
+    prefix: "max-h",
+    inherited: spacing,
+    field_name: max_height,
+    variants: []
+});
+
+// 5. Typography
+// Font Family
+// Font Size
+// Font Smoothing
+// Font Style
+// Font Weight
+// Font Variant Numeric
+// Letter Spacing
+// Line Clamp
+// Line Height
+// List Style Image
+// List Style Position
+// List Style Type
+// Text Align
+// Text Color
+// Text Decoration
+// Text Decoration Color
+// Text Decoration Style
+// Text Decoration Thickness
+// Text Underline Offset
+// Text Transform
+// Text Overflow
+// Text Indent
+// Vertical Align
+// Whitespace
+// Word Break
+// Hyphens
+// Content
+define_tailwind_field!({
+    name: FontFamily,
+    prefix: "font",
+    inherited: font_family,
+    field_name: font_family,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: FontSize,
+    prefix: "text",
+    inherited: font_size,
+    field_name: font_size,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: FontSmoothing,
+    prefix: "",
+    inherited: font_smoothing,
+    field_name: font_smoothing,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: FontStyle,
+    prefix: "",
+    inherited: font_style,
+    field_name: font_style,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: FontWeight,
+    prefix: "font",
+    inherited: font_weight,
+    field_name: font_weight,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: FontVariantNumeric,
+    prefix: "",
+    inherited: font_variant_numeric,
+    field_name: font_variant_numeric,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: LetterSpacing,
+    prefix: "tracking",
+    inherited: letter_spacing,
+    field_name: letter_spacing,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: LineClamp,
+    prefix: "line-clamp",
+    inherited: line_clamp,
+    field_name: line_clamp,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: LineHeight,
+    prefix: "leading",
+    inherited: line_height,
+    field_name: line_height,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: ListStyleImage,
+    prefix: "list-image",
+    inherited: list_style_image,
+    field_name: list_style_image,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: ListStylePosition,
+    prefix: "list",
+    inherited: list_style_position,
+    field_name: list_style_position,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: ListStyleType,
+    prefix: "list",
+    inherited: list_style_type,
+    field_name: list_style_type,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: TextAlign,
+    prefix: "text",
+    inherited: text_align,
+    field_name: text_align,
+    variants: []
+});
+
+super::define_tailwind_color_field!({
+    name: TextColor,
+    prefix: "text",
+    // inherited: text_color,
+    field_name: text_color,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: TextDecoration,
+    prefix: "",
+    inherited: text_decoration,
+    field_name: text_decoration,
+    variants: []
+});
+
+super::define_tailwind_color_field!({
+    name: TextDecorationColor,
+    prefix: "decoration",
+    field_name: text_decoration_color,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: TextDecorationStyle,
+    prefix: "decoration",
+    inherited: text_decoration_style,
+    field_name: text_decoration_style,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: TextDecorationThickness,
+    prefix: "decoration",
+    inherited: text_decoration_thickness,
+    field_name: text_decoration_thickness,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: TextUnderlineOffset,
+    prefix: "underline-offset",
+    inherited: text_underline_offset,
+    field_name: text_underline_offset,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: TextTransform,
+    prefix: "",
+    inherited: text_transform,
+    field_name: text_transform,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: TextOverflow,
+    prefix: "",
+    inherited: text_overflow,
+    field_name: text_overflow,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: TextIndent,
+    prefix: "indent",
+    inherited: spacing,
+    field_name: text_indent,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: VerticalAlign,
+    prefix: "align",
+    inherited: vertical_align,
+    field_name: vertical_align,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Whitespace,
+    prefix: "whitespace",
+    inherited: whitespace,
+    field_name: whitespace,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: WordBreak,
+    prefix: "break",
+    inherited: word_break,
+    field_name: word_break,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Hyphens,
+    prefix: "hyphens",
+    inherited: hyphens,
+    field_name: hyphens,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Content,
+    prefix: "content",
+    inherited: content,
+    field_name: content,
+    variants: []
+});
+
+// 6. Backgrounds
+// Background Attachment
+// Background Clip
+// Background Color
+// Background Origin
+// Background Position
+// Background Repeat
+// Background Size
+// Background Image
+// Background Color Stops
+define_tailwind_field!({
+    name: BackgroundAttachment,
+    prefix: "bg",
+    inherited: background_attachment,
+    field_name: background_attachment,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: BackgroundClip,
+    prefix: "bg-clip",
+    inherited: background_clip,
+    field_name: background_clip,
+    variants: []
+});
+
+super::define_tailwind_color_field!({
+    name: BackgroundColor,
+    prefix: "bg",
+    field_name: background_color,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: BackgroundOrigin,
+    prefix: "bg-origin",
+    inherited: background_origin,
+    field_name: background_origin,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: BackgroundPosition,
+    prefix: "bg",
+    inherited: background_position,
+    field_name: background_position,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: BackgroundRepeat,
+    prefix: "bg",
+    inherited: background_repeat,
+    field_name: background_repeat,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: BackgroundSize,
+    prefix: "bg",
+    inherited: background_size,
+    field_name: background_size,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: BackgroundImage,
+    prefix: "bg",
+    inherited: background_image,
+    field_name: background_image,
+    variants: []
+});
+
+/*
+* Alternatively, you can customize just your gradient colors by editing theme.gradientColorStops or theme.extend.gradientColorStops in your tailwind.config.js file.
+
+In addition to the colors, you can also customize the gradient color stop positions by editing theme.gradientColorStopPositions or theme.extend.gradientColorStopPositions.
+// https://tailwindcss.com/docs/gradient-color-stops
+* */
+super::define_tailwind_color_field!({
+    name: GradientColorStopsFrom,
+    prefix: "from",
+    field_name: gradient_color_stops,
+    variants: []
+});
+
+super::define_tailwind_color_field!({
+    name: GradientColorStopsVia,
+    prefix: "via",
+    field_name: gradient_color_stops,
+    variants: []
+});
+
+super::define_tailwind_color_field!({
+    name: GradientColorStopsTo,
+    prefix: "to",
+    field_name: gradient_color_stops,
+    variants: []
+});
+
+// 7. Borders
+// Border Radius
+// Border Width
+// Border Color
+// Border Style
+// Divide Width
+// Divide Color
+// Divide Style
+// Outline Width
+// Outline Color
+// Outline Style
+// Outline Offset
+// Ring Width
+// Ring Color
+// Ring Offset Width
+// Ring Offset Color
+define_tailwind_field!({
+    name: BorderRadius,
+    prefix: "rounded",
+    inherited: border_radius,
+    field_name: border_radius,
+    variants: ["t", "r", "b", "l", "tl", "tr", "br", "bl", "s", "e", "ss", "se", "es", "ee"]
+});
+
+define_tailwind_field!({
+    name: BorderWidth,
+    prefix: "border",
+    inherited: border_width,
+    field_name: border_width,
+    variants: ["x", "y", "t", "r", "b","l", "s", "e"]
+});
+
+super::define_tailwind_color_field!({
+    name: BorderColor,
+    prefix: "border",
+    field_name: border_color,
+    variants: ["x", "y", "t", "r", "b","l", "s", "e"]
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: BorderStyle,
+    prefix: "border",
+    inherited: border_style,
+    field_name: border_style,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: DivideWidth,
+    prefix: "divide",
+    // It inherits the border-width
+    inherited: border_width,
+    field_name: divide_width,
+    variants: ["x", "y"]
+});
+
+super::define_tailwind_color_field!({
+    name: DivideColor,
+    prefix: "divide",
+    field_name: divide_color,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: DivideStyle,
+    prefix: "divide",
+    inherited: divide_style,
+    field_name: divide_style,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: OutlineWidth,
+    prefix: "outline",
+    inherited: outline_width,
+    field_name: outline_width,
+    variants: []
+});
+
+super::define_tailwind_color_field!({
+    name: OutlineColor,
+    prefix: "outline",
+    field_name: outline_color,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: OutlineStyle,
+    prefix: "outline",
+    inherited: outline_style,
+    field_name: outline_style,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: OutlineOffset,
+    prefix: "outline-offset",
+    inherited: outline_offset,
+    field_name: outline_offset,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: RingWidth,
+    prefix: "ring",
+    inherited: ring_width,
+    field_name: ring_width,
+    variants: []
+});
+
+super::define_tailwind_color_field!({
+    name: RingColor,
+    prefix: "ring",
+    field_name: ring_color,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: RingOffsetWidth,
+    prefix: "ring-offset",
+    inherited: ring_offset_width,
+    field_name: ring_offset_width,
+    variants: []
+});
+
+super::define_tailwind_color_field!({
+    name: RingOffsetColor,
+    prefix: "ring-offset",
+    field_name: ring_offset_color,
+    variants: []
+});
+
+// 8. Effects
 // Box Shadow
 // Box Shadow Color
 // Opacity
 // Mix Blend Mode
 // Background Blend Mode
-define_tailwind_field!(BoxShadow, "shadow", box_shadow, []);
-define_tailwind_field!(Opacity, "opacity", opacity, []);
-// define_tailwind_field!(MixBlendMode, "mix-blend", mix_blend_mode, []);
-// define_tailwind_field!(
-//     BackgroundBlendMode,
-//     "background-blend",
-//     background_blend_mode,
-//     []
-// );
+define_tailwind_field!({
+    name: BoxShadow,
+    prefix: "shadow",
+    inherited: box_shadow,
+    field_name: box_shadow,
+    variants: []
+});
 
-/// ---
-/// Filters
-define_tailwind_field!(Blur, "blur", blur, []);
-define_tailwind_field!(Brightness, "brightness", brightness, []);
-define_tailwind_field!(Contrast, "contrast", contrast, []);
-define_tailwind_field!(DropShadow, "drop-shadow", drop_shadow, []);
-define_tailwind_field!(Grayscale, "grayscale", grayscale, []);
-define_tailwind_field!(HueRotate, "hue-rotate", hue_rotate, []);
-define_tailwind_field!(Invert, "invert", invert, []);
-define_tailwind_field!(Saturate, "saturate", saturate, []);
-define_tailwind_field!(Sepia, "sepia", sepia, []);
-define_tailwind_field!(BackdropBlur, "backdrop-blur", backdrop_blur, []);
-define_tailwind_field!(
-    BackdropBrightness,
-    "backdrop-brightness",
-    backdrop_brightness,
-    []
-);
-define_tailwind_field!(BackdropContrast, "backdrop-contrast", backdrop_contrast, []);
-define_tailwind_field!(
-    BackdropGrayscale,
-    "backdrop-grayscale",
-    backdrop_grayscale,
-    []
-);
-define_tailwind_field!(
-    BackdropHueRotate,
-    "backdrop-hue-rotate",
-    backdrop_hue_rotate,
-    []
-);
-define_tailwind_field!(BackdropInvert, "backdrop-invert", backdrop_invert, []);
-define_tailwind_field!(BackdropOpacity, "backdrop-opacity", backdrop_opacity, []);
-define_tailwind_field!(BackdropSaturate, "backdrop-saturate", backdrop_saturate, []);
-define_tailwind_field!(BackdropSepia, "backdrop-sepia", backdrop_sepia, []);
+super::define_tailwind_color_field!({
+    name: BoxShadowColor,
+    prefix: "shadow",
+    field_name: box_shadow_color,
+    variants: []
+});
 
-/// ---
-// Tables
-// define_tailwind_field!(BorderCollapse, "border-collapse", border_collapse, []);
-// define_tailwind_field!(TableLayout, "table-layout", table_layout, []);
-// define_tailwind_field!(CaptionSide, "caption-side", caption_side, []);
+define_tailwind_field!({
+    name: Opacity,
+    prefix: "opacity",
+    inherited: opacity,
+    field_name: opacity,
+    variants: []
+});
 
-/// ---
-/// Transitions & Animation
-define_tailwind_field!(TransitionProperty, "transition", transition_property, []);
-define_tailwind_field!(TransitionDuration, "duration", transition_duration, []);
-define_tailwind_field!(
-    TransitionTimingFunction,
-    "ease",
-    transition_timing_function,
-    []
-);
-define_tailwind_field!(TransitionDelay, "delay", transition_delay, []);
-define_tailwind_field!(Animation, "animate", animation, []);
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: MixBlendMode,
+    prefix: "mix-blend",
+    inherited: mix_blend_mode,
+    field_name: mix_blend_mode,
+    variants: []
+});
 
-/// ---
-/// Transforms
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: BackgroundBlendMode,
+    prefix: "bg-blend",
+    inherited: background_blend_mode,
+    field_name: background_blend_mode,
+    variants: []
+});
+
+// 9. Filters
+// Blur
+// Brightness
+// Contrast
+// Drop Shadow
+// Grayscale
+// Hue Rotate
+// Invert
+// Saturate
+// Sepia
+// Backdrop Blur
+// Backdrop Brightness
+// Backdrop Contrast
+// Backdrop Grayscale
+// Backdrop Hue Rotate
+// Backdrop Invert
+// Backdrop Opacity
+// Backdrop Saturate
+// Backdrop Sepia
+define_tailwind_field!({
+    name: Blur,
+    prefix: "blur",
+    inherited: blur,
+    field_name: blur,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Brightness,
+    prefix: "brightness",
+    inherited: brightness,
+    field_name: brightness,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Contrast,
+    prefix: "contrast",
+    inherited: contrast,
+    field_name: contrast,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: DropShadow,
+    prefix: "drop-shadow",
+    inherited: drop_shadow,
+    field_name: drop_shadow,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Grayscale,
+    prefix: "grayscale",
+    inherited: grayscale,
+    field_name: grayscale,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: HueRotate,
+    prefix: "hue-rotate",
+    inherited: hue_rotate,
+    field_name: hue_rotate,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Invert,
+    prefix: "invert",
+    inherited: invert,
+    field_name: invert,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Saturate,
+    prefix: "saturate",
+    inherited: saturate,
+    field_name: saturate,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Sepia,
+    prefix: "sepia",
+    inherited: sepia,
+    field_name: sepia,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: BackdropBlur,
+    prefix: "backdrop-blur",
+    inherited: backdrop_blur,
+    field_name: backdrop_blur,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: BackdropBrightness,
+    prefix: "backdrop-brightness",
+    inherited: backdrop_brightness,
+    field_name: backdrop_brightness,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: BackdropContrast,
+    prefix: "backdrop-contrast",
+    inherited: backdrop_contrast,
+    field_name: backdrop_contrast,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: BackdropGrayscale,
+    prefix: "backdrop-grayscale",
+    inherited: backdrop_grayscale,
+    field_name: backdrop_grayscale,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: BackdropHueRotate,
+    prefix: "backdrop-hue-rotate",
+    inherited: backdrop_hue_rotate,
+    field_name: backdrop_hue_rotate,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: BackdropInvert,
+    prefix: "backdrop-invert",
+    inherited: backdrop_invert,
+    field_name: backdrop_invert,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: BackdropOpacity,
+    prefix: "backdrop-opacity",
+    inherited: backdrop_opacity,
+    field_name: backdrop_opacity,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: BackdropSaturate,
+    prefix: "backdrop-saturate",
+    inherited: backdrop_saturate,
+    field_name: backdrop_saturate,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: BackdropSepia,
+    prefix: "backdrop-sepia",
+    inherited: backdrop_sepia,
+    field_name: backdrop_sepia,
+    variants: []
+});
+
+// 10. Tables
+// Border Collapse
+// Border Spacing
+// Table Layout
+// Caption Side
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: BorderCollapse,
+    prefix: "",
+    inherited: border_collapse,
+    field_name: border_collapse,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: BorderSpacing,
+    prefix: "border-spacing",
+    inherited: spacing,
+    field_name: border_spacing,
+    variants: ["x", "y"]
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: TableLayout,
+    prefix: "table",
+    inherited: table_layout,
+    field_name: table_layout,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: CaptionSide,
+    prefix: "caption",
+    inherited: caption_side,
+    field_name: caption_side,
+    variants: []
+});
+
+// 11. Transitions and Animation
+// Transition Property
+// Transition Duration
+// Transition Timing Function
+// Transition delay
+// Animation
+define_tailwind_field!({
+    name: TransitionProperty,
+    prefix: "transition",
+    inherited: transition_property,
+    field_name: transition_property,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: TransitionDuration,
+    prefix: "duration",
+    inherited: transition_duration,
+    field_name: transition_duration,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: TransitionTimingFunction,
+    prefix: "ease",
+    inherited: transition_timing_function,
+    field_name: transition_timing_function,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: TransitionDelay,
+    prefix: "delay",
+    inherited: transition_delay,
+    field_name: transition_delay,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Animation,
+    prefix: "animate",
+    inherited: animation,
+    field_name: animation,
+    variants: []
+});
+
+// 12. Transforms
 // Scale
 // Rotate
 // Translate
 // Skew
 // Transform Origin
-define_tailwind_field!(Scale, "scale", scale, []);
-define_tailwind_field!(Rotate, "rotate", rotate, []);
-define_tailwind_field!(Skew, "skew", skew, []);
-define_tailwind_field!(TransformOrigin, "origin", transform_origin, []);
+define_tailwind_field!({
+    name: Scale,
+    prefix: "scale",
+    inherited: scale,
+    field_name: scale,
+    variants: ["x", "y"]
+});
 
-/// ---
-/// Interactivity
+define_tailwind_field!({
+    name: Rotate,
+    prefix: "rotate",
+    inherited: rotate,
+    field_name: rotate,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Translate,
+    prefix: "translate",
+    inherited: spacing,
+    field_name: translate,
+    variants: ["x", "y"]
+});
+
+define_tailwind_field!({
+    name: Skew,
+    prefix: "skew",
+    inherited: skew,
+    field_name: skew,
+    variants: ["x", "y"]
+});
+
+define_tailwind_field!({
+    name: TransformOrigin,
+    prefix: "origin",
+    inherited: transform_origin,
+    field_name: transform_origin,
+    variants: []
+});
+
+// 13. Interactivity
 // Accent Color
 // Appearance
 // Cursor
@@ -299,23 +1428,165 @@ define_tailwind_field!(TransformOrigin, "origin", transform_origin, []);
 // Touch Action
 // User Select
 // Will Change
-// define_tailwind_field!(Appearance, "appearance", appearance, []);
-define_tailwind_field!(Cursor, "cursor", cursor, []);
-// define_tailwind_field!(PointerEvents, "pointer-events", pointer_events, []);
-// define_tailwind_field!(Resize, "resize", resize, []);
-// define_tailwind_field!(ScrollBehavior, "scroll", scroll_behavior, []);
-// define_tailwind_field!(ScrollSnapAlign, "scroll", scroll_snap_align, []);
-// define_tailwind_field!(ScrollSnapStop, "scroll", scroll_snap_stop, []);
-// define_tailwind_field!(ScrollSnapType, "scroll", scroll_snap_type, []);
-// define_tailwind_field!(TouchAction, "touch", touch_action, []);
-define_tailwind_field!(WillChange, "will-change", will_change, []);
-// define_tailwind_field!(UserSelect, "user-select", user_select, []);
+super::define_tailwind_color_field!({
+    name: AccentColor,
+    prefix: "accent",
+    field_name: accent_color,
+    variants: []
+});
 
-// ---
-// SVG
-define_tailwind_field!(StrokeWidth, "stroke", stroke_width, []);
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: Appearance,
+    prefix: "appearance",
+    inherited: appearance,
+    field_name: appearance,
+    variants: []
+});
 
-// ---
-// Accessibility
-// Screen Readers
-// define_tailwind_field!(ScreenReaders, "", screen_readers, []);
+define_tailwind_field!({
+    name: Cursor,
+    prefix: "cursor",
+    inherited: cursor,
+    field_name: cursor,
+    variants: []
+});
+
+super::define_tailwind_color_field!({
+    name: CaretColor,
+    prefix: "caret",
+    field_name: caret_color,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: PointerEvents,
+    prefix: "pointer-events",
+    inherited: pointer_events,
+    field_name: pointer_events,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: Resize,
+    prefix: "resize",
+    inherited: resize,
+    field_name: resize,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: ScrollBehavior,
+    prefix: "scroll",
+    inherited: scroll_behavior,
+    field_name: scroll_behavior,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: ScrollMargin,
+    prefix: "scroll-m",
+    inherited: spacing,
+    field_name: scroll_margin,
+    variants: ["x", "y", "s", "e", "t", "r", "b", "l"]
+});
+
+define_tailwind_field!({
+    name: ScrollPadding,
+    prefix: "scroll-p",
+    inherited: spacing,
+    field_name: scroll_padding,
+    variants: ["x", "y", "s", "e", "t", "r", "b", "l"]
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: ScrollSnapAlign,
+    prefix: "snap",
+    inherited: scroll_snap_align,
+    field_name: scroll_snap_align,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: ScrollSnapStop,
+    prefix: "snap",
+    inherited: scroll_snap_stop,
+    field_name: scroll_snap_stop,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: ScrollSnapType,
+    prefix: "snap",
+    inherited: scroll_snap_type,
+    field_name: scroll_snap_type,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: TouchAction,
+    prefix: "touch",
+    inherited: touch_action,
+    field_name: touch_action,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: UserSelect,
+    prefix: "select",
+    inherited: user_select,
+    field_name: user_select,
+    variants: []
+});
+
+// unchangeable and unconfigurable
+define_tailwind_field!({
+    name: WillChange,
+    prefix: "will-change",
+    inherited: will_change,
+    field_name: will_change,
+    variants: []
+});
+
+// 14. SVG
+// Fill
+// Stroke
+// Stroke Width
+super::define_tailwind_color_field!({
+    name: Fill,
+    prefix: "fill",
+    field_name: fill,
+    variants: []
+});
+
+super::define_tailwind_color_field!({
+    name: Stroke,
+    prefix: "stroke",
+    field_name: stroke,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: StrokeWidth,
+    prefix: "stroke",
+    inherited: stroke_width,
+    field_name: stroke_width,
+    variants: []
+});
+
+// 15. Accessibility
+define_tailwind_field!({
+    name: ScreenReaders,
+    prefix: "",
+    inherited: screen_readers,
+    field_name: screen_readers,
+    variants: []
+});

@@ -74,7 +74,6 @@ define_spacing_field!(Inset, "inset", margin, ["x", "y"]);
 define_spacing_field!(Space, "space", margin, ["x", "y"]);
 define_spacing_field!(Translate, "translate", margin, ["x", "y"]);
 define_spacing_field!(TextIndent, "indent", text_indent, []);
-define_spacing_field!(FlexBasis, "basis", flex_basis, []);
 define_spacing_field!(BorderSpacing, "border-spacing", border_spacing, ["x", "y"]);
 // no separator between scroll-m prefix and the value
 define_spacing_field!(
