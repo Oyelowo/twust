@@ -4,6 +4,15 @@ fn main() {
     // tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-red-50");
     tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-purple bg-red-50 border-s-tahiti-800");
     tw!("text-red-50 text-slate-50 text-purple text-tahiti-500");
+    tw!("scroll-m-14");
+    tw!("scroll-m-sm");
+    tw!("scroll-mx-sm");
+    tw!("scroll-mx-md");
+    tw!("scroll-my-md");
+    tw!("px-sm pt-sm pb-sm pr-sm pl-sm");
+    tw!("px-md pt-md pb-md pr-md pl-md");
+    tw!("py-sm");
+    // tw!("scroll-m-14 scroll-14");
     // tw!("m-4 p-4 p-4");
     // tw!("-m-[4px] p-4 p-4");
     // tw!("-m-4 p-4 p-4");

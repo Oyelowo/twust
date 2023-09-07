@@ -71,11 +71,13 @@ macro_rules! define_tailwind_field {
 // Now, use the macro to define the structs and their implementations:
 define_tailwind_field!(AccentColor, "accent", accent_color, []);
 define_tailwind_field!(BgColor, "bg", background_color, []);
+// border color has hyphen between the prefix and the variant
+// e.g border<prefix>-t<variant>-red-500<key>
 define_tailwind_field!(
     BorderColor,
     "border",
     border_color,
-    ["t", "r", "b", "l", "s", "e"]
+    ["-t", "-r", "-b", "-l", "-s", "-e"]
 );
 define_tailwind_field!(TextColor, "text", text_color, []);
 define_tailwind_field!(TextDecorationColor, "decoration", text_decoration_color, []);

@@ -2,7 +2,7 @@ use std::fs;
 
 use crate::tailwind::tailwind_config::TailwindConfig;
 
-use self::colors::*;
+use self::{colors::*, spacings::*};
 
 mod colors;
 mod spacings;
@@ -27,7 +27,7 @@ fn generate_classes_for_keys(field: &dyn TailwindField, keys: &Vec<String>) -> V
         classes.push(format!("{prefix}-{key}"));
         for variant in variants.iter() {
             // e.g border-t-red, border-r-red-500,
-            classes.push(format!("{prefix}-{variant}-{key}"));
+            classes.push(format!("{prefix}{variant}-{key}"));
         }
     }
 
@@ -75,7 +75,8 @@ fn read_tailwind_config() -> Result<TailwindConfig, std::io::Error> {
 pub fn get_classes() -> Result<Vec<String>, std::io::Error> {
     let config = read_tailwind_config()?;
     let mut classes = Vec::new();
-    let colors: [Box<dyn TailwindField>; 13] = [
+    let colors: [Box<dyn TailwindField>; 25] = [
+        // Colors
         Box::new(AccentColor),
         Box::new(BgColor),
         Box::new(BorderColor),
@@ -89,6 +90,19 @@ pub fn get_classes() -> Result<Vec<String>, std::io::Error> {
         Box::new(OutlineColor),
         Box::new(FillColor),
         Box::new(StrokeColor),
+        // Spacing
+        Box::new(Padding),
+        Box::new(Margin),
+        Box::new(Width),
+        Box::new(Height),
+        Box::new(MaxHeight),
+        Box::new(Gap),
+        Box::new(Inset),
+        Box::new(Translate),
+        Box::new(TextIndent),
+        Box::new(BorderSpacing),
+        Box::new(ScrollMargin),
+        Box::new(ScrollPadding),
     ];
 
     for color in colors {
