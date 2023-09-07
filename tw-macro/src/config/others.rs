@@ -197,8 +197,7 @@ define_tailwind_field!(OutlineWidth, "outline", outline_width, []);
 // define_tailwind_field!(OutlineStyle, "outline", outline_style, []);
 define_tailwind_field!(OutlineOffset, "outline-offset", outline_offset, []);
 define_tailwind_field!(RingWidth, "ring", ring_width, []);
-define_tailwind_field!(RingOffsetWidth, "ring-offset", ring_offset_width,[]);
-
+define_tailwind_field!(RingOffsetWidth, "ring-offset", ring_offset_width, []);
 
 /// ---
 // Effects
@@ -254,16 +253,13 @@ define_tailwind_field!(BackdropOpacity, "backdrop-opacity", backdrop_opacity, []
 define_tailwind_field!(BackdropSaturate, "backdrop-saturate", backdrop_saturate, []);
 define_tailwind_field!(BackdropSepia, "backdrop-sepia", backdrop_sepia, []);
 
-
-
 /// ---
 // Tables
 // define_tailwind_field!(BorderCollapse, "border-collapse", border_collapse, []);
 // define_tailwind_field!(TableLayout, "table-layout", table_layout, []);
 // define_tailwind_field!(CaptionSide, "caption-side", caption_side, []);
 
-
-/// --- 
+/// ---
 /// Transitions & Animation
 define_tailwind_field!(TransitionProperty, "transition", transition_property, []);
 define_tailwind_field!(TransitionDuration, "duration", transition_duration, []);
@@ -276,19 +272,52 @@ define_tailwind_field!(
 define_tailwind_field!(TransitionDelay, "delay", transition_delay, []);
 define_tailwind_field!(Animation, "animate", animation, []);
 
-
-/// --- 
+/// ---
 /// Transforms
 // Scale
 // Rotate
 // Translate
 // Skew
 // Transform Origin
-
-
+define_tailwind_field!(Scale, "scale", scale, []);
+define_tailwind_field!(Rotate, "rotate", rotate, []);
+define_tailwind_field!(Skew, "skew", skew, []);
+define_tailwind_field!(TransformOrigin, "origin", transform_origin, []);
 
 /// ---
-define_tailwind_field!(UserSelect, "user-select", user_select, []);
-define_tailwind_field!(AccentColor, "accent-color", accent_color, []);
-define_tailwind_field!(ScreenReaders, "accessibility", screen_readers, []);
-define_tailwind_field!(Appearance, "appearance", appearance, []);
+/// Interactivity
+// Accent Color
+// Appearance
+// Cursor
+// Caret Color
+// Pointer Events
+// Resize
+// Scroll Behavior
+// Scroll Margin
+// Scroll Padding
+// Scroll Snap Align
+// Scroll Snap Stop
+// Scroll Snap Type
+// Touch Action
+// User Select
+// Will Change
+// define_tailwind_field!(Appearance, "appearance", appearance, []);
+define_tailwind_field!(Cursor, "cursor", cursor, []);
+// define_tailwind_field!(PointerEvents, "pointer-events", pointer_events, []);
+// define_tailwind_field!(Resize, "resize", resize, []);
+// define_tailwind_field!(ScrollBehavior, "scroll", scroll_behavior, []);
+// define_tailwind_field!(ScrollSnapAlign, "scroll", scroll_snap_align, []);
+// define_tailwind_field!(ScrollSnapStop, "scroll", scroll_snap_stop, []);
+// define_tailwind_field!(ScrollSnapType, "scroll", scroll_snap_type, []);
+// define_tailwind_field!(TouchAction, "touch", touch_action, []);
+define_tailwind_field!(WillChange, "will-change", will_change, []);
+// define_tailwind_field!(UserSelect, "user-select", user_select, []);
+
+// ---
+// SVG
+define_tailwind_field!(StrokeWidth, "stroke", stroke_width, []);
+
+// ---
+// Accessibility
+// Screen Readers
+// define_tailwind_field!(ScreenReaders, "", screen_readers, []);
