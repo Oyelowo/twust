@@ -92,6 +92,7 @@ pub struct CustomisableClasses {
     pub animation: Option<HashMap<String, String>>,
     pub appearance: Option<HashMap<String, String>>,
     pub aspect_ratio: Option<HashMap<String, String>>,
+    pub grayscale: Option<HashMap<String, String>>,
     pub backdrop_blur: Option<HashMap<String, String>>,
     pub backdrop_brightness: Option<HashMap<String, String>>,
     pub backdrop_contrast: Option<HashMap<String, String>>,
