@@ -15,7 +15,7 @@ use self::classes::*;
 trait TailwindField {
     fn get_prefix(&self) -> &'static str;
     fn get_variants(&self) -> Vec<&'static str>;
-    fn get_default(&self) -> Vec<&str>;
+    fn get_default(&self, config: &TailwindConfig) -> Vec<&str>;
     fn get_override(&self, config: &TailwindConfig) -> Vec<String>;
     fn get_extend(&self, config: &TailwindConfig) -> Vec<String>;
     fn handle_special_cases(&self, config: &TailwindConfig) -> Vec<String>;
@@ -48,7 +48,7 @@ fn add_classes_for_field(
     if !overrides.is_empty() {
         classes.extend(generate_classes_for_keys(field, &overrides));
     } else {
-        let default = field.get_default();
+        let default = field.get_default(config);
         classes.extend(default.iter().map(|x| x.to_string()));
     }
     let extend = field.get_extend(&config);

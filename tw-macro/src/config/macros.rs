@@ -57,11 +57,18 @@ macro_rules! define_tailwind_color_field {
                 $variants.to_vec()
             }
 
-            fn get_default(&self) -> Vec<&str> {
+            fn get_default(&self, config: &TailwindConfig) -> Vec<&str> {
+                if !config.core_plugins.$default_field {
+                    return vec![];
+                };
                 TAILWIND_CSS.$default_field.to_vec()
             }
 
             fn get_override(&self, config: &TailwindConfig) -> Vec<String> {
+                if !config.core_plugins.$default_field {
+                    return vec![];
+                };
+
                 $crate::config::macros::extract_keys_from_colors(
                     &config.theme.overrides.$default_field,
                     &config.theme.overrides.colors,
@@ -69,6 +76,9 @@ macro_rules! define_tailwind_color_field {
             }
 
             fn get_extend(&self, config: &TailwindConfig) -> Vec<String> {
+                if !config.core_plugins.$default_field {
+                    return vec![];
+                };
                 $crate::config::macros::extract_keys_from_colors(
                     &config.theme.extend.$default_field,
                     &config.theme.extend.colors,
@@ -98,11 +108,19 @@ macro_rules! define_tailwind_field {
                 $variants.to_vec()
             }
 
-            fn get_default(&self) -> Vec<&str> {
+            fn get_default(&self, config: &TailwindConfig) -> Vec<&str> {
+                if !config.core_plugins.$field_name {
+                    return vec![];
+                };
+
                 TAILWIND_CSS.$field_name.to_vec()
             }
 
             fn get_override(&self, config: &TailwindConfig) -> Vec<String> {
+                if !config.core_plugins.$field_name {
+                    return vec![];
+                };
+
                 $crate::config::macros::extract_keys(
                     &config.theme.overrides.$field_name,
                     &config.theme.overrides.$inherited,
@@ -110,6 +128,10 @@ macro_rules! define_tailwind_field {
             }
 
             fn get_extend(&self, config: &TailwindConfig) -> Vec<String> {
+                if !config.core_plugins.$field_name {
+                    return vec![];
+                };
+
                 $crate::config::macros::extract_keys(
                     &config.theme.extend.$field_name,
                     &config.theme.extend.$inherited,
