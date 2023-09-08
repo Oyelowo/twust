@@ -14,17 +14,21 @@ use tailwind::{
 
 use config::{get_classes, noconfig::UNCONFIGURABLE, read_tailwind_config};
 use proc_macro::TokenStream;
-use quote::quote;
 use regex::{self, Regex};
 use tailwind::signable::SIGNABLES;
-use tailwindcss_core::parser::{Extractor, ExtractorOptions};
+// use tailwindcss_core::parser::{Extractor, ExtractorOptions};
 
 #[proc_macro]
-pub fn tw(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as LitStr);
+pub fn tw(raw_input: TokenStream) -> TokenStream {
+    let r_input = raw_input.clone();
+    let input = parse_macro_input!(r_input as LitStr);
     let (modifiers, valid_class_names) = match setup(&input) {
         Ok(value) => value,
-        Err(value) => return value,
+        Err(value) => {
+            return syn::Error::new_spanned(input, value)
+                .to_compile_error()
+                .into()
+        }
     };
 
     for word in input.value().split_whitespace() {
@@ -68,11 +72,11 @@ pub fn tw(input: TokenStream) -> TokenStream {
             || is_valid_group_classname(last_word_unsigned)
             || is_validate_modifier_or_group(word, &modifiers, &valid_class_names)
         {
-            if check_word(word, false).is_empty() {
-                return syn::Error::new_spanned(input, format!("Invalid string: {}", word))
-                    .to_compile_error()
-                    .into();
-            }
+            // if check_word(word, false).is_empty() {
+            //     return syn::Error::new_spanned(input, format!("Invalid string: {}", word))
+            //         .to_compile_error()
+            //         .into();
+            // }
         } else {
             return syn::Error::new_spanned(input, format!("Invalid string: {}", word))
                 .to_compile_error()
@@ -80,20 +84,20 @@ pub fn tw(input: TokenStream) -> TokenStream {
         }
     }
 
-    TokenStream::from(quote! {#input})
+    return raw_input;
 }
 
-fn check_word(input: &str, loose: bool) -> Vec<&str> {
-    Extractor::unique_ord(
-        input.as_bytes(),
-        ExtractorOptions {
-            preserve_spaces_in_arbitrary: loose,
-        },
-    )
-    .into_iter()
-    .map(|s| unsafe { std::str::from_utf8_unchecked(s) })
-    .collect()
-}
+// fn check_word(input: &str, loose: bool) -> Vec<&str> {
+//     Extractor::unique_ord(
+//         input.as_bytes(),
+//         ExtractorOptions {
+//             preserve_spaces_in_arbitrary: loose,
+//         },
+//     )
+//     .into_iter()
+//     .map(|s| unsafe { std::str::from_utf8_unchecked(s) })
+//     .collect()
+// }
 
 fn is_valid_length(value: &str) -> bool {
     let re = regex::Regex::new(r"^(-?\d+(\.?\d+)?(px|em|rem|%|cm|mm|in|pt|pc|vh|vw|vmin|vmax)|0)$")
