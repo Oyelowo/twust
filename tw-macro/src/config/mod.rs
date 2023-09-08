@@ -256,18 +256,5 @@ pub fn get_classes() -> Result<Vec<String>, std::io::Error> {
         add_classes_for_field(utility.as_ref(), &config, &mut classes);
     }
 
-    // add_classes_for_field(&AccentColor, &config, &mut classes);
-    // add_classes_for_field(&BgColor, &config, &mut classes);
-    // add_classes_for_field(&BorderColor, &config, &mut classes);
-    // add_classes_for_field(&TextColor, &config, &mut classes);
-    // add_classes_for_field(&TextDecorationColor, &config, &mut classes);
-    // add_classes_for_field(&RingColor, &config, &mut classes);
-    // add_classes_for_field(&RingOffsetColor, &config, &mut classes);
-    // add_classes_for_field(&DivideColor, &config, &mut classes);
-    // add_classes_for_field(&OutlineColor, &config, &mut classes);
-    // add_classes_for_field(&FillColor, &config, &mut classes);
-    // add_classes_for_field(&StrokeColor, &config, &mut classes);
-    // add_classes_for_field(&PlaceholderColor, &config, &mut classes);
-
     Ok(classes)
 }

@@ -227,7 +227,7 @@ define_tailwind_field!({
     prefix: "inset",
     inherited: spacing,
     field_name: inset,
-    variants: ["x", "y"]
+    variants: ["-x", "-y"]
 });
 
 define_tailwind_field!({
@@ -537,7 +537,7 @@ define_tailwind_field!({
     prefix: "space",
     inherited: spacing,
     field_name: space,
-    variants: ["x", "y"]
+    variants: ["-x", "-y"]
 });
 
 // 4. Sizing
@@ -965,7 +965,7 @@ define_tailwind_field!({
     prefix: "rounded",
     inherited: border_radius,
     field_name: border_radius,
-    variants: ["t", "r", "b", "l", "tl", "tr", "br", "bl", "s", "e", "ss", "se", "es", "ee"]
+    variants: ["-t", "-r", "-b", "-l", "-tl", "-tr", "-br", "-bl", "-s", "-e", "-ss", "-se", "-es", "-ee"]
 });
 
 define_tailwind_field!({
@@ -973,14 +973,14 @@ define_tailwind_field!({
     prefix: "border",
     inherited: border_width,
     field_name: border_width,
-    variants: ["x", "y", "t", "r", "b","l", "s", "e"]
+    variants: ["-x", "-y", "-t", "-r", "-b","-l", "-s", "-e"]
 });
 
 define_tailwind_color_field!({
     name: BorderColor,
     prefix: "border",
     field_name: border_color,
-    variants: ["x", "y", "t", "r", "b","l", "s", "e"]
+    variants: ["-x", "-y", "-t", "-r", "-b","-l", "-s", "-e"]
 });
 
 // unchangeable and unconfigurable
@@ -998,7 +998,7 @@ define_tailwind_field!({
     // It inherits the border-width
     inherited: border_width,
     field_name: divide_width,
-    variants: ["x", "y"]
+    variants: ["-x", "-y"]
 });
 
 define_tailwind_color_field!({
@@ -1308,7 +1308,7 @@ define_tailwind_field!({
     prefix: "border-spacing",
     inherited: spacing,
     field_name: border_spacing,
-    variants: ["x", "y"]
+    variants: ["-x", "-y"]
 });
 
 // unchangeable and unconfigurable
@@ -1386,7 +1386,7 @@ define_tailwind_field!({
     prefix: "scale",
     inherited: scale,
     field_name: scale,
-    variants: ["x", "y"]
+    variants: ["-x", "-y"]
 });
 
 define_tailwind_field!({
@@ -1402,7 +1402,7 @@ define_tailwind_field!({
     prefix: "translate",
     inherited: spacing,
     field_name: translate,
-    variants: ["x", "y"]
+    variants: ["-x", "-y"]
 });
 
 define_tailwind_field!({
@@ -1410,7 +1410,7 @@ define_tailwind_field!({
     prefix: "skew",
     inherited: skew,
     field_name: skew,
-    variants: ["x", "y"]
+    variants: ["-x", "-y"]
 });
 
 define_tailwind_field!({
@@ -1500,6 +1500,7 @@ define_tailwind_field!({
     prefix: "scroll-m",
     inherited: spacing,
     field_name: scroll_margin,
+    // Scroll margin has no gap between the prefix and the variants
     variants: ["x", "y", "s", "e", "t", "r", "b", "l"]
 });
 
@@ -1508,6 +1509,7 @@ define_tailwind_field!({
     prefix: "scroll-p",
     inherited: spacing,
     field_name: scroll_padding,
+    // Scroll pading has no gap between the prefix and the variants
     variants: ["x", "y", "s", "e", "t", "r", "b", "l"]
 });
 

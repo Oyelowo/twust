@@ -1,23 +1,21 @@
 use super::TailwindField;
 use crate::tailwind::class_type::TAILWIND_CSS;
-use crate::tailwind::tailwind_config::{ColorValue, TailwindConfig};
+use crate::tailwind::tailwind_config::{ColorValue, Key, TailwindConfig};
 use serde_json;
 use std::env;
 use std::path::Path;
 use std::{collections::HashMap, fs};
 
-pub(crate) fn extract_keys_from_colors(
-    colors: &Option<HashMap<String, ColorValue>>,
-) -> Vec<String> {
+pub(crate) fn extract_keys_from_colors(colors: &Option<HashMap<Key, ColorValue>>) -> Vec<String> {
     let mut keys = Vec::new();
     if let Some(colors_map) = colors {
         for (key, value) in colors_map.iter() {
             match value {
-                ColorValue::Simple(_) => keys.push(key.clone()),
+                ColorValue::Simple(_) => keys.push(key.to_string()),
                 ColorValue::Shades(shades) => {
                     for shade_key in shades.keys() {
                         if shade_key == "DEFAULT" {
-                            keys.push(key.clone());
+                            keys.push(key.to_string());
                             continue;
                         }
                         keys.push(format!("{key}-{shade_key}"));
@@ -84,7 +82,7 @@ macro_rules! define_tailwind_field {
             }
 
             fn get_variants(&self) -> Vec<&'static str> {
-                vec![]
+                $variants.to_vec()
             }
 
             fn get_default(&self) -> Vec<&str> {
@@ -117,28 +115,30 @@ pub(crate) use define_tailwind_field;
 
 pub(crate) fn extract_keys(
     prefix: &str,
-    specific_config: &Option<HashMap<String, String>>,
-    inherited_config: &Option<HashMap<String, String>>,
+    specific_config: &Option<HashMap<Key, String>>,
+    inherited_config: &Option<HashMap<Key, String>>,
 ) -> Vec<String> {
     let mut keys = Vec::new();
 
     if let Some(confing) = specific_config {
         for key in confing.keys() {
-            if key == "DEFAULT" {
-                keys.push(prefix.to_string());
-            } else {
-                keys.push(format!("{}-{}", prefix, key));
-            }
+            keys.push(key.to_string());
+            // if key == "DEFAULT" {
+            //     keys.push(prefix.to_string());
+            // } else {
+            //     keys.push(format!("{}-{}", prefix, key));
+            // }
         }
     }
 
     if let Some(config) = inherited_config {
         for key in config.keys() {
-            if key == "DEFAULT" {
-                keys.push(prefix.to_string());
-            } else {
-                keys.push(format!("{}-{}", prefix, key));
-            }
+            keys.push(key.to_string());
+            // if key == "DEFAULT" {
+            //     keys.push(prefix.to_string());
+            // } else {
+            //     keys.push(format!("{}-{}", prefix, key));
+            // }
         }
     }
 
