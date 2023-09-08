@@ -1,3 +1,9 @@
+/*
+ * Author: Oyelowo Oyedayo
+ * Email: oyelowo.oss@gmail.com
+ * Copyright (c) 2023 Oyelowo Oyedayo
+ * Licensed under the MIT license
+ */
 use super::TailwindField;
 use crate::tailwind::class_type::TAILWIND_CSS;
 use crate::tailwind::tailwind_config::{ColorValue, Key, TailwindConfig};
