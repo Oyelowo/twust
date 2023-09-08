@@ -74,7 +74,7 @@
 
 use super::tailwind_config::TailwindConfig;
 
-pub const MODIFIERS: [&'static str; 57] = [
+const MODIFIERS: [&'static str; 57] = [
     "hover",
     "focus",
     "focus-within",

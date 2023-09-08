@@ -51,7 +51,7 @@ fn add_classes_for_field(
     classes.extend(field.handle_special_cases(&config));
 }
 
-fn read_tailwind_config() -> Result<TailwindConfig, std::io::Error> {
+pub(crate) fn read_tailwind_config() -> Result<TailwindConfig, std::io::Error> {
     let current_dir = std::env::current_dir()?;
 
     // Construct the path to tailwind.config.json relative to the current directory
@@ -72,8 +72,7 @@ fn read_tailwind_config() -> Result<TailwindConfig, std::io::Error> {
     Ok(config)
 }
 
-pub fn get_classes() -> Result<Vec<String>, std::io::Error> {
-    let config = read_tailwind_config()?;
+pub fn get_classes(config: &TailwindConfig) -> Result<Vec<String>, std::io::Error> {
     let mut classes = Vec::new();
     let utilities: [Box<dyn TailwindField>; 174] = [
         Box::new(AspectRatio),

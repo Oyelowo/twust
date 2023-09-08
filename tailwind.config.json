@@ -23,17 +23,10 @@
     "fill": {},
     "stroke": {},
     "breakAfter": {},
-    "scrollMargin": {
-      "DEFAULT": "0px",
-      "14": "34",
-      "sm": "0px",
-      "md": "0px",
-      "lg": "0px",
-      "xl": "0px",
-      "2xl": "0px"
-    },
     "extend": {
-      "screens": {},
+      "screens": {
+        "tablet": "640px"
+      },
       "colors": {
         "transparent": "transparent",
         "current": "currentColor",
@@ -79,6 +72,14 @@
         "2xl": "1rem"
       },
       "margin": {},
+      "scrollMargin": {
+        "DEFAULT": "0px",
+        "sm": "0px",
+        "md": "0px",
+        "lg": "0px",
+        "xl": "0px",
+        "2xl": "0px"
+      },
       "negativeMargin": {},
       "shadows": {},
       "zIndex": {},
