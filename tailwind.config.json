@@ -45,6 +45,16 @@
       "screens": {
         "tablet": "640px"
       },
+      "aria": {
+        "asc": "sort=\"ascending\"",
+        "desc": "sort=\"descending\""
+      },
+      "data": {
+        "checked": "ui~=\"checked\""
+      },
+      "supports": {
+        "grid": "display: grid"
+      },
       "colors": {
         "transparent": "transparent",
         "current": "currentColor",

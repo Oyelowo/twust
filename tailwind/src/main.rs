@@ -11,8 +11,15 @@ fn main() {
     tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-purple bg-red-50 bg-tahiti-800 border-s-tahiti-800");
     tw!("md:text-red-50 text-slate-50 text-purple text-tahiti-500");
     tw!("py-sm md:py-md tablet:py-sm lg:py-lg xl:py-xl");
-    tw!("scroll-m-14");
-    tw!("scroll-m-sm");
+    tw!("group");
+    tw!("text-sm font-medium text-slate-300 group-hover:text-white");
+    tw!("text-sm font-medium text-slate-500 group-hover:text-slate-300");
+    tw!("hover:-translate-y-0.5 transition motion-reduce:hover:translate-y-0 motion-reduce:transition-none");
+    tw!("motion-safe:hover:-translate-x-0.5 motion-safe:transition");
+
+    tw!("bg-gray-600 aria-checked:bg-sky-700 aria-asc:bg-midnight data-checked:underline");
+    tw!("scroll-m-14 flex supports-grid:grid supports-[display:grid]:grid");
+    tw!("scroll-m-sm group-aria-[sort=ascending]:rotate-0");
     tw!("scroll-mx-sm");
     tw!("scroll-mx-md");
     tw!("scroll-my-md");

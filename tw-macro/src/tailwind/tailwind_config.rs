@@ -476,6 +476,11 @@ pub struct CustomisableClasses {
     pub word_break: Option<HashMap<Key, String>>,
 
     pub screen_readers: Option<HashMap<Key, String>>,
+
+    // Modifiers
+    pub aria: Option<HashMap<Key, String>>,
+    pub supports: Option<HashMap<Key, String>>,
+    pub data: Option<HashMap<Key, String>>,
     // pub extend: HashMap<Key, HashMap<String, String>>,
 }
 

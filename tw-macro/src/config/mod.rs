@@ -6,13 +6,14 @@
  */
 mod classes;
 mod macros;
+pub mod modifiers;
 pub mod noconfig;
 use crate::tailwind::tailwind_config::{CustomisableClasses, TailwindConfig};
 use std::fs;
 
 use self::{classes::*, noconfig::UNCONFIGURABLE};
 
-trait TailwindField {
+pub trait TailwindField {
     fn get_prefix(&self) -> &'static str;
     fn get_variants(&self) -> Vec<&'static str>;
     fn get_default(&self, config: &TailwindConfig) -> Vec<&str>;
@@ -39,7 +40,7 @@ fn generate_classes_for_keys(field: &dyn TailwindField, keys: &Vec<String>) -> V
     classes
 }
 
-fn add_classes_for_field(
+pub fn add_classes_for_field(
     field: &dyn TailwindField,
     config: &TailwindConfig,
     classes: &mut Vec<String>,
@@ -271,6 +272,7 @@ pub fn get_classes(config: &TailwindConfig) -> Vec<String> {
         .unwrap_or(Vec::new());
 
     classes.extend(allowed_extra_classes);
+    classes.push("group".to_string());
 
     classes
 }

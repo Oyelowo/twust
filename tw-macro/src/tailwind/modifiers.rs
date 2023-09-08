@@ -78,9 +78,11 @@
 // ltr	[dir=“ltr”] &
 // open	&[open]
 
+use crate::config::{add_classes_for_field, modifiers};
+
 use super::tailwind_config::TailwindConfig;
 
-const MODIFIERS: [&'static str; 57] = [
+const MODIFIERS: [&'static str; 49] = [
     "hover",
     "focus",
     "focus-within",
@@ -128,14 +130,6 @@ const MODIFIERS: [&'static str; 57] = [
     "contrast-less",
     "print",
     // supports-[…]	@supports (…)
-    "aria-checked	",
-    "aria-disabled	",
-    "aria-expanded	",
-    "aria-hidden	",
-    "aria-pressed	",
-    "aria-readonly	",
-    "aria-required	",
-    "aria-selected	",
     "ltr",
     "rtl",
     "open",
@@ -146,22 +140,24 @@ const MODIFIERS: [&'static str; 57] = [
     // open	&[open]
 ];
 
+pub const ARIA_DEFAULT: [&'static str; 8] = [
+    "aria-checked",
+    "aria-disabled",
+    "aria-expanded",
+    "aria-hidden",
+    "aria-pressed",
+    "aria-readonly",
+    "aria-required",
+    "aria-selected",
+];
+
 pub fn get_modifiers(config: &TailwindConfig) -> Vec<String> {
     let mut modifiers = Vec::new();
     modifiers.extend(MODIFIERS.iter().map(|x| x.to_string()));
     let mut default_screens = vec![
-        "sm",
-        "md",
-        "lg",
-        "xl",
-        "2xl",
-        "min-[…]",
-        "max-sm",
-        "max-md",
-        "max-lg",
-        "max-xl",
-        "max-2xl",
-        "max-[…]",
+        "sm", "md", "lg", "xl", "2xl", // "min-[…]",
+        "max-sm", "max-md", "max-lg", "max-xl", "max-2xl",
+        // "max-[…]",
     ]
     .into_iter()
     .map(|x| x.to_string())
@@ -169,9 +165,6 @@ pub fn get_modifiers(config: &TailwindConfig) -> Vec<String> {
 
     if let Some(ref screens) = config.theme.overrides.screens {
         if !screens.is_empty() {
-            // for (key, _) in screens.iter() {
-            //     default_screens.push(key.as_str());
-            // }
             default_screens = screens
                 .keys()
                 .into_iter()
@@ -200,5 +193,16 @@ pub fn get_modifiers(config: &TailwindConfig) -> Vec<String> {
     modifiers.extend(allowed_extra_modifiers);
 
     modifiers.extend(default_screens);
+
+    add_classes_for_field(&modifiers::Aria, config, &mut modifiers);
+    add_classes_for_field(&modifiers::Supports, config, &mut modifiers);
+    add_classes_for_field(&modifiers::Data, config, &mut modifiers);
+
+    modifiers.extend(
+        modifiers
+            .iter()
+            .map(|x| format!("group-{x}"))
+            .collect::<Vec<_>>(),
+    );
     modifiers
 }
