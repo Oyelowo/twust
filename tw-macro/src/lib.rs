@@ -93,7 +93,7 @@ pub fn tw(input: TokenStream) -> TokenStream {
                     // for multiple, hover:first:last, in hover:first:last:[mask-type:alpha]
                 modifiers_or_full_arb_prop
                     .split(':')
-                    .all(|modifier| modifiers.contains(&modifier)) &&
+                    .all(|modifier| modifiers.contains(&modifier.to_string())) &&
                     full_arb_prop.matches(']').count() == 1 &&
                     full_arb_prop
                         .trim_end_matches(']')
@@ -127,7 +127,7 @@ pub fn tw(input: TokenStream) -> TokenStream {
             .collect::<Vec<&str>>();
         let is_valid_modifier = modifiers_from_word
             .iter()
-            .all(|modifier| modifiers.contains(&modifier));
+            .all(|modifier| modifiers.contains(&modifier.to_string()));
 
         let is_valid_class =
             { !is_valid_arb_prop && valid_class_names.contains(&last_word_unsigned.to_string()) };

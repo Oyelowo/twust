@@ -1,7 +1,6 @@
 mod classes;
 mod macros;
 mod noconfig;
-mod spacings;
 use crate::tailwind::tailwind_config::TailwindConfig;
 use std::fs;
 
@@ -254,6 +253,15 @@ pub fn get_classes(config: &TailwindConfig) -> Result<Vec<String>, std::io::Erro
     for utility in utilities {
         add_classes_for_field(utility.as_ref(), &config, &mut classes);
     }
+
+    let allowed_extra_classes = config
+        .allowed_lists
+        .as_ref()
+        .map(|x| x.classes.to_owned())
+        .flatten()
+        .unwrap_or(Vec::new());
+    classes.extend(allowed_extra_classes);
+    classes.push("lowo".to_string());
 
     Ok(classes)
 }

@@ -1,12 +1,16 @@
 {
+  "allowedLists": {
+    "classes": ["lowo"],
+    "modifiers": []
+  },
   "theme": {
     "screens": {},
     "colors": {},
     "spacing": {},
     "backgroundPosition": {},
     "backgroundSize": {},
-    "borderColors": {},
-    "borderWidths": {},
+    "borderColor": {},
+    "borderWidth": {},
     "borderRadius": {},
     "width": {},
     "height": {},
@@ -54,8 +58,8 @@
       "spacing": {},
       "backgroundPosition": {},
       "backgroundSize": {},
-      "borderColors": {},
-      "borderWidths": {},
+      "borderColor": {},
+      "borderWidth": {},
       "borderRadius": {},
       "width": {},
       "height": {},

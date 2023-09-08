@@ -5,15 +5,23 @@ use std::{
 };
 
 #[derive(Serialize, Deserialize, Default, Debug)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct TailwindConfig {
     pub theme: Theme,
+    pub allowed_lists: Option<AllowedLists>,
     pub variants: Variants,
     pub plugins: Plugins,
 }
 
 #[derive(Serialize, Deserialize, Default, Debug)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct AllowedLists {
+    pub classes: Option<Vec<String>>,
+    pub modifiers: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Default, Debug)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct Theme {
     #[serde(flatten)]
     pub overrides: CustomisableClasses,
@@ -21,7 +29,7 @@ pub struct Theme {
 }
 
 // Represents a color which can either be a simple string or a nested structure.
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 #[serde(untagged)]
 pub enum ColorValue {
     Simple(String),
@@ -58,14 +66,12 @@ pub struct RawBreakpoint {
 pub type Key = String;
 
 #[derive(Serialize, Deserialize, Default, Debug)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CustomisableClasses {
     // pub screens: Option<HashMap<String, String>>,
     pub screens: Option<HashMap<Key, ScreenValue>>,
     pub colors: Option<HashMap<Key, ColorValue>>,
     pub spacing: Option<HashMap<Key, String>>,
-
-    pub border_widths: Option<HashMap<Key, String>>,
 
     pub width: Option<HashMap<Key, String>>,
     pub height: Option<HashMap<Key, String>>,

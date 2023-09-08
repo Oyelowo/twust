@@ -123,22 +123,12 @@ pub(crate) fn extract_keys(
     if let Some(confing) = specific_config {
         for key in confing.keys() {
             keys.push(key.to_string());
-            // if key == "DEFAULT" {
-            //     keys.push(prefix.to_string());
-            // } else {
-            //     keys.push(format!("{}-{}", prefix, key));
-            // }
         }
     }
 
     if let Some(config) = inherited_config {
         for key in config.keys() {
             keys.push(key.to_string());
-            // if key == "DEFAULT" {
-            //     keys.push(prefix.to_string());
-            // } else {
-            //     keys.push(format!("{}-{}", prefix, key));
-            // }
         }
     }
 

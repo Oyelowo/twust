@@ -140,9 +140,9 @@ const MODIFIERS: [&'static str; 57] = [
     // open	&[open]
 ];
 
-pub fn get_modifiers(config: &TailwindConfig) -> Vec<&str> {
+pub fn get_modifiers(config: &TailwindConfig) -> Vec<String> {
     let mut modifiers = Vec::new();
-    modifiers.extend(MODIFIERS.iter().map(|x| *x));
+    modifiers.extend(MODIFIERS.iter().map(|x| x.to_string()));
     let mut default_screens = vec![
         "sm",
         "md",
@@ -156,14 +156,21 @@ pub fn get_modifiers(config: &TailwindConfig) -> Vec<&str> {
         "max-xl",
         "max-2xl",
         "max-[…]",
-    ];
+    ]
+    .into_iter()
+    .map(|x| x.to_string())
+    .collect::<Vec<String>>();
 
     if let Some(ref screens) = config.theme.overrides.screens {
         if !screens.is_empty() {
             // for (key, _) in screens.iter() {
             //     default_screens.push(key.as_str());
             // }
-            default_screens = screens.keys().into_iter().map(|x| x.as_str()).collect();
+            default_screens = screens
+                .keys()
+                .into_iter()
+                .map(ToString::to_string)
+                .collect();
         }
     }
 
@@ -172,11 +179,19 @@ pub fn get_modifiers(config: &TailwindConfig) -> Vec<&str> {
             let screens = screens
                 .keys()
                 .into_iter()
-                .map(|x| x.as_str())
-                .collect::<Vec<&str>>();
+                .map(ToString::to_string)
+                .collect::<Vec<_>>();
             default_screens.extend(screens);
         }
     }
+
+    let allowed_extra_modifiers = config
+        .allowed_lists
+        .as_ref()
+        .map(|x| x.classes.to_owned())
+        .flatten()
+        .unwrap_or(Vec::new());
+    modifiers.extend(allowed_extra_modifiers);
 
     modifiers.extend(default_screens);
     modifiers
