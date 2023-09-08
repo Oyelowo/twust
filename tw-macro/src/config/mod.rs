@@ -1,12 +1,10 @@
+mod classes;
+mod macros;
+mod spacings;
+use crate::tailwind::tailwind_config::TailwindConfig;
 use std::fs;
 
-use crate::tailwind::tailwind_config::TailwindConfig;
-
-use self::{colors::*, others::*, spacings::*};
-
-mod colors;
-mod others;
-mod spacings;
+use self::classes::*;
 
 trait TailwindField {
     fn get_prefix(&self) -> &'static str;
@@ -79,7 +77,7 @@ pub fn get_classes() -> Result<Vec<String>, std::io::Error> {
     let colors: [Box<dyn TailwindField>; 100] = [
         // Colors
         Box::new(AccentColor),
-        Box::new(BgColor),
+        Box::new(BackgroundColor),
         Box::new(BorderColor),
         Box::new(TextColor),
         Box::new(TextDecorationColor),

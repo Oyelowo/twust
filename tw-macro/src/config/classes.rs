@@ -1,56 +1,9 @@
 use std::collections::HashMap;
 
+use super::macros::{define_tailwind_color_field, define_tailwind_field};
 use super::TailwindField;
 use crate::tailwind::class_type::TAILWIND_CSS;
 use crate::tailwind::tailwind_config::TailwindConfig;
-
-macro_rules! define_tailwind_field {
-    ({name : $name:ident, prefix: $prefix:expr, inherited: $inherited:ident,  field_name: $field_name:ident, variants: $variants:expr}) => {
-        pub struct $name;
-
-        impl TailwindField for $name {
-            fn get_prefix(&self) -> &'static str {
-                $prefix
-            }
-
-            fn get_variants(&self) -> Vec<&'static str> {
-                vec![]
-            }
-
-            fn get_default(&self) -> Vec<&str> {
-                TAILWIND_CSS.$field_name.to_vec()
-            }
-
-            fn get_override(&self, config: &TailwindConfig) -> Vec<String> {
-                if let Some(overrides) = &config.theme.overrides.$field_name {
-                    return overrides.keys().cloned().collect();
-                }
-
-                if let Some(inherited) = &config.theme.overrides.$inherited {
-                    return inherited.keys().cloned().collect();
-                }
-
-                vec![]
-            }
-
-            fn get_extend(&self, config: &TailwindConfig) -> Vec<String> {
-                if let Some(overrides) = &config.theme.extend.$field_name {
-                    return overrides.keys().cloned().collect();
-                }
-
-                if let Some(inherited) = &config.theme.extend.$inherited {
-                    return inherited.keys().cloned().collect();
-                }
-
-                vec![]
-            }
-
-            fn handle_special_cases(&self, _config: &TailwindConfig) -> Vec<String> {
-                vec![]
-            }
-        }
-    };
-}
 
 // LayOut
 //
@@ -719,7 +672,7 @@ define_tailwind_field!({
     variants: []
 });
 
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: TextColor,
     prefix: "text",
     // inherited: text_color,
@@ -736,7 +689,7 @@ define_tailwind_field!({
     variants: []
 });
 
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: TextDecorationColor,
     prefix: "decoration",
     field_name: text_decoration_color,
@@ -860,7 +813,7 @@ define_tailwind_field!({
     variants: []
 });
 
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: BackgroundColor,
     prefix: "bg",
     field_name: background_color,
@@ -914,21 +867,21 @@ define_tailwind_field!({
 In addition to the colors, you can also customize the gradient color stop positions by editing theme.gradientColorStopPositions or theme.extend.gradientColorStopPositions.
 // https://tailwindcss.com/docs/gradient-color-stops
 * */
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: GradientColorStopsFrom,
     prefix: "from",
     field_name: gradient_color_stops,
     variants: []
 });
 
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: GradientColorStopsVia,
     prefix: "via",
     field_name: gradient_color_stops,
     variants: []
 });
 
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: GradientColorStopsTo,
     prefix: "to",
     field_name: gradient_color_stops,
@@ -967,7 +920,7 @@ define_tailwind_field!({
     variants: ["x", "y", "t", "r", "b","l", "s", "e"]
 });
 
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: BorderColor,
     prefix: "border",
     field_name: border_color,
@@ -992,7 +945,7 @@ define_tailwind_field!({
     variants: ["x", "y"]
 });
 
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: DivideColor,
     prefix: "divide",
     field_name: divide_color,
@@ -1016,7 +969,7 @@ define_tailwind_field!({
     variants: []
 });
 
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: OutlineColor,
     prefix: "outline",
     field_name: outline_color,
@@ -1048,7 +1001,7 @@ define_tailwind_field!({
     variants: []
 });
 
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: RingColor,
     prefix: "ring",
     field_name: ring_color,
@@ -1063,7 +1016,7 @@ define_tailwind_field!({
     variants: []
 });
 
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: RingOffsetColor,
     prefix: "ring-offset",
     field_name: ring_offset_color,
@@ -1084,7 +1037,7 @@ define_tailwind_field!({
     variants: []
 });
 
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: BoxShadowColor,
     prefix: "shadow",
     field_name: box_shadow_color,
@@ -1428,7 +1381,7 @@ define_tailwind_field!({
 // Touch Action
 // User Select
 // Will Change
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: AccentColor,
     prefix: "accent",
     field_name: accent_color,
@@ -1452,7 +1405,7 @@ define_tailwind_field!({
     variants: []
 });
 
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: CaretColor,
     prefix: "caret",
     field_name: caret_color,
@@ -1560,14 +1513,14 @@ define_tailwind_field!({
 // Fill
 // Stroke
 // Stroke Width
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: Fill,
     prefix: "fill",
     field_name: fill,
     variants: []
 });
 
-super::define_tailwind_color_field!({
+define_tailwind_color_field!({
     name: Stroke,
     prefix: "stroke",
     field_name: stroke,
