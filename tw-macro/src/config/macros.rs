@@ -58,15 +58,23 @@ macro_rules! define_tailwind_color_field {
             }
 
             fn get_default(&self, config: &TailwindConfig) -> Vec<&str> {
-                if !config.core_plugins.$default_field {
-                    return vec![];
+                if let Some(ref core_plugins) = config.core_plugins {
+                    if let Some(enabled) = core_plugins.$default_field {
+                        if enabled == false {
+                            return vec![];
+                        }
+                    }
                 };
                 TAILWIND_CSS.$default_field.to_vec()
             }
 
             fn get_override(&self, config: &TailwindConfig) -> Vec<String> {
-                if !config.core_plugins.$default_field {
-                    return vec![];
+                if let Some(ref core_plugins) = config.core_plugins {
+                    if let Some(enabled) = core_plugins.$default_field {
+                        if enabled == false {
+                            return vec![];
+                        }
+                    }
                 };
 
                 $crate::config::macros::extract_keys_from_colors(
@@ -76,9 +84,14 @@ macro_rules! define_tailwind_color_field {
             }
 
             fn get_extend(&self, config: &TailwindConfig) -> Vec<String> {
-                if !config.core_plugins.$default_field {
-                    return vec![];
+                if let Some(ref core_plugins) = config.core_plugins {
+                    if let Some(enabled) = core_plugins.$default_field {
+                        if enabled == false {
+                            return vec![];
+                        }
+                    }
                 };
+
                 $crate::config::macros::extract_keys_from_colors(
                     &config.theme.extend.$default_field,
                     &config.theme.extend.colors,
@@ -109,16 +122,24 @@ macro_rules! define_tailwind_field {
             }
 
             fn get_default(&self, config: &TailwindConfig) -> Vec<&str> {
-                if !config.core_plugins.$field_name {
-                    return vec![];
+                if let Some(ref core_plugins) = config.core_plugins {
+                    if let Some(enabled) = core_plugins.$field_name {
+                        if enabled == false {
+                            return vec![];
+                        }
+                    }
                 };
 
                 TAILWIND_CSS.$field_name.to_vec()
             }
 
             fn get_override(&self, config: &TailwindConfig) -> Vec<String> {
-                if !config.core_plugins.$field_name {
-                    return vec![];
+                if let Some(ref core_plugins) = config.core_plugins {
+                    if let Some(enabled) = core_plugins.$field_name {
+                        if enabled == false {
+                            return vec![];
+                        }
+                    }
                 };
 
                 $crate::config::macros::extract_keys(
@@ -128,8 +149,12 @@ macro_rules! define_tailwind_field {
             }
 
             fn get_extend(&self, config: &TailwindConfig) -> Vec<String> {
-                if !config.core_plugins.$field_name {
-                    return vec![];
+                if let Some(ref core_plugins) = config.core_plugins {
+                    if let Some(enabled) = core_plugins.$field_name {
+                        if enabled == false {
+                            return vec![];
+                        }
+                    }
                 };
 
                 $crate::config::macros::extract_keys(

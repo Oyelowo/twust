@@ -1,4 +1,11 @@
 {
+  "corePlugins": {
+    "padding": false,
+    "margin": false,
+    "spacing": false,
+    "opacity": false,
+    "scrollMargin": false
+  },
   "allowedLists": {
     "classes": ["lowo"],
     "modifiers": []
