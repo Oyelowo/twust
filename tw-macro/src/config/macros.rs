@@ -4,13 +4,8 @@
  * Copyright (c) 2023 Oyelowo Oyedayo
  * Licensed under the MIT license
  */
-use super::TailwindField;
-use crate::tailwind::class_type::TAILWIND_CSS;
-use crate::tailwind::tailwind_config::{ColorValue, Key, TailwindConfig};
-use serde_json;
-use std::env;
-use std::path::Path;
-use std::{collections::HashMap, fs};
+use crate::tailwind::tailwind_config::{ColorValue, Key};
+use std::collections::HashMap;
 
 pub(crate) fn extract_keys_from_colors(
     specific_colors: &Option<HashMap<Key, ColorValue>>,
@@ -43,7 +38,6 @@ pub(crate) fn extract_keys_from_colors(
 }
 
 // Define Color Fields implementations
-#[macro_use]
 macro_rules! define_tailwind_color_field {
     ({name: $name:ident, prefix: $prefix:expr, field_name: $default_field:ident, variants: $variants:expr}) => {
         pub(crate) struct $name;
@@ -107,7 +101,6 @@ macro_rules! define_tailwind_color_field {
 
 pub(crate) use define_tailwind_color_field;
 
-#[macro_use]
 macro_rules! define_tailwind_field {
     ({name : $name:ident, prefix: $prefix:expr, inherited: $inherited:ident,  field_name: $field_name:ident, variants: $variants:expr}) => {
         pub(crate) struct $name;

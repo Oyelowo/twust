@@ -8,10 +8,10 @@ mod classes;
 mod macros;
 pub mod modifiers;
 pub mod noconfig;
-use crate::tailwind::tailwind_config::{CustomisableClasses, TailwindConfig};
+use crate::tailwind::tailwind_config::TailwindConfig;
 use std::fs;
 
-use self::{classes::*, noconfig::UNCONFIGURABLE};
+use self::classes::*;
 
 pub trait TailwindField {
     fn get_prefix(&self) -> &'static str;

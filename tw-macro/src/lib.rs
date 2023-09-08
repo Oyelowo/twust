@@ -8,10 +8,7 @@ use syn::{parse_macro_input, LitStr};
 mod config;
 mod tailwind;
 use tailwind::{
-    class_type::TAILWIND_CSS,
-    lengthy::LENGTHY,
-    modifiers::{self, get_modifiers},
-    tailwind_config::{CustomisableClasses, TailwindConfig},
+    lengthy::LENGTHY, modifiers::get_modifiers, tailwind_config::CustomisableClasses,
     valid_baseclass_names::VALID_BASECLASS_NAMES,
 };
 
@@ -19,7 +16,6 @@ use config::{get_classes, noconfig::UNCONFIGURABLE, read_tailwind_config};
 use proc_macro::TokenStream;
 use quote::quote;
 use regex::{self, Regex};
-use std::{env, fs};
 use tailwind::signable::SIGNABLES;
 use tailwindcss_core::parser::{Extractor, ExtractorOptions};
 
@@ -153,7 +149,7 @@ fn get_modifiers_and_words<'a>(
     // TODO:  check the first and the last character are not open and close brackets
     // respectively i.e arbitrary property e.g [mask_type:aplha];
     // hover:[mask-type:alpha];
-    let mut word_for_arb_prop = word.split(":[");
+    let word_for_arb_prop = word.split(":[");
 
     // modifiers e.g hover: in
     // hover:[mask-type:alpha]
@@ -206,7 +202,7 @@ fn has_arb_variant(word: &str) -> bool {
         // [&_p]:mt-4 => _p
         let mut ampersand_variant_selector =
             word.split("[@").last().unwrap_or_default().split("]:");
-        let mut and_variant_selector = word.split("[&").last().unwrap_or_default().split("]:");
+        let and_variant_selector = word.split("[&").last().unwrap_or_default().split("]:");
         let is_valid_arbitrary_variant_selector = ampersand_variant_selector.clone().count() >= 2
             && !ampersand_variant_selector
                 .next()
@@ -223,7 +219,7 @@ fn has_arb_variant(word: &str) -> bool {
                 .is_empty();
         let is_query = word.starts_with("[@");
 
-        (is_valid_arbitrary_variant_selector || is_valid_arbitrary_variant_queries)
+        is_valid_arbitrary_variant_selector || is_valid_arbitrary_variant_queries || is_query
         // &&
         // ((!is_query  && !word.split("[&").next().unwrap_or_default().is_empty() && word.split(":[&").count() >= 2)  || is_query)
     };
