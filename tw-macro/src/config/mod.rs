@@ -1,5 +1,6 @@
 mod classes;
 mod macros;
+mod noconfig;
 mod spacings;
 use crate::tailwind::tailwind_config::TailwindConfig;
 use std::fs;
