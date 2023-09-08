@@ -1,7 +1,7 @@
 {
   "corePlugins": {},
   "allowedLists": {
-    "classes": ["oyelowo", "oyedayo", "codebreather"],
+    "classes": ["oyelowo", "oyedayo", "codebreather", "title-font"],
     "modifiers": []
   },
   "theme": {

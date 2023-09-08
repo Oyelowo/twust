@@ -8,7 +8,7 @@
 // placeholder-slate-400
 
 #[derive(Debug, Clone, Copy)]
-pub struct TailWindCss {
+pub struct TailWindCssDefaultClassNames {
     pub aspect_ratio: [&'static str; 3],
     pub container: [&'static str; 4],
     pub columns: [&'static str; 26],
@@ -196,7 +196,7 @@ pub struct TailWindCss {
 // - stroke_dasharray
 // - stroke_dashoffset
 
-pub const TAILWIND_CSS: TailWindCss = TailWindCss {
+pub const TAILWIND_CSS: TailWindCssDefaultClassNames = TailWindCssDefaultClassNames {
     // MARK: Layout
 
     /* Aspect Ratio */

@@ -4,7 +4,7 @@
  * Copyright (c) 2023 Oyelowo Oyedayo
  * Licensed under the MIT license
  */
-pub mod class_type;
+pub mod default_classnames;
 pub mod lengthy;
 pub mod modifiers;
 pub mod signable;

@@ -17,8 +17,10 @@ fn main() {
     tw!("hover:-translate-y-0.5 transition motion-reduce:hover:translate-y-0 motion-reduce:transition-none");
     tw!("motion-safe:hover:-translate-x-0.5 motion-safe:transition");
 
-    tw!("group/edit block invisible hover:bg-slate-200 group-hover/item:visible");
+    tw!("group/edit block invisible md:hover:bg-slate-200 group-hover/item:visible");
     tw!("group-[:nth-of-type(3)_&]:block group-hover/edit:text-gray-700 group-[:nth-of-type(3)_&]:block");
+
+    tw!("tracking-widest text-xs title-font font-medium text-gray-400 mb-1");
 
     tw!("bg-gray-600 aria-checked:bg-sky-700 aria-asc:bg-midnight data-checked:underline");
     tw!("scroll-m-14 flex supports-grid:grid supports-[display:grid]:grid");

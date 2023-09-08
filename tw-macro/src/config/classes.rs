@@ -7,7 +7,7 @@
 
 use super::macros::{define_tailwind_color_field, define_tailwind_field};
 use super::TailwindField;
-use crate::tailwind::{class_type::TAILWIND_CSS, tailwind_config::TailwindConfig};
+use crate::tailwind::{default_classnames::TAILWIND_CSS, tailwind_config::TailwindConfig};
 
 // LayOut
 //

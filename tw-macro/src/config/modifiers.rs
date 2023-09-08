@@ -1,3 +1,10 @@
+/*
+ * Author: Oyelowo Oyedayo
+ * Email: oyelowo.oss@gmail.com
+ * Copyright (c) 2023 Oyelowo Oyedayo
+ * Licensed under the MIT license
+ */
+
 use crate::tailwind::{modifiers::ARIA_DEFAULT, tailwind_config::TailwindConfig};
 
 use super::TailwindField;
