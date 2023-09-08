@@ -6,24 +6,33 @@ use std::env;
 use std::path::Path;
 use std::{collections::HashMap, fs};
 
-pub(crate) fn extract_keys_from_colors(colors: &Option<HashMap<Key, ColorValue>>) -> Vec<String> {
+pub(crate) fn extract_keys_from_colors(
+    specific_colors: &Option<HashMap<Key, ColorValue>>,
+    inherited_colors: &Option<HashMap<Key, ColorValue>>,
+) -> Vec<String> {
     let mut keys = Vec::new();
-    if let Some(colors_map) = colors {
-        for (key, value) in colors_map.iter() {
-            match value {
-                ColorValue::Simple(_) => keys.push(key.to_string()),
-                ColorValue::Shades(shades) => {
-                    for shade_key in shades.keys() {
-                        if shade_key == "DEFAULT" {
-                            keys.push(key.to_string());
-                            continue;
+    let mut extract_color_keys = |colors: &Option<HashMap<Key, ColorValue>>| {
+        if let Some(colors_map) = colors {
+            for (key, value) in colors_map.iter() {
+                match value {
+                    // e.g for, bg-red => red
+                    ColorValue::Simple(_) => keys.push(key.to_string()),
+                    ColorValue::Shades(shades) => {
+                        for shade_key in shades.keys() {
+                            if shade_key == "DEFAULT" {
+                                keys.push(key.to_string());
+                            } else {
+                                // e.g for bg-green-500 => green-500
+                                keys.push(format!("{key}-{shade_key}"));
+                            }
                         }
-                        keys.push(format!("{key}-{shade_key}"));
                     }
                 }
             }
-        }
-    }
+        };
+    };
+    extract_color_keys(specific_colors);
+    extract_color_keys(inherited_colors);
     keys
 }
 
@@ -47,19 +56,17 @@ macro_rules! define_tailwind_color_field {
             }
 
             fn get_override(&self, config: &TailwindConfig) -> Vec<String> {
-                let specific_colors = &config.theme.overrides.$default_field;
-                if specific_colors.is_some() {
-                    return $crate::config::macros::extract_keys_from_colors(specific_colors);
-                }
-                $crate::config::macros::extract_keys_from_colors(&config.theme.overrides.colors)
+                $crate::config::macros::extract_keys_from_colors(
+                    &config.theme.overrides.$default_field,
+                    &config.theme.overrides.colors,
+                )
             }
 
             fn get_extend(&self, config: &TailwindConfig) -> Vec<String> {
-                let specific_colors = &config.theme.extend.$default_field;
-                if specific_colors.is_some() {
-                    return $crate::config::macros::extract_keys_from_colors(specific_colors);
-                }
-                $crate::config::macros::extract_keys_from_colors(&config.theme.extend.colors)
+                $crate::config::macros::extract_keys_from_colors(
+                    &config.theme.extend.$default_field,
+                    &config.theme.extend.colors,
+                )
             }
 
             fn handle_special_cases(&self, _config: &TailwindConfig) -> Vec<String> {
@@ -91,7 +98,6 @@ macro_rules! define_tailwind_field {
 
             fn get_override(&self, config: &TailwindConfig) -> Vec<String> {
                 $crate::config::macros::extract_keys(
-                    $prefix,
                     &config.theme.overrides.$field_name,
                     &config.theme.overrides.$inherited,
                 )
@@ -99,7 +105,6 @@ macro_rules! define_tailwind_field {
 
             fn get_extend(&self, config: &TailwindConfig) -> Vec<String> {
                 $crate::config::macros::extract_keys(
-                    $prefix,
                     &config.theme.extend.$field_name,
                     &config.theme.extend.$inherited,
                 )
@@ -114,7 +119,6 @@ macro_rules! define_tailwind_field {
 pub(crate) use define_tailwind_field;
 
 pub(crate) fn extract_keys(
-    prefix: &str,
     specific_config: &Option<HashMap<Key, String>>,
     inherited_config: &Option<HashMap<Key, String>>,
 ) -> Vec<String> {

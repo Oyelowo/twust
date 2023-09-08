@@ -260,8 +260,8 @@ pub fn get_classes(config: &TailwindConfig) -> Result<Vec<String>, std::io::Erro
         .map(|x| x.classes.to_owned())
         .flatten()
         .unwrap_or(Vec::new());
+
     classes.extend(allowed_extra_classes);
-    classes.push("lowo".to_string());
 
     Ok(classes)
 }
