@@ -17,6 +17,9 @@ fn main() {
     tw!("hover:-translate-y-0.5 transition motion-reduce:hover:translate-y-0 motion-reduce:transition-none");
     tw!("motion-safe:hover:-translate-x-0.5 motion-safe:transition");
 
+    tw!("group/edit block invisible hover:bg-slate-200 group-hover/item:visible");
+    tw!("group-[:nth-of-type(3)_&]:block group-hover/edit:text-gray-700 group-[:nth-of-type(3)_&]:block");
+
     tw!("bg-gray-600 aria-checked:bg-sky-700 aria-asc:bg-midnight data-checked:underline");
     tw!("scroll-m-14 flex supports-grid:grid supports-[display:grid]:grid");
     tw!("scroll-m-sm group-aria-[sort=ascending]:rotate-0");
@@ -75,7 +78,7 @@ fn main() {
     tw!("hover:[mask-type:alpha]");
     tw!(
         "m-4 last:first:invalid:last:first:p-4 last:m-4 pb-[calc(100%-34px)] pb-[23px] [mask-type:luminance]
-    [mask-type:luminance] hover:[mask-type:alpha] lg:[--scroll-offset:44px] lowo break-after-avoid"
+    [mask-type:luminance] hover:[mask-type:alpha] lg:[--scroll-offset:44px] oyelowo oyedayo break-after-avoid"
     );
     tw!("p-4 md:w-1/3");
 
