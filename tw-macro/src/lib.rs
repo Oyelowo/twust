@@ -7,12 +7,15 @@
 use syn::{parse_macro_input, LitStr};
 mod config;
 mod tailwind;
-use tailwind::lengthy::LENGTHY;
-use tailwind::modifiers::get_modifiers;
-use tailwind::tailwind_config::TailwindConfig;
-use tailwind::{class_type::TAILWIND_CSS, modifiers, valid_baseclass_names::VALID_BASECLASS_NAMES};
+use tailwind::{
+    class_type::TAILWIND_CSS,
+    lengthy::LENGTHY,
+    modifiers::{self, get_modifiers},
+    tailwind_config::{CustomisableClasses, TailwindConfig},
+    valid_baseclass_names::VALID_BASECLASS_NAMES,
+};
 
-use config::{get_classes, read_tailwind_config};
+use config::{get_classes, noconfig::UNCONFIGURABLE, read_tailwind_config};
 use regex;
 use std::{env, fs};
 use tailwind::signable::SIGNABLES;
@@ -59,14 +62,25 @@ pub fn tw(input: TokenStream) -> TokenStream {
         }
     };
     let modifiers = get_modifiers(config);
-    let valid_class_names = match get_classes(config) {
-        Ok(config) => config,
-        Err(e) => {
-            return syn::Error::new_spanned(input, format!("Error reading Tailwind config: {}", e))
-                .to_compile_error()
-                .into();
-        }
+    let valid_class_names = get_classes(config);
+    let is_unconfigurable = |classes: &CustomisableClasses, action_type_str: &str| {
+        serde_json::to_value(classes)
+            .expect("Unable to convert to value")
+            .as_object()
+            .expect("Unable to convert to object")
+            .iter()
+            .any(|(key, value)| {
+                if UNCONFIGURABLE.contains(&key.as_str()) && !value.is_null() {
+                    panic!(
+                        "You cannot {action_type_str} the key: {key:?} in tailwind.config.json",
+                        key = key
+                    );
+                }
+                false
+            })
     };
+    is_unconfigurable(&config.theme.overrides, "override");
+    is_unconfigurable(&config.theme.extend, "extend");
 
     for word in input.value().split_whitespace() {
         let modifiers_and_class = word.split(':');

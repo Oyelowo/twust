@@ -6,8 +6,8 @@
  */
 mod classes;
 mod macros;
-mod noconfig;
-use crate::tailwind::tailwind_config::TailwindConfig;
+pub mod noconfig;
+use crate::tailwind::tailwind_config::{CustomisableClasses, TailwindConfig};
 use std::fs;
 
 use self::{classes::*, noconfig::UNCONFIGURABLE};
@@ -77,40 +77,9 @@ pub(crate) fn read_tailwind_config() -> Result<TailwindConfig, std::io::Error> {
     Ok(config)
 }
 
-pub fn get_classes(config: &TailwindConfig) -> Result<Vec<String>, std::io::Error> {
+pub fn get_classes(config: &TailwindConfig) -> Vec<String> {
     // Check that config overrides keys are not one of this list, as those cannot be set
     // by the user.
-    // let list = UNCONFIGURABLE;
-    let core_plugins_value: serde_json::Value =
-        serde_json::to_value(&config.theme.overrides).expect("tooo");
-    core_plugins_value
-        .as_object()
-        .unwrap()
-        .iter()
-        .for_each(|(key, value)| {
-            if UNCONFIGURABLE.contains(&key.as_str()) && !value.is_null() {
-                panic!(
-                    "You cannot override the key: {key:?} in tailwind.config.json",
-                    key = key
-                );
-            }
-        });
-
-    // Do the same for the extend key
-    let core_plugins_value: serde_json::Value =
-        serde_json::to_value(&config.theme.extend).expect("tooo");
-    core_plugins_value
-        .as_object()
-        .unwrap()
-        .iter()
-        .for_each(|(key, value)| {
-            if UNCONFIGURABLE.contains(&key.as_str()) && !value.is_null() {
-                panic!(
-                    "You cannot extend the key: {key:?} in tailwind.config.json",
-                    key = key
-                );
-            }
-        });
 
     let mut classes = Vec::new();
     let utilities: [Box<dyn TailwindField>; 174] = [
@@ -303,5 +272,5 @@ pub fn get_classes(config: &TailwindConfig) -> Result<Vec<String>, std::io::Erro
 
     classes.extend(allowed_extra_classes);
 
-    Ok(classes)
+    classes
 }
