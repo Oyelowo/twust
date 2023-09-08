@@ -175,6 +175,62 @@ define_tailwind_field!({
 });
 
 define_tailwind_field!({
+    name: Top,
+    prefix: "top",
+    inherited: spacing,
+    field_name: top,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Right,
+    prefix: "right",
+    inherited: spacing,
+    field_name: right,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Bottom,
+    prefix: "bottom",
+    inherited: spacing,
+    field_name: bottom,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Left,
+    prefix: "left",
+    inherited: spacing,
+    field_name: left,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Start,
+    prefix: "start",
+    inherited: spacing,
+    field_name: start,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: End,
+    prefix: "end",
+    inherited: spacing,
+    field_name: end,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: Inset,
+    prefix: "inset",
+    inherited: spacing,
+    field_name: inset,
+    variants: ["x", "y"]
+});
+
+define_tailwind_field!({
     name: Visibility,
     prefix: "visibility",
     inherited: visibility,
@@ -1514,14 +1570,14 @@ define_tailwind_field!({
 // Stroke
 // Stroke Width
 define_tailwind_color_field!({
-    name: Fill,
+    name: FillColor,
     prefix: "fill",
     field_name: fill,
     variants: []
 });
 
 define_tailwind_color_field!({
-    name: Stroke,
+    name: StrokeColor,
     prefix: "stroke",
     field_name: stroke,
     variants: []

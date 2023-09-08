@@ -81,7 +81,7 @@ pub fn get_classes() -> Result<Vec<String>, std::io::Error> {
         Box::new(BorderColor),
         Box::new(TextColor),
         Box::new(TextDecorationColor),
-        Box::new(PlaceholderColor),
+        // Box::new(PlaceholderColor),
         Box::new(RingColor),
         Box::new(RingOffsetColor),
         Box::new(BoxShadowColor),

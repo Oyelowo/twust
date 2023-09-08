@@ -165,7 +165,7 @@ fn get_class_names() -> Vec<&'static str> {
         border_radius,
         border_width,
         border_color,
-        border_syle,
+        border_style,
         border_collapse,
         border_spacing,
         table_layout,
