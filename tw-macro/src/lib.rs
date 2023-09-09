@@ -33,7 +33,7 @@ pub fn tw(raw_input: TokenStream) -> TokenStream {
     };
 
     for word in input.value().split_whitespace() {
-        let (last_word_signed, last_word_unsigned) = get_last_word_types(word, &modifiers);
+        let (last_word_signed, last_word_unsigned) = get_last_word_types(word);
 
         // modifiers e.g hover: in
         // hover:[mask-type:alpha]
@@ -146,7 +146,7 @@ fn setup(input: &LitStr) -> Result<(Vec<String>, Vec<String>), TokenStream> {
     Ok((modifiers, valid_class_names))
 }
 
-fn get_last_word_types<'a>(word: &'a str, modifiers: &'a [String]) -> (&'a str, &'a str) {
+fn get_last_word_types<'a>(word: &'a str) -> (&'a str, &'a str) {
     let modifiers_and_class = word.split(':');
 
     // let is_arbitrary_property = word.starts_with('[') && word.ends_with(']');
