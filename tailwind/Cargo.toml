@@ -9,7 +9,7 @@ documentation.workspace = true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tw-macro = { workspace = true }
+tw-macro = { workspace = true, features = ["daisyui"] }
 
 
 serde = "1.0.188"

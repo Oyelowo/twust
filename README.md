@@ -5,11 +5,11 @@ A powerful Rust macro to validate TailwindCSS class names at compile-time.
 ## Table of Contents
 
 - [Overview](#overview)
+- [Installation](#installation)
+- [Usage](#usage)
 - [Statement of Problem](#statement-of-problem)
 - [Solution](#solution)
 - [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
 - [How does this compare with Other Rust
   Libraries](#how-does-this-compare-with-other-rust-libraries)
 - [`tailwind.config.json` Overview](#tailwind.config.json-Overview)
@@ -22,45 +22,6 @@ A powerful Rust macro to validate TailwindCSS class names at compile-time.
 TailwindCSS class names. Leveraging the power of Rust's macro system, `tw-macro`
 ensures that you only use valid TailwindCSS class names, preventing runtime
 errors and promoting a more robust development experience.
-
-## Statement of Problem
-
-TailwindCSS offers developers a flexible utility-first approach to styling web
-applications. However, its flexibility can also lead to potential pitfalls:
-
-- **Runtime Errors:** Invalid TailwindCSS class names can cause unexpected
-  styling issues that are only caught during runtime.
-- **Developer Experience:** Manually validating class names can be tedious and
-  error-prone. Moreover, relying on runtime checks or external tools can disrupt
-  the development workflow.
-
-- **Increased Build Size:** Invalid class names that slip into the production
-  code can increase the size of the final CSS bundle, affecting performance.
-
-## Solution
-
-`tw-macro` addresses these challenges by offering:
-
-- **Compile-time Validation:** By checking the validity of TailwindCSS class
-  names at compile time, `tw-macro` prevents invalid class names from making
-  their way into the production code.
-
-- **Seamless Integration:** As a Rust macro, `tw-macro` integrates seamlessly
-  into your Rust workflow, offering immediate feedback without the need for
-  external tools or manual validation.
-
-- **Optimized Builds:** By ensuring only valid class names are used, `tw-macro`
-  helps in reducing the unnecessary bloat in the final CSS bundle.
-
-## Features
-
-- **Comprehensive Coverage:** Supports all standard TailwindCSS class names,
-  including responsive variants, pseudo-class variants, and more.
-- **Custom Configurations:** Easily integrate with custom TailwindCSS
-  configurations to support custom utility classes.
-
-- **Performance:** Designed with performance in mind, ensuring minimal overhead
-  during the compilation process.
 
 ## Installation
 
@@ -100,6 +61,63 @@ tw!("h-full border-2 border-opacity-60 rounded-lg overflow-hidden");
 
 If an invalid class name is used, the compiler will raise an error, preventing
 it from being used in your application.
+
+## Statement of Problem
+
+TailwindCSS offers developers a flexible utility-first approach to styling web
+applications. However, its flexibility can also lead to potential pitfalls:
+
+- **Runtime Errors:** Invalid TailwindCSS class names can cause unexpected
+  styling issues that are only caught during runtime.
+- **Developer Experience:** Manually validating class names can be tedious and
+  error-prone. Moreover, relying on runtime checks or external tools can disrupt
+  the development workflow.
+
+- **Incompatibility with Plugins:** Some TailwindCSS utilities extend their
+  functionality with plugins like daisyui. Traditional methods might not support
+  these extensions seamlessly, leading to a fragmented development experience.
+- **Code Reusability:** Directly copying and reusing TailwindCSS code from one
+  project to another can often require manual transformations or mappings,
+  reducing developer efficiency.
+
+- **Increased Build Size:** Invalid class names that slip into the production
+  code can increase the size of the final CSS bundle, affecting performance.
+
+## Solution
+
+`tw-macro` addresses these challenges by offering:
+
+- **Compile-time Validation:** By checking the validity of TailwindCSS class
+  names at compile time, `tw-macro` prevents invalid class names from making
+  their way into the production code.
+
+- **Seamless Integration:** As a Rust macro, `tw-macro` integrates seamlessly
+  into your Rust workflow, offering immediate feedback without the need for
+  external tools or manual validation.
+
+- **Plugin Support:** With tw-macro, you can easily integrate popular plugins
+  like daisyui by merely specifying them as a feature, ensuring a consistent and
+  extended development experience.
+- **Effortless Code Reusability:** The ability to copy-paste and reuse your
+  TailwindCSS code without any manual mappings or transformations. Just wrap
+  your code with the macro, and you're set.
+
+- **Optimized Builds:** By ensuring only valid class names are used, `tw-macro`
+  helps in reducing the unnecessary bloat in the final CSS bundle.
+
+## Features
+
+- **Comprehensive Coverage:** Supports all standard TailwindCSS class names,
+  including responsive variants, pseudo-class variants, and more.
+- **Custom Configurations:** Easily integrate with custom TailwindCSS
+  configurations to support custom utility classes.
+- **Plugin Integration:** Enable support for popular plugins like daisyui by
+  specifying them as a feature, offering an extended range of class names.
+- **Easy Code Reusability:** Directly copy-paste your TailwindCSS code across
+  projects without any manual effort, ensuring rapid development.
+
+- **Performance:** Designed with performance in mind, ensuring minimal overhead
+  during the compilation process.
 
 ## How does this compare with Other Rust Libraries
 
