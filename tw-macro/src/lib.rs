@@ -147,7 +147,7 @@ fn setup(input: &LitStr) -> Result<(Vec<String>, Vec<String>), TokenStream> {
 
 fn get_modifiers_and_words<'a>(
     word: &'a str,
-    modifiers: &'a Vec<String>,
+    modifiers: &'a [String],
 ) -> (bool, &'a str, &'a str, bool) {
     let modifiers_and_class = word.split(':');
     // TODO:  check the first and the last character are not open and close brackets
@@ -180,7 +180,7 @@ fn get_modifiers_and_words<'a>(
     )
 }
 
-fn is_valid_opacity(last_word_unsigned: &str, valid_class_names: &Vec<String>) -> bool {
+fn is_valid_opacity(last_word_unsigned: &str, valid_class_names: &[String]) -> bool {
     let is_valid_opacity = {
         let (class_name, opacity_raw) = last_word_unsigned.split_once('/').unwrap_or_default();
         let opacity_arb = opacity_raw
@@ -229,7 +229,7 @@ fn has_arb_variant(word: &str) -> bool {
 }
 
 fn is_valid_negative_baseclass(
-    valid_class_names: &Vec<String>,
+    valid_class_names: &[String],
     last_word_unsigned: &str,
     last_word_signed: &str,
     is_valid_arb_prop: bool,
@@ -250,7 +250,7 @@ fn is_valid_negative_baseclass(
 
 fn is_valid_class(
     is_valid_arb_prop: bool,
-    valid_class_names: &Vec<String>,
+    valid_class_names: &[String],
     last_word_unsigned: &str,
 ) -> bool {
     !is_valid_arb_prop && valid_class_names.contains(&last_word_unsigned.to_string())
@@ -258,7 +258,7 @@ fn is_valid_class(
 
 fn is_valid_arb_prop(
     mut word_for_arb_prop: std::str::Split<'_, &str>,
-    modifiers: &Vec<String>,
+    modifiers: &[String],
 ) -> bool {
     word_for_arb_prop
         .next()
@@ -305,7 +305,7 @@ fn is_valid_arb_prop(
     })
 }
 
-fn is_valid_group_pattern(modifier: &str, valid_modifiers: &Vec<String>) -> bool {
+fn is_valid_group_pattern(modifier: &str, valid_modifiers: &[String]) -> bool {
     let parts: Vec<&str> = modifier.split('/').collect();
     let group_modifier = parts[0];
     parts.len() == 2
@@ -317,8 +317,8 @@ fn is_valid_group_pattern(modifier: &str, valid_modifiers: &Vec<String>) -> bool
 // tw!("group-[:nth-of-type(3)_&]:block group-hover/edit:text-gray-700 group-[:nth-of-type(3)_&]:block");
 fn is_validate_modifier_or_group(
     word: &str,
-    valid_modifiers: &Vec<String>,
-    valid_class_names: &Vec<String>,
+    valid_modifiers: &[String],
+    valid_class_names: &[String],
 ) -> bool {
     let valid_arb_group = word.split(':').collect::<Vec<&str>>();
     let modifiers = &valid_arb_group[..valid_arb_group.len() - 1];
@@ -328,9 +328,11 @@ fn is_validate_modifier_or_group(
 
     for modifier in modifiers {
         if modifier.starts_with("group") {
-            return is_valid_group_pattern(modifier, valid_modifiers) && is_valid_last_word;
-        } else {
-            return valid_modifiers.contains(&modifier.to_string()) && is_valid_last_word;
+            if !is_valid_group_pattern(modifier, valid_modifiers) && is_valid_last_word {
+                return false;
+            }
+        } else if !valid_modifiers.contains(&modifier.to_string()) && is_valid_last_word {
+            return false;
         }
     }
 

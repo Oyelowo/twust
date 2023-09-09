@@ -23,7 +23,7 @@ pub trait TailwindField {
 }
 
 // Put it all together
-fn generate_classes_for_keys(field: &dyn TailwindField, keys: &Vec<String>) -> Vec<String> {
+fn generate_classes_for_keys(field: &dyn TailwindField, keys: &[String]) -> Vec<String> {
     let mut classes = Vec::new();
     let variants = field.get_variants();
     let prefix = field.get_prefix();
