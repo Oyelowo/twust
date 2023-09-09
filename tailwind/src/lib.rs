@@ -129,7 +129,7 @@ fn _happy_paths() {
 
         // You can even conditionally statically support plugins such as daisyui
         // This lets you use daisyui classes in your tailwind macro
-        tw!("btn collapse-arrow badge-secondary checkbox-warning");
+        let _classnames = tw!("btn collapse-arrow badge-secondary checkbox-warning");
 
         let _classnames =
             tw!("group/edit block invisible md:hover:bg-slate-200 group-hover/item:visible");
