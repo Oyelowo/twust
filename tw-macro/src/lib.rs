@@ -146,7 +146,7 @@ fn setup(input: &LitStr) -> Result<(Vec<String>, Vec<String>), TokenStream> {
     Ok((modifiers, valid_class_names))
 }
 
-fn get_last_word_types<'a>(word: &'a str) -> (&'a str, &'a str) {
+fn get_last_word_types(word: &str) -> (&str, &str) {
     let modifiers_and_class = word.split(':');
 
     // let is_arbitrary_property = word.starts_with('[') && word.ends_with(']');
