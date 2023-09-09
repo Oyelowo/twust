@@ -33,8 +33,11 @@ pub fn tw(raw_input: TokenStream) -> TokenStream {
     };
 
     for word in input.value().split_whitespace() {
-        let (is_valid_arb_prop, last_word_signed, last_word_unsigned, is_valid_modifier) =
-            get_modifiers_and_words(word, &modifiers);
+        let (last_word_signed, last_word_unsigned) = get_last_word_types(word, &modifiers);
+
+        // modifiers e.g hover: in
+        // hover:[mask-type:alpha]
+        let is_valid_arb_prop = is_valid_arb_prop(word, &modifiers);
 
         let is_valid_class =
             is_valid_class(is_valid_arb_prop, &valid_class_names, last_word_unsigned);
@@ -63,7 +66,7 @@ pub fn tw(raw_input: TokenStream) -> TokenStream {
 
         let is_valid_opacity = is_valid_opacity(last_word_unsigned, &valid_class_names);
 
-        if (is_valid_class && is_valid_modifier)
+        if (is_valid_class && is_valid_modifier(word, &modifiers))
             || is_valid_negative_baseclass
             || (!is_lengthy_class && is_arbitrary_value)
             || is_valid_length
@@ -143,19 +146,8 @@ fn setup(input: &LitStr) -> Result<(Vec<String>, Vec<String>), TokenStream> {
     Ok((modifiers, valid_class_names))
 }
 
-fn get_modifiers_and_words<'a>(
-    word: &'a str,
-    modifiers: &'a [String],
-) -> (bool, &'a str, &'a str, bool) {
+fn get_last_word_types<'a>(word: &'a str, modifiers: &'a [String]) -> (&'a str, &'a str) {
     let modifiers_and_class = word.split(':');
-    // TODO:  check the first and the last character are not open and close brackets
-    // respectively i.e arbitrary property e.g [mask_type:aplha];
-    // hover:[mask-type:alpha];
-    let word_for_arb_prop = word.split(":[");
-
-    // modifiers e.g hover: in
-    // hover:[mask-type:alpha]
-    let is_valid_arb_prop = is_valid_arb_prop(word_for_arb_prop, modifiers);
 
     // let is_arbitrary_property = word.starts_with('[') && word.ends_with(']');
     let last_word_signed = modifiers_and_class.clone().last().unwrap_or_default();
@@ -163,19 +155,18 @@ fn get_modifiers_and_words<'a>(
         .strip_prefix('-')
         .unwrap_or(last_word_signed);
 
+    (last_word_signed, last_word_unsigned)
+}
+
+fn is_valid_modifier(word: &str, modifiers: &[String]) -> bool {
+    let modifiers_and_class = word.split(':');
     let modifiers_from_word = modifiers_and_class
         .clone()
         .take(modifiers_and_class.count() - 1)
         .collect::<Vec<&str>>();
-    let is_valid_modifier = modifiers_from_word
+    modifiers_from_word
         .iter()
-        .all(|modifier| modifiers.contains(&modifier.to_string()));
-    (
-        is_valid_arb_prop,
-        last_word_signed,
-        last_word_unsigned,
-        is_valid_modifier,
-    )
+        .all(|modifier| modifiers.contains(&modifier.to_string()))
 }
 
 fn is_valid_opacity(last_word_unsigned: &str, valid_class_names: &[String]) -> bool {
@@ -254,10 +245,12 @@ fn is_valid_class(
     !is_valid_arb_prop && valid_class_names.contains(&last_word_unsigned.to_string())
 }
 
-fn is_valid_arb_prop(
-    mut word_for_arb_prop: std::str::Split<'_, &str>,
-    modifiers: &[String],
-) -> bool {
+fn is_valid_arb_prop(word: &str, modifiers: &[String]) -> bool {
+    // TODO:  check the first and the last character are not open and close brackets
+    // respectively i.e arbitrary property e.g [mask_type:aplha];
+    // hover:[mask-type:alpha];
+    let mut word_for_arb_prop = word.split(":[");
+
     word_for_arb_prop
         .next()
         // e.g for hover:[mask-type:alpha], this will be hover,
