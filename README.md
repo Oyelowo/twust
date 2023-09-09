@@ -5,11 +5,11 @@ A powerful Rust macro to validate TailwindCSS class names at compile-time.
 ## Table of Contents
 
 - [Overview](#overview)
+- [Installation](#installation)
+- [Usage](#usage)
 - [Statement of Problem](#statement-of-problem)
 - [Solution](#solution)
 - [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
 - [How does this compare with Other Rust
   Libraries](#how-does-this-compare-with-other-rust-libraries)
 - [`tailwind.config.json` Overview](#tailwind.config.json-Overview)
@@ -22,6 +22,45 @@ A powerful Rust macro to validate TailwindCSS class names at compile-time.
 TailwindCSS class names. Leveraging the power of Rust's macro system, `tw-macro`
 ensures that you only use valid TailwindCSS class names, preventing runtime
 errors and promoting a more robust development experience.
+
+## Installation
+
+Add `tw-macro` to your `Cargo.toml`:
+
+```toml
+[dependencies]
+tw-macro = "0.1.0"
+```
+
+## Usage
+
+Simply prefix your TailwindCSS class strings with the `tw!` macro:
+
+```rust
+use tw_macro::tw;
+
+let classes = tw!("bg-blue-500 hover:bg-blue-700");
+    // You can override/extend color/background color in tailwind.config.json
+tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-purple bg-red-50 bg-tahiti-800 border-s-tahiti-800");
+tw!("md:text-red-50 text-slate-50 text-purple text-tahiti-500");
+tw!("py-sm md:py-md tablet:py-sm lg:py-lg xl:py-xl");
+tw!("group");
+tw!("hover:-translate-y-0.5 transition motion-reduce:hover:translate-y-0 motion-reduce:transition-none");
+tw!("group/edit block invisible md:hover:bg-slate-200 group-hover/item:visible");
+tw!("group-[:nth-of-type(3)_&]:block group-hover/edit:text-gray-700 group-[:nth-of-type(3)_&]:block");
+tw!("scroll-m-15 group-aria-[sort=ascending]:rotate-0");
+
+// Even scroll margin can also be configured, here we add, sm and md under the Spacing/scrollMargin field in the config file
+tw!("scroll-mx-sm scroll-mx-md");
+tw!("px-[-45px] px-[-45cm] px-[-45rem] px-[-45em] px-[-45%] px-[-45vh]");
+tw!("m-4 last:first:invalid:last:first:p-4 last:m-4 pb-[calc(100%-34px)] pb-[23px] [mask-type:luminance]
+    [mask-type:luminance] hover:[mask-type:alpha] lg:[--scroll-offset:44px] oyelowo oyedayo break-after-avoid"
+);
+tw!("h-full border-2 border-opacity-60 rounded-lg overflow-hidden");
+```
+
+If an invalid class name is used, the compiler will raise an error, preventing
+it from being used in your application.
 
 ## Statement of Problem
 
@@ -79,45 +118,6 @@ applications. However, its flexibility can also lead to potential pitfalls:
 
 - **Performance:** Designed with performance in mind, ensuring minimal overhead
   during the compilation process.
-
-## Installation
-
-Add `tw-macro` to your `Cargo.toml`:
-
-```toml
-[dependencies]
-tw-macro = "0.1.0"
-```
-
-## Usage
-
-Simply prefix your TailwindCSS class strings with the `tw!` macro:
-
-```rust
-use tw_macro::tw;
-
-let classes = tw!("bg-blue-500 hover:bg-blue-700");
-    // You can override/extend color/background color in tailwind.config.json
-tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-purple bg-red-50 bg-tahiti-800 border-s-tahiti-800");
-tw!("md:text-red-50 text-slate-50 text-purple text-tahiti-500");
-tw!("py-sm md:py-md tablet:py-sm lg:py-lg xl:py-xl");
-tw!("group");
-tw!("hover:-translate-y-0.5 transition motion-reduce:hover:translate-y-0 motion-reduce:transition-none");
-tw!("group/edit block invisible md:hover:bg-slate-200 group-hover/item:visible");
-tw!("group-[:nth-of-type(3)_&]:block group-hover/edit:text-gray-700 group-[:nth-of-type(3)_&]:block");
-tw!("scroll-m-15 group-aria-[sort=ascending]:rotate-0");
-
-// Even scroll margin can also be configured, here we add, sm and md under the Spacing/scrollMargin field in the config file
-tw!("scroll-mx-sm scroll-mx-md");
-tw!("px-[-45px] px-[-45cm] px-[-45rem] px-[-45em] px-[-45%] px-[-45vh]");
-tw!("m-4 last:first:invalid:last:first:p-4 last:m-4 pb-[calc(100%-34px)] pb-[23px] [mask-type:luminance]
-    [mask-type:luminance] hover:[mask-type:alpha] lg:[--scroll-offset:44px] oyelowo oyedayo break-after-avoid"
-);
-tw!("h-full border-2 border-opacity-60 rounded-lg overflow-hidden");
-```
-
-If an invalid class name is used, the compiler will raise an error, preventing
-it from being used in your application.
 
 ## How does this compare with Other Rust Libraries
 
