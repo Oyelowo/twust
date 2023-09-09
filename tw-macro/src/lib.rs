@@ -132,10 +132,7 @@ fn setup(input: &LitStr) -> Result<(Vec<String>, Vec<String>), TokenStream> {
             .iter()
             .any(|(key, value)| {
                 if UNCONFIGURABLE.contains(&key.as_str()) && !value.is_null() {
-                    panic!(
-                        "You cannot {action_type_str} the key: {key:?} in tailwind.config.json",
-                        key = key
-                    );
+                    panic!("You cannot {action_type_str} the key: {key} in tailwind.config.json",);
                 }
                 false
             })
