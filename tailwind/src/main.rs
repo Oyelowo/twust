@@ -86,5 +86,6 @@ fn main() {
 
     tw!("opacity-50 md:opacity-100 hover:opacity-100");
     tw!("tracking-widest text-xs font-medium text-gray-400 mb-1");
-    // tw!("h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden");
+    // border color is overriden here in tailwind.config.json
+    tw!("h-full border-2 border-mana-200 border-opacity-60 rounded-lg overflow-hidden");
 }
