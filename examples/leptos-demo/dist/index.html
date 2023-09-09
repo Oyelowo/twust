@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <script type="module">import init from '/tailwind-csr-trunk-4ed9e9e4c35d1fac.js';init('/tailwind-csr-trunk-4ed9e9e4c35d1fac_bg.wasm');</script>
+    <link rel="icon" href="/favicon-e9cbd8f50cc65bf2.ico">
+    <link rel="stylesheet" href="/output-eebef1fbc202efb9.css">
+    <title>Leptos • Counter with Tailwind</title>
+
+<link rel="preload" href="/tailwind-csr-trunk-4ed9e9e4c35d1fac_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/tailwind-csr-trunk-4ed9e9e4c35d1fac.js"></head>
+
+<body>
+
+
+<script>(function () {
+    var protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    var url = protocol + '//' + window.location.host + '/_trunk/ws';
+    var poll_interval = 5000;
+    var reload_upon_connect = () => {
+        window.setTimeout(
+            () => {
+                // when we successfully reconnect, we'll force a
+                // reload (since we presumably lost connection to
+                // trunk due to it being killed, so it will have
+                // rebuilt on restart)
+                var ws = new WebSocket(url);
+                ws.onopen = () => window.location.reload();
+                ws.onclose = reload_upon_connect;
+            },
+            poll_interval);
+    };
+
+    var ws = new WebSocket(url);
+    ws.onmessage = (ev) => {
+        const msg = JSON.parse(ev.data);
+        if (msg.reload) {
+            window.location.reload();
+        }
+    };
+    ws.onclose = reload_upon_connect;
+})()
+</script></body></html>
