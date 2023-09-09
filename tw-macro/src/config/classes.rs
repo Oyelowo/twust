@@ -953,6 +953,7 @@ define_tailwind_color_field!({
 // Border Width
 // Border Color
 // Border Style
+// Border Opacity
 // Divide Width
 // Divide Color
 // Divide Style
@@ -994,6 +995,14 @@ define_tailwind_field!({
     inherited: border_style,
     field_name: border_style,
     variants: []
+});
+
+define_tailwind_field!({
+    name: BorderOpacity,
+    prefix: "border-opacity",
+    inherited: opacity,
+    field_name: border_opacity,
+    variants: ["-x", "-y", "-t", "-r", "-b","-l", "-s", "-e"]
 });
 
 define_tailwind_field!({
@@ -1272,7 +1281,7 @@ define_tailwind_field!({
 define_tailwind_field!({
     name: BackdropOpacity,
     prefix: "backdrop-opacity",
-    inherited: backdrop_opacity,
+    inherited: opacity,
     field_name: backdrop_opacity,
     variants: []
 });
