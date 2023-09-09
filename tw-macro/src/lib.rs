@@ -79,7 +79,7 @@ pub fn tw(raw_input: TokenStream) -> TokenStream {
             //         .into();
             // }
         } else {
-            return syn::Error::new_spanned(input, format!("Invalid string: {}", word))
+            return syn::Error::new_spanned(input, format!("Invalid string: {word}"))
                 .to_compile_error()
                 .into();
         }
@@ -346,6 +346,6 @@ fn is_valid_group_classname(class_name: &str) -> bool {
 
 fn is_valid_string(s: &str) -> bool {
     // Matches strings that contain only alphanumeric characters, underscores, and hyphens.
-    let re = Regex::new(r"^[a-zA-Z0-9_-]*$").unwrap();
+    let re = Regex::new(r"^[a-zA-Z0-9_-]*$").expect("Invalid regex");
     re.is_match(s) && !s.is_empty()
 }
