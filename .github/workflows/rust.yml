@@ -1,0 +1,119 @@
+name: tw-macro
+
+on:
+  # workflow_dispatch:
+  # paths:
+  #   - '**'
+  push:
+    branches: [master]
+    # paths:
+    #   - '**'
+
+  # pull_request:
+  #   paths:
+  #     - '**'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check_and_test_rust_monorepo:
+    name: Run code checks for rust workspace
+    timeout-minutes: 80
+    runs-on: ubuntu-latest
+    # defaults:
+    #   run:
+    #     working-directory: rust
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      # - name: Install rustfmt
+      #   run: rustup component add rustfmt
+
+      # - name: Install Protoc
+      #   uses: arduino/setup-protoc@v1
+      #   with:
+      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: Swatinem/rust-cache@v1
+
+      - name: Run cargo test
+        run: make test
+
+  format:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    # defaults:
+    #   run:
+    #     working-directory: rust
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      - run: rustup component add rustfmt
+
+      - run: make format
+
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    # defaults:
+    #   run:
+    #     working-directory: rust
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      - run: rustup component add clippy
+      - run: make check
+
+  # versioning:
+  #   runs-on: ubuntu-latest
+  #   needs: [check_and_test_rust_monorepo, format, clippy]
+  #   defaults:
+  #     run:
+  #       working-directory: surreal-orm
+  #   steps:
+  #     - uses: actions/checkout@v3
+
+  #     - name: Setup Rust
+  #       uses: actions-rs/toolchain@v1
+  #       with:
+  #         profile: minimal
+  #         toolchain: stable
+  #         components: cargo-release
+
+  #     - name: Bump version and create tag
+  #       run: |
+  #         cargo release patch --no-publish --no-push --no-dev-version
+  #         git tag -l | tail -n 1 > VERSION
+
+  #     - name: Push changes
+  #       uses: ad-m/github-push-action@master
+  #       with:
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         tags: true
+
+  # publish:
+  #   needs: versioning
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+
+  #     - name: Publish crate
+  #       run: cargo publish
+  #       env:
+  #         CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
