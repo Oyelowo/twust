@@ -272,7 +272,7 @@ pub fn get_classes(config: &TailwindConfig) -> Vec<String> {
         .allowed_lists
         .as_ref()
         .and_then(|x| x.classes.to_owned())
-        .unwrap_or(Vec::new());
+        .unwrap_or_default();
 
     classes.extend(allowed_extra_classes);
     classes.push("group".to_string());

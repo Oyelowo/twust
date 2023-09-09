@@ -1485,7 +1485,6 @@ pub const TAILWIND_CSS: TailWindCssDefaultClassNames = TailWindCssDefaultClassNa
     ],
 
     /* Space Between */
-    /// Space Between
     space: [
         "space-x-0",
         "space-x-px",
