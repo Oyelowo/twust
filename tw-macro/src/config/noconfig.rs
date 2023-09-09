@@ -4,7 +4,7 @@
  * Copyright (c) 2023 Oyelowo Oyedayo
  * Licensed under the MIT license
  */
-pub const UNCONFIGURABLE: [&'static str; 61] = [
+pub const UNCONFIGURABLE: [&str; 61] = [
     "container",
     "columns",
     "break_after",

@@ -84,7 +84,7 @@ pub fn tw(raw_input: TokenStream) -> TokenStream {
         }
     }
 
-    return raw_input;
+    raw_input
 }
 
 // fn check_word(input: &str, loose: bool) -> Vec<&str> {
@@ -111,7 +111,7 @@ fn is_valid_calc(value: &str) -> bool {
 }
 
 fn setup(input: &LitStr) -> Result<(Vec<String>, Vec<String>), TokenStream> {
-    let ref config = match read_tailwind_config() {
+    let config = &(match read_tailwind_config() {
         Ok(config) => config,
         Err(e) => {
             return Err(syn::Error::new_spanned(
@@ -121,7 +121,7 @@ fn setup(input: &LitStr) -> Result<(Vec<String>, Vec<String>), TokenStream> {
             .to_compile_error()
             .into());
         }
-    };
+    });
     let modifiers = get_modifiers(config);
     let valid_class_names = get_classes(config);
     let is_unconfigurable = |classes: &CustomisableClasses, action_type_str: &str| {
@@ -182,15 +182,13 @@ fn get_modifiers_and_words<'a>(
 
 fn is_valid_opacity(last_word_unsigned: &str, valid_class_names: &Vec<String>) -> bool {
     let is_valid_opacity = {
-        let (class_name, opacity_raw) = last_word_unsigned.split_once("/").unwrap_or_default();
+        let (class_name, opacity_raw) = last_word_unsigned.split_once('/').unwrap_or_default();
         let opacity_arb = opacity_raw
             .trim_start_matches('[')
             .trim_end_matches(']')
             .parse::<f32>();
-        let is_valid_number = opacity_arb.is_ok_and(|opacity_num| {
-            let is_valid_number = opacity_num >= 0.0 && opacity_num <= 100.0;
-            is_valid_number
-        });
+        let is_valid_number =
+            opacity_arb.is_ok_and(|opacity_num| (0.0..=100.0).contains(&opacity_num));
         valid_class_names.contains(&class_name.to_string()) && is_valid_number
     };
     is_valid_opacity
@@ -239,7 +237,7 @@ fn is_valid_negative_baseclass(
     let is_valid_negative_baseclass = {
         // tw!("-m-4 p-4 p-4");
         (valid_class_names.contains(&last_word_unsigned.to_string())
-            && last_word_signed.starts_with("-")
+            && last_word_signed.starts_with('-')
             && SIGNABLES
                 .iter()
                 .any(|s| (last_word_unsigned.starts_with(s))))
@@ -255,16 +253,14 @@ fn is_valid_class(
     valid_class_names: &Vec<String>,
     last_word_unsigned: &str,
 ) -> bool {
-    let is_valid_class =
-        { !is_valid_arb_prop && valid_class_names.contains(&last_word_unsigned.to_string()) };
-    is_valid_class
+    !is_valid_arb_prop && valid_class_names.contains(&last_word_unsigned.to_string())
 }
 
 fn is_valid_arb_prop(
     mut word_for_arb_prop: std::str::Split<'_, &str>,
     modifiers: &Vec<String>,
 ) -> bool {
-    let is_valid_arb_prop = word_for_arb_prop
+    word_for_arb_prop
         .next()
         // e.g for hover:[mask-type:alpha], this will be hover,
         // for [mask-type:alpha], this will be [mask-type:alpha]
@@ -306,21 +302,15 @@ fn is_valid_arb_prop(
         // We had already split by ":[", so there should be no "[" anymore
             && value.matches('[').count() == 0
             && value.matches(']').count() == 1
-    });
-    is_valid_arb_prop
+    })
 }
 
 fn is_valid_group_pattern(modifier: &str, valid_modifiers: &Vec<String>) -> bool {
     let parts: Vec<&str> = modifier.split('/').collect();
     let group_modifier = parts[0];
-    if parts.len() == 2
+    parts.len() == 2
         && valid_modifiers.contains(&group_modifier.to_string())
         && group_modifier.starts_with("group")
-    {
-        return true;
-    } else {
-        false
-    }
 }
 
 // tw!("group/edit invisible hover:bg-slate-200 group-hover/item:visible");
@@ -330,7 +320,7 @@ fn is_validate_modifier_or_group(
     valid_modifiers: &Vec<String>,
     valid_class_names: &Vec<String>,
 ) -> bool {
-    let valid_arb_group = word.split(":").collect::<Vec<&str>>();
+    let valid_arb_group = word.split(':').collect::<Vec<&str>>();
     let modifiers = &valid_arb_group[..valid_arb_group.len() - 1];
     let last_word = valid_arb_group.last().unwrap_or(&"");
     let is_valid_last_word =
@@ -348,10 +338,10 @@ fn is_validate_modifier_or_group(
 }
 
 fn is_valid_group_classname(class_name: &str) -> bool {
-    return !class_name.contains(':')
+    !class_name.contains(':')
         && !class_name.contains('[')
         && !class_name.contains(']')
-        && class_name.starts_with("group/");
+        && class_name.starts_with("group/")
 }
 
 fn is_valid_string(s: &str) -> bool {

@@ -82,7 +82,7 @@ use crate::config::{add_classes_for_field, modifiers};
 
 use super::tailwind_config::TailwindConfig;
 
-const MODIFIERS: [&'static str; 49] = [
+const MODIFIERS: [&str; 49] = [
     "hover",
     "focus",
     "focus-within",
@@ -140,7 +140,7 @@ const MODIFIERS: [&'static str; 49] = [
     // open	&[open]
 ];
 
-pub const ARIA_DEFAULT: [&'static str; 8] = [
+pub const ARIA_DEFAULT: [&str; 8] = [
     "aria-checked",
     "aria-disabled",
     "aria-expanded",
@@ -165,21 +165,13 @@ pub fn get_modifiers(config: &TailwindConfig) -> Vec<String> {
 
     if let Some(ref screens) = config.theme.overrides.screens {
         if !screens.is_empty() {
-            default_screens = screens
-                .keys()
-                .into_iter()
-                .map(ToString::to_string)
-                .collect();
+            default_screens = screens.keys().map(ToString::to_string).collect();
         }
     }
 
     if let Some(ref screens) = config.theme.extend.screens {
         if !screens.is_empty() {
-            let screens = screens
-                .keys()
-                .into_iter()
-                .map(ToString::to_string)
-                .collect::<Vec<_>>();
+            let screens = screens.keys().map(ToString::to_string).collect::<Vec<_>>();
             default_screens.extend(screens);
         }
     }
@@ -187,8 +179,7 @@ pub fn get_modifiers(config: &TailwindConfig) -> Vec<String> {
     let allowed_extra_modifiers = config
         .allowed_lists
         .as_ref()
-        .map(|x| x.classes.to_owned())
-        .flatten()
+        .and_then(|x| x.classes.to_owned())
         .unwrap_or(Vec::new());
     modifiers.extend(allowed_extra_modifiers);
 

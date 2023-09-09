@@ -45,16 +45,16 @@ pub fn add_classes_for_field(
     config: &TailwindConfig,
     classes: &mut Vec<String>,
 ) {
-    let overrides = field.get_override(&config);
+    let overrides = field.get_override(config);
     if !overrides.is_empty() {
         classes.extend(generate_classes_for_keys(field, &overrides));
     } else {
         let default = field.get_default(config);
         classes.extend(default.iter().map(|x| x.to_string()));
     }
-    let extend = field.get_extend(&config);
+    let extend = field.get_extend(config);
     classes.extend(generate_classes_for_keys(field, &extend));
-    classes.extend(field.handle_special_cases(&config));
+    classes.extend(field.handle_special_cases(config));
 }
 
 pub(crate) fn read_tailwind_config() -> Result<TailwindConfig, std::io::Error> {
@@ -262,14 +262,13 @@ pub fn get_classes(config: &TailwindConfig) -> Vec<String> {
     ];
 
     for utility in utilities {
-        add_classes_for_field(utility.as_ref(), &config, &mut classes);
+        add_classes_for_field(utility.as_ref(), config, &mut classes);
     }
 
     let allowed_extra_classes = config
         .allowed_lists
         .as_ref()
-        .map(|x| x.classes.to_owned())
-        .flatten()
+        .and_then(|x| x.classes.to_owned())
         .unwrap_or(Vec::new());
 
     classes.extend(allowed_extra_classes);
