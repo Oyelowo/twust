@@ -34,6 +34,13 @@ applications. However, its flexibility can also lead to potential pitfalls:
   error-prone. Moreover, relying on runtime checks or external tools can disrupt
   the development workflow.
 
+- **Incompatibility with Plugins:** Some TailwindCSS utilities extend their
+  functionality with plugins like daisyui. Traditional methods might not support
+  these extensions seamlessly, leading to a fragmented development experience.
+- **Code Reusability:** Directly copying and reusing TailwindCSS code from one
+  project to another can often require manual transformations or mappings,
+  reducing developer efficiency.
+
 - **Increased Build Size:** Invalid class names that slip into the production
   code can increase the size of the final CSS bundle, affecting performance.
 
@@ -49,6 +56,13 @@ applications. However, its flexibility can also lead to potential pitfalls:
   into your Rust workflow, offering immediate feedback without the need for
   external tools or manual validation.
 
+- **Plugin Support:** With tw-macro, you can easily integrate popular plugins
+  like daisyui by merely specifying them as a feature, ensuring a consistent and
+  extended development experience.
+- **Effortless Code Reusability:** The ability to copy-paste and reuse your
+  TailwindCSS code without any manual mappings or transformations. Just wrap
+  your code with the macro, and you're set.
+
 - **Optimized Builds:** By ensuring only valid class names are used, `tw-macro`
   helps in reducing the unnecessary bloat in the final CSS bundle.
 
@@ -58,6 +72,10 @@ applications. However, its flexibility can also lead to potential pitfalls:
   including responsive variants, pseudo-class variants, and more.
 - **Custom Configurations:** Easily integrate with custom TailwindCSS
   configurations to support custom utility classes.
+- **Plugin Integration:** Enable support for popular plugins like daisyui by
+  specifying them as a feature, offering an extended range of class names.
+- **Easy Code Reusability:** Directly copy-paste your TailwindCSS code across
+  projects without any manual effort, ensuring rapid development.
 
 - **Performance:** Designed with performance in mind, ensuring minimal overhead
   during the compilation process.
