@@ -7,6 +7,7 @@
 use tw_macro::tw;
 
 fn main() {
+    tw!("btn collapse-arrow");
     let _classnames = tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-red-50");
     let _classnames = tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-purple bg-red-50 bg-tahiti-800 border-s-tahiti-800");
     let _classnames = tw!("md:text-red-50 text-slate-50 text-purple text-tahiti-500");

@@ -6,6 +6,7 @@
  */
 use syn::{parse_macro_input, LitStr};
 mod config;
+mod plugins;
 mod tailwind;
 use tailwind::{
     lengthy::LENGTHY, modifiers::get_modifiers, tailwind_config::CustomisableClasses,

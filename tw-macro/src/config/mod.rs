@@ -8,6 +8,9 @@ mod classes;
 mod macros;
 pub mod modifiers;
 pub mod noconfig;
+// use crate::plugins::daisyui::DAISY_UI_CLASSES;
+// use crate::plugins::DAISY_UI_CLASSES;
+use crate::plugins::daisyui;
 use crate::tailwind::tailwind_config::TailwindConfig;
 use std::fs;
 
@@ -273,6 +276,8 @@ pub fn get_classes(config: &TailwindConfig) -> Vec<String> {
 
     classes.extend(allowed_extra_classes);
     classes.push("group".to_string());
+
+    classes.extend(daisyui::get_it().iter().map(ToString::to_string));
 
     classes
 }
