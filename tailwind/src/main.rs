@@ -6,9 +6,15 @@
  * Licensed under the MIT license
  */
 use tw_macro::tw;
+use tw_macro::tww;
 
 fn main() {
+    let _ = tww!("btn btn");
+    let test = tww!("btn     active:hover:collapse-arrow");
+    println!("TEXT - {}", test);
     let _ = tw!("btn collapse-arrow");
+    tww!("bg-gray-600 bg-sky-700 bg-midnight underline");
+    // tww!("bg-gray-600 aria-checked:bg-sky-700 aria-asc:bg-midnight data-checked:underline");
     let _classnames = tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-red-50");
     let _classnames = tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-purple bg-red-50 bg-tahiti-800 border-s-tahiti-800");
     let _classnames = tw!("md:text-red-50 text-slate-50 text-purple text-tahiti-500");

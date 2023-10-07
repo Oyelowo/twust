@@ -1,3 +1,11 @@
+use nom::{
+    bytes::complete::{tag, take_while1},
+    character::complete::{multispace0, multispace1, space0, space1},
+    combinator::{all_consuming, opt, recognize},
+    multi::separated_list0,
+    sequence::{delimited, tuple},
+    IResult,
+};
 /*
  * Author: Oyelowo Oyedayo
  * Email: oyelowo.oss@gmail.com
@@ -9,8 +17,8 @@ mod config;
 mod plugins;
 mod tailwind;
 use tailwind::{
-    lengthy::LENGTHY, modifiers::get_modifiers, tailwind_config::CustomisableClasses,
-    valid_baseclass_names::VALID_BASECLASS_NAMES,
+    default_classnames::TAILWIND_CSS, lengthy::LENGTHY, modifiers::get_modifiers,
+    tailwind_config::CustomisableClasses, valid_baseclass_names::VALID_BASECLASS_NAMES,
 };
 
 use config::{get_classes, noconfig::UNCONFIGURABLE, read_tailwind_config};
@@ -18,6 +26,8 @@ use proc_macro::TokenStream;
 use regex::{self, Regex};
 use tailwind::signable::SIGNABLES;
 // use tailwindcss_core::parser::{Extractor, ExtractorOptions};
+//
+// p-6 max-w-sm mx-auto bg-white rounded-xl shadow-lg flex items-center space-x-4
 
 #[proc_macro]
 pub fn tw(raw_input: TokenStream) -> TokenStream {
@@ -341,4 +351,207 @@ fn is_valid_string(s: &str) -> bool {
     // Matches strings that contain only alphanumeric characters, underscores, and hyphens.
     let re = Regex::new(r"^[a-zA-Z0-9_-]*$").expect("Invalid regex");
     re.is_match(s) && !s.is_empty()
+}
+
+// fn is_valid_id_char(c: char) -> bool {
+//     c.is_alphanumeric() || c == '_' || c == '-'
+// }
+//
+// fn parse_identifier(input: &str) -> IResult<&str, &str> {
+//     take_while1(is_valid_id_char)(input)
+// }
+
+// fn parse_record_inner(input: &str) -> IResult<&str, Vec<&str>> {
+//     let (input, _) = space0(input)?;
+//     let (input, _) = tag("<")(input)?;
+//     let (input, _) = space0(input)?;
+//     let (input, ref_tables) =
+//         separated_list0(tag("|"), tuple((space0, parse_identifier, space0)))(input)?;
+//     let (input, _) = space0(input)?;
+//     let (input, _) = tag(">")(input)?;
+//     let (input, _) = space0(input)?;
+//     Ok((input, ref_tables.iter().map(|t| t.1).collect()))
+// }
+//
+//
+// fn parse_record_type(input: &str) -> IResult<&str, FieldType> {
+//     let (input, _) = tag("record")(input)?;
+//     let (input, rt) = opt(parse_record_inner)(input)?;
+//     // let (input, rt) = cut(opt(parse_record_inner))(input)?;
+//     Ok((
+//         input,
+//         FieldType::Record(
+//             rt.unwrap_or(vec![])
+//                 .into_iter()
+//                 .map(|t| t.to_string().into())
+//                 .collect(),
+//         ),
+//     ))
+// }
+//
+
+fn get_classes_straight() -> Vec<String> {
+    get_classes(&read_tailwind_config().unwrap())
+    // get_classes
+}
+fn is_valid_classname2(class_name: &str) -> bool {
+    get_classes_straight().contains(&class_name.to_string())
+}
+
+fn is_valid_modifier2(modifier: &str) -> bool {
+    get_modifiers(&read_tailwind_config().unwrap()).contains(&modifier.to_string())
+}
+
+// fn parse_tw_full_classname(input: &str) -> IResult<&str, &str> {
+//     let (input, class_names) = (is_valid_classname)(input)?;
+//     Ok((input, ""))
+// }
+
+fn parse_single_tw_classname(input: &str) -> IResult<&str, &str> {
+    let (input, class_name) = recognize(|i| {
+        // Assuming a Tailwind class consists of alphanumeric, dashes, and colons
+        nom::bytes::complete::is_a(
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-:",
+        )(i)
+    })(input)?;
+
+    if is_valid_classname2(class_name) {
+        Ok((input, class_name))
+    } else {
+        Err(nom::Err::Error(nom::error::Error::new(
+            input,
+            nom::error::ErrorKind::Tag,
+        )))
+    }
+}
+
+// rules: colon(:) preceeded by either valid identifier or closed bracket
+// // postceeded by either valid identifier or open bracket
+// // e.g
+fn modifier_separator(input: &str) -> IResult<&str, &str> {
+    let (input, _) = tag(":")(input)?;
+    Ok((input, ""))
+}
+
+// [&:nth-child(3)]:underline
+// lg:[&:nth-child(3)]:hover:underline
+// [&_p]:mt-4
+// flex [@supports(display:grid)]:grid
+// [@media(any-hover:hover){&:hover}]:opacity-100
+// group/edit invisible hover:bg-slate-200 group-hover/item:visible
+// hidden group-[.is-published]:block
+// group-[:nth-of-type(3)_&]:block
+// peer-checked/published:text-sky-500
+// peer-[.is-dirty]:peer-required:block hidden
+// hidden peer-[:nth-of-type(3)_&]:block
+// after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700
+// before:content-[''] before:block
+// bg-black/75 supports-[backdrop-filter]:bg-black/25 supports-[backdrop-filter]:backdrop-blur
+// aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
+// group-aria-[sort=ascending]:rotate-0 group-aria-[sort=descending]:rotate-180
+// data-[size=large]:p-8
+// open:bg-white dark:open:bg-slate-900 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-6 rounded-lg
+// lg:[&:nth-child(3)]:hover:underline
+// min-[320px]:text-center max-[600px]:bg-sky-300
+// top-[117px] lg:top-[344px]
+// bg-[#bada55] text-[22px] before:content-['Festivus']
+// grid grid-cols-[fit-content(theme(spacing.32))]
+// bg-[--my-color]
+// [mask-type:luminance] hover:[mask-type:alpha]
+// [--scroll-offset:56px] lg:[--scroll-offset:44px]
+// lg:[&:nth-child(3)]:hover:underline
+// bg-[url('/what_a_rush.png')]
+// before:content-['hello\_world']
+// text-[22px]
+// text-[#bada55]
+// text-[var(--my-var)]
+// text-[length:var(--my-var)]
+// text-[color:var(--my-var)]
+//
+fn modifier(input: &str) -> IResult<&str, &str> {
+    let (input, modifier) = recognize(|i| {
+        // Assuming a Tailwind class consists of alphanumeric, dashes, and colons
+        nom::bytes::complete::is_a(
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-",
+        )(i)
+    })(input)?;
+
+    if is_valid_modifier2(modifier) {
+        Ok((input, modifier))
+    } else {
+        Err(nom::Err::Error(nom::error::Error::new(
+            input,
+            nom::error::ErrorKind::Tag,
+        )))
+    }
+}
+
+fn modifiers_chained(input: &str) -> IResult<&str, Vec<&str>> {
+    let (input, modifiers) = separated_list0(tag(":"), modifier)(input)?;
+    Ok((input, modifiers))
+}
+
+fn parse_tw_full_classname(input: &str) -> IResult<&str, Vec<&str>> {
+    // Parses one or more Tailwind class names separated by spaces, allowing optional spaces before and after each class name
+    // let (input, class_names) = delimited(
+    //     multispace0,
+    //     separated_list0(multispace1, parse_single_tw_classname),
+    //     multispace0,
+    // )(input)?;
+
+    let (input, class_names) = tuple((
+        opt(tuple((modifiers_chained, tag(":")))),
+        parse_single_tw_classname,
+    ))(input)?;
+
+    // Ok((input, class_names))
+    Ok((input, vec![]))
+}
+
+fn parse_class_names(input: &str) -> IResult<&str, Vec<&str>> {
+    // let (input, _) = space0(input)?;
+    // let (input, class_names) = separated_list0(space1, parse_tw_full_classname)(input)?;
+    // let (input, class_names) = separated_list0(space1, tag("btn"))(input)?;
+    let (input, class_names) = separated_list0(multispace1, parse_tw_full_classname)(input)?;
+    // let (input, _) = space0(input)?;
+
+    Ok((input, vec![]))
+}
+
+fn parse_top(input: &str) -> IResult<&str, Vec<&str>> {
+    parse_class_names(input)
+    // all_consuming(parse_class_names)(input)
+}
+
+// p-6 max-w-sm mx-auto bg-white rounded-xl shadow-lg flex items-center space-x-4
+#[proc_macro]
+pub fn tww(raw_input: TokenStream) -> TokenStream {
+    let r_input = raw_input.clone();
+    let input = parse_macro_input!(r_input as LitStr);
+    let (modifiers, valid_class_names) = match setup(&input) {
+        Ok(value) => value,
+        Err(value) => {
+            return syn::Error::new_spanned(input, value)
+                .to_compile_error()
+                .into()
+        }
+    };
+    let full_classnames = input.value();
+
+    let (input, class_names) = match parse_top(&full_classnames) {
+        Ok(value) => value,
+        Err(value) => {
+            return syn::Error::new_spanned(input, value)
+                .to_compile_error()
+                .into()
+        }
+    };
+
+    // for word in input.value().split_whitespace() {
+
+    // raw_input
+    quote::quote! {
+        #input
+    }
+    .into()
 }
