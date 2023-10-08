@@ -1,4 +1,5 @@
 use nom::{
+    branch::alt,
     bytes::complete::{tag, take_while1},
     character::complete::{multispace0, multispace1, space0, space1},
     combinator::{all_consuming, opt, recognize},
@@ -407,32 +408,6 @@ fn is_valid_modifier2(modifier: &str) -> bool {
 //     Ok((input, ""))
 // }
 
-fn parse_single_tw_classname(input: &str) -> IResult<&str, &str> {
-    let (input, class_name) = recognize(|i| {
-        // Assuming a Tailwind class consists of alphanumeric, dashes, and colons
-        nom::bytes::complete::is_a(
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-:",
-        )(i)
-    })(input)?;
-
-    if is_valid_classname2(class_name) {
-        Ok((input, class_name))
-    } else {
-        Err(nom::Err::Error(nom::error::Error::new(
-            input,
-            nom::error::ErrorKind::Tag,
-        )))
-    }
-}
-
-// rules: colon(:) preceeded by either valid identifier or closed bracket
-// // postceeded by either valid identifier or open bracket
-// // e.g
-fn modifier_separator(input: &str) -> IResult<&str, &str> {
-    let (input, _) = tag(":")(input)?;
-    Ok((input, ""))
-}
-
 // [&:nth-child(3)]:underline
 // lg:[&:nth-child(3)]:hover:underline
 // [&_p]:mt-4
@@ -467,7 +442,61 @@ fn modifier_separator(input: &str) -> IResult<&str, &str> {
 // text-[var(--my-var)]
 // text-[length:var(--my-var)]
 // text-[color:var(--my-var)]
-//
+fn parse_predefined_tw_classname(input: &str) -> IResult<&str, ()> {
+    let (input, class_name) = recognize(|i| {
+        // Assuming a Tailwind class consists of alphanumeric, dashes, and colons
+        nom::bytes::complete::is_a(
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-:",
+        )(i)
+    })(input)?;
+
+    if is_valid_classname2(class_name) {
+        // Ok((input, class_name))
+        Ok((input, ()))
+    } else {
+        Err(nom::Err::Error(nom::error::Error::new(
+            input,
+            nom::error::ErrorKind::Tag,
+        )))
+    }
+}
+
+fn is_ident_char(c: char) -> bool {
+    c.is_alphanumeric() || c == '_' || c == '-'
+}
+
+// e.g: [mask-type:alpha]
+fn kv_pair_classname(input: &str) -> IResult<&str, ()> {
+    // let Ok((input, _)) = delimited(
+    //     tag("["),
+    //     tuple((
+    //         take_while1(is_ident_char),
+    //         tag(":"),
+    //         take_while1(is_ident_char),
+    //     )),
+    //     tag("]"),
+    // )(input);
+    // Ok((input, ()))
+    let (input, _) = tag("[")(input)?;
+    let (input, _) = take_while1(is_ident_char)(input)?;
+    let (input, _) = tag(":")(input)?;
+    let (input, _) = take_while1(is_ident_char)(input)?;
+    let (input, _) = tag("]")(input)?;
+    Ok((input, ()))
+}
+
+fn parse_single_tw_classname(input: &str) -> IResult<&str, ()> {
+    alt((parse_predefined_tw_classname, kv_pair_classname))(input)
+}
+
+// rules: colon(:) preceeded by either valid identifier or closed bracket
+// // postceeded by either valid identifier or open bracket
+// // e.g
+fn modifier_separator(input: &str) -> IResult<&str, &str> {
+    let (input, _) = tag(":")(input)?;
+    Ok((input, ""))
+}
+
 fn modifier(input: &str) -> IResult<&str, &str> {
     let (input, modifier) = recognize(|i| {
         // Assuming a Tailwind class consists of alphanumeric, dashes, and colons
