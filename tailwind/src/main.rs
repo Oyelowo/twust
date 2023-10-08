@@ -10,7 +10,7 @@ use tw_macro::tww;
 
 fn main() {
     let _ = tww!("btn btn");
-    let test = tww!("[mask-type:alpha]  btn     active:hover:collapse-arrow");
+    let test = tww!("[mask-type:alpha]  text-[22cm] btn     active:hover:collapse-arrow");
     println!("TEXT - {}", test);
     let _ = tw!("btn collapse-arrow");
     tww!("bg-gray-600 bg-sky-700 bg-midnight underline");
