@@ -1,9 +1,10 @@
 use nom::{
     branch::alt,
-    bytes::complete::{tag, take_while1},
+    bytes::complete::{tag, take_until, take_while1},
     character::complete::{multispace0, multispace1, space0, space1},
     combinator::{all_consuming, opt, recognize},
     multi::separated_list0,
+    number,
     sequence::{delimited, tuple},
     IResult,
 };
@@ -465,6 +466,52 @@ fn is_ident_char(c: char) -> bool {
     c.is_alphanumeric() || c == '_' || c == '-'
 }
 
+fn is_lengthy_classname(class_name: &str) -> bool {
+    LENGTHY.contains(&class_name)
+}
+
+/// text-[22px]
+fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
+    let (input, class_name) = take_until("-[")(input)?;
+    let ((input, _)) = if is_lengthy_classname(class_name) {
+        // if is_lengthy_classname(class_name) {
+        //     // Do something special for lengthy class names
+        // }
+        Ok((input, ()))
+    } else {
+        Err(nom::Err::Error(nom::error::Error::new(
+            input,
+            nom::error::ErrorKind::Tag,
+        )))
+    }?;
+
+    // arbitrary value
+    let (input, _) = tag("-")(input)?;
+    let (input, _) = tag("[")(input)?;
+    // is number
+    let (input, _) = number::complete::double(input)?;
+    let (input, _) = {
+        // px|em|rem|%|cm|mm|in|pt|pc|vh|vw|vmin|vmax
+        alt((
+            tag("px"),
+            tag("em"),
+            tag("rem"),
+            tag("%"),
+            tag("cm"),
+            tag("mm"),
+            tag("in"),
+            tag("pt"),
+            tag("pc"),
+            tag("vh"),
+            tag("vw"),
+            tag("vmin"),
+            tag("vmax"),
+        ))
+    }(input)?;
+    let (input, _) = tag("]")(input)?;
+    Ok((input, ()))
+}
+
 // e.g: [mask-type:alpha]
 fn kv_pair_classname(input: &str) -> IResult<&str, ()> {
     // let Ok((input, _)) = delimited(
@@ -486,7 +533,11 @@ fn kv_pair_classname(input: &str) -> IResult<&str, ()> {
 }
 
 fn parse_single_tw_classname(input: &str) -> IResult<&str, ()> {
-    alt((parse_predefined_tw_classname, kv_pair_classname))(input)
+    alt((
+        parse_predefined_tw_classname,
+        kv_pair_classname,
+        lengthy_arbitrary_classname,
+    ))(input)
 }
 
 // rules: colon(:) preceeded by either valid identifier or closed bracket
