@@ -489,6 +489,7 @@ fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     // arbitrary value
     let (input, _) = tag("-")(input)?;
     let (input, _) = tag("[")(input)?;
+    let (input, _) = multispace0(input)?;
     // is number
     let (input, _) = number::complete::double(input)?;
     let (input, _) = {
@@ -509,6 +510,7 @@ fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
             tag("vmax"),
         ))
     }(input)?;
+    let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
     Ok((input, ()))
 }
@@ -537,12 +539,13 @@ fn colorful_arbitrary_baseclass(input: &str) -> IResult<&str, ()> {
     // arbitrary value
     let (input, _) = tag("-")(input)?;
     let (input, _) = tag("[")(input)?;
+    let (input, _) = multispace0(input)?;
     // is hex color
     // let (input, _) = tag("#")(input)?;
     // let (input, color) = take_while1(|c: char| c.is_ascii_hexdigit())(input)?;
     // should be length 3 or 6
     let (input, color) = take_until("]")(input)?;
-    let ((input, _)) = if is_hex_color(color) {
+    let ((input, _)) = if is_hex_color(color.trim()) {
         Ok((input, ()))
     } else {
         Err(nom::Err::Error(nom::error::Error::new(
@@ -567,9 +570,13 @@ fn kv_pair_classname(input: &str) -> IResult<&str, ()> {
     // )(input);
     // Ok((input, ()))
     let (input, _) = tag("[")(input)?;
+    let (input, _) = multispace0(input)?;
     let (input, _) = take_while1(is_ident_char)(input)?;
+    let (input, _) = multispace0(input)?;
     let (input, _) = tag(":")(input)?;
+    let (input, _) = multispace0(input)?;
     let (input, _) = take_while1(is_ident_char)(input)?;
+    let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
     Ok((input, ()))
 }
