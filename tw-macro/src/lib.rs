@@ -32,6 +32,7 @@ use tailwind::signable::SIGNABLES;
 //
 // p-6 max-w-sm mx-auto bg-white rounded-xl shadow-lg flex items-center space-x-4
 
+// OLD IMPLEMENTATION
 #[proc_macro]
 pub fn tw(raw_input: TokenStream) -> TokenStream {
     let r_input = raw_input.clone();
@@ -356,43 +357,7 @@ fn is_valid_string(s: &str) -> bool {
     re.is_match(s) && !s.is_empty()
 }
 
-// fn is_valid_id_char(c: char) -> bool {
-//     c.is_alphanumeric() || c == '_' || c == '-'
-// }
-//
-// fn parse_identifier(input: &str) -> IResult<&str, &str> {
-//     take_while1(is_valid_id_char)(input)
-// }
-
-// fn parse_record_inner(input: &str) -> IResult<&str, Vec<&str>> {
-//     let (input, _) = space0(input)?;
-//     let (input, _) = tag("<")(input)?;
-//     let (input, _) = space0(input)?;
-//     let (input, ref_tables) =
-//         separated_list0(tag("|"), tuple((space0, parse_identifier, space0)))(input)?;
-//     let (input, _) = space0(input)?;
-//     let (input, _) = tag(">")(input)?;
-//     let (input, _) = space0(input)?;
-//     Ok((input, ref_tables.iter().map(|t| t.1).collect()))
-// }
-//
-//
-// fn parse_record_type(input: &str) -> IResult<&str, FieldType> {
-//     let (input, _) = tag("record")(input)?;
-//     let (input, rt) = opt(parse_record_inner)(input)?;
-//     // let (input, rt) = cut(opt(parse_record_inner))(input)?;
-//     Ok((
-//         input,
-//         FieldType::Record(
-//             rt.unwrap_or(vec![])
-//                 .into_iter()
-//                 .map(|t| t.to_string().into())
-//                 .collect(),
-//         ),
-//     ))
-// }
-//
-
+// OLD IMPLEMENTATION
 fn get_classes_straight() -> Vec<String> {
     get_classes(&read_tailwind_config().unwrap())
     // get_classes
@@ -404,11 +369,6 @@ fn is_valid_classname2(class_name: &str) -> bool {
 fn is_valid_modifier2(modifier: &str) -> bool {
     get_modifiers(&read_tailwind_config().unwrap()).contains(&modifier.to_string())
 }
-
-// fn parse_tw_full_classname(input: &str) -> IResult<&str, &str> {
-//     let (input, class_names) = (is_valid_classname)(input)?;
-//     Ok((input, ""))
-// }
 
 // [&:nth-child(3)]:underline
 // lg:[&:nth-child(3)]:hover:underline
@@ -581,12 +541,21 @@ fn kv_pair_classname(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
+// before:content-['Festivus']
+fn arbitrary_content(input: &str) -> IResult<&str, ()> {
+    let (input, _) = tag("content-['")(input)?;
+    let (input, _) = take_until("']")(input)?;
+    let (input, _) = tag("']")(input)?;
+    Ok((input, ()))
+}
+
 fn parse_single_tw_classname(input: &str) -> IResult<&str, ()> {
     alt((
         parse_predefined_tw_classname,
         kv_pair_classname,
         lengthy_arbitrary_classname,
         colorful_arbitrary_baseclass,
+        arbitrary_content,
     ))(input)
 }
 

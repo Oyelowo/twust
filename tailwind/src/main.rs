@@ -11,7 +11,9 @@ use tw_macro::tww;
 fn main() {
     let _ = tww!("btn btn");
     let test = tww!(
-        "[mask-type:alpha] [ mask-type:   alpha   ]  active:hover:text-[#bada55] active:hover:text-[  #bada55   ] text-[#bada55] hover:aria-checked:text-[22px] 
+        "[mask-type:alpha] [ mask-type:   alpha   ] before:content-['rerer  erer re rr r  \re  reFestivus']    
+after:content-['I am a content'] after:content-['I am a content'] after:content-['I am a content']
+    active:hover:text-[#bada55] active:hover:text-[  #bada55   ] text-[#bada55] hover:aria-checked:text-[22px] 
     text-[22.34e434cm] btn     active:hover:collapse-arrow"
     );
     println!("TEXT - {}", test);
