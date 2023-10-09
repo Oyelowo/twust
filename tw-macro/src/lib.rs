@@ -19,8 +19,9 @@ mod config;
 mod plugins;
 mod tailwind;
 use tailwind::{
-    default_classnames::TAILWIND_CSS, lengthy::LENGTHY, modifiers::get_modifiers,
-    tailwind_config::CustomisableClasses, valid_baseclass_names::VALID_BASECLASS_NAMES,
+    colorful::COLORFUL_BASECLASSES, default_classnames::TAILWIND_CSS, lengthy::LENGTHY,
+    modifiers::get_modifiers, tailwind_config::CustomisableClasses,
+    valid_baseclass_names::VALID_BASECLASS_NAMES,
 };
 
 use config::{get_classes, noconfig::UNCONFIGURABLE, read_tailwind_config};
@@ -470,7 +471,7 @@ fn is_lengthy_classname(class_name: &str) -> bool {
     LENGTHY.contains(&class_name)
 }
 
-/// text-[22px]
+// text-[22px]
 fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     let (input, class_name) = take_until("-[")(input)?;
     let ((input, _)) = if is_lengthy_classname(class_name) {
@@ -512,6 +513,47 @@ fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
+fn is_hex_color(color: &str) -> bool {
+    let re = regex::Regex::new(r"^#[0-9a-fA-F]{3,6}$").expect("Invalid regex");
+    re.is_match(color)
+}
+
+fn is_colorful_baseclass(class_name: &str) -> bool {
+    COLORFUL_BASECLASSES.contains(&class_name)
+}
+
+// text-[#bada55]
+fn colorful_arbitrary_baseclass(input: &str) -> IResult<&str, ()> {
+    let (input, class_name) = take_until("-[")(input)?;
+    let ((input, _)) = if is_colorful_baseclass(class_name) {
+        Ok((input, ()))
+    } else {
+        Err(nom::Err::Error(nom::error::Error::new(
+            input,
+            nom::error::ErrorKind::Tag,
+        )))
+    }?;
+
+    // arbitrary value
+    let (input, _) = tag("-")(input)?;
+    let (input, _) = tag("[")(input)?;
+    // is hex color
+    // let (input, _) = tag("#")(input)?;
+    // let (input, color) = take_while1(|c: char| c.is_ascii_hexdigit())(input)?;
+    // should be length 3 or 6
+    let (input, color) = take_until("]")(input)?;
+    let ((input, _)) = if is_hex_color(color) {
+        Ok((input, ()))
+    } else {
+        Err(nom::Err::Error(nom::error::Error::new(
+            input,
+            nom::error::ErrorKind::Tag,
+        )))
+    }?;
+
+    let (input, _) = tag("]")(input)?;
+    Ok((input, ()))
+}
 // e.g: [mask-type:alpha]
 fn kv_pair_classname(input: &str) -> IResult<&str, ()> {
     // let Ok((input, _)) = delimited(
@@ -537,6 +579,7 @@ fn parse_single_tw_classname(input: &str) -> IResult<&str, ()> {
         parse_predefined_tw_classname,
         kv_pair_classname,
         lengthy_arbitrary_classname,
+        colorful_arbitrary_baseclass,
     ))(input)
 }
 
