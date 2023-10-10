@@ -116,7 +116,7 @@ fn parse_predefined_tw_classname(input: &str) -> IResult<&str, ()> {
     let (input, class_name) = recognize(|i| {
         // Assuming a Tailwind class consists of alphanumeric, dashes, and colons
         nom::bytes::complete::is_a(
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.",
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-./",
         )(i)
     })(input)?;
 
@@ -802,7 +802,9 @@ fn parse_class_names(input: &str) -> IResult<&str, Vec<&str>> {
     // let (input, _) = space0(input)?;
     // let (input, class_names) = separated_list0(space1, parse_tw_full_classname)(input)?;
     // let (input, class_names) = separated_list0(space1, tag("btn"))(input)?;
+    let (input, _) = multispace0(input)?;
     let (input, class_names) = separated_list0(multispace1, parse_tw_full_classname)(input)?;
+    let (input, _) = multispace0(input)?;
     // let (input, _) = space0(input)?;
 
     Ok((input, vec![]))
@@ -810,6 +812,7 @@ fn parse_class_names(input: &str) -> IResult<&str, Vec<&str>> {
 
 fn parse_top(input: &str) -> IResult<&str, Vec<&str>> {
     all_consuming(parse_class_names)(input)
+    // parse_class_names(input)
 }
 
 // p-6 max-w-sm mx-auto bg-white rounded-xl shadow-lg flex items-center space-x-4
