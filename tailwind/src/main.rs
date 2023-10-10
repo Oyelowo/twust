@@ -53,7 +53,7 @@ after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium te
 
     bg-black/75 supports-[backdrop-filter]:bg-black/25 supports-[backdrop-filter]:backdrop-blur
 
-
+aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
 
         "#
     );
