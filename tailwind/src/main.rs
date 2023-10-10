@@ -14,15 +14,18 @@ fn main() {
     // // aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
 
     let test = tww!(
-        "[mask-type:alpha] [ mask-type:   alpha   ] before:content-['rerer  erer re rr r  \re  reFestivus']    
+        r#"[mask-type:alpha] [ mask-type:   alpha   ] before:content-['rerer  erer re rr r  \re  reFestivus']    
 after:content-['I am a content'] after:content-['I am a content'] after:content-['I am a content']
     active:hover:text-[#bada55] active:hover:text-[  #bada55   ] text-[#bada55] hover:aria-checked:text-[22px] 
     text-[22.34e434cm]
+    before:content-['hello\_world']
 grid grid-cols-[fit-content(theme(spacing.32))]
 bg-[--my-color]
     text-[var(--my-var)]
     text-[length:var(--my-var)]
-    btn bg-[url('/img/down-arrow.svg')] ring-white/10   bg-black/25  bg-black/[100] bg-black/[0.75]    active:hover:collapse-arrow "
+    text-[color:var(--my-var)]
+    [--scroll-offset:56px] lg:[--scroll-offset:44px]
+    btn bg-[url('/img/down-arrow.svg')] ring-white/10   bg-black/25  bg-black/[100] bg-black/[0.75]    active:hover:collapse-arrow "#
     );
     println!("TEXT - {}", test);
     let _ = tw!("btn collapse-arrow");

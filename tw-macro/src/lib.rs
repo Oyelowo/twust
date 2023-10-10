@@ -641,27 +641,27 @@ fn bg_arbitrary_url(input: &str) -> IResult<&str, ()> {
 // grid-cols-[fit-content(theme(spacing.32))]
 fn arbitrary_css_value(input: &str) -> IResult<&str, ()> {
     // is prefixed by valid base class
+    // take until -[
+    let (input, base_class) = take_until("-[")(input)?;
     let input = if VALID_BASECLASS_NAMES
         .iter()
-        .any(|cb| input.trim().starts_with(cb))
+        .any(|cb| base_class.trim().eq(*cb))
     {
         input
     } else {
         return Err(nom::Err::Error(nom::error::Error::new(
-            input,
+            base_class,
             nom::error::ErrorKind::Tag,
         )));
     };
-    let (input, _) = take_while1(|char| is_ident_char(char) && char != '[')(input)?;
-    let (input, _) = tag("[")(input)?;
-    let (input, _) = multispace0(input)?;
-    // ident, (, till ]
-    let (input, _) = take_while1(|char| is_ident_char(char) && char != '(')(input)?;
+    let (input, _) = tag("-[")(input)?;
     let (input, _) = not(alt((
         tag("--"),
         tag("var(--"),
         // <ident>:var(--
     )))(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = take_while1(|char| is_ident_char(char) && char != '(')(input)?;
     let (input, _) = tag("(")(input)?;
     let (input, _) = take_until(")]")(input)?;
 
