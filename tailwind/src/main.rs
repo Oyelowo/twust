@@ -32,6 +32,7 @@ bg-[--my-color]
     group-[:nth-of-type(3)_&]:block
  [&_p]:mt-4
     
+ flex [@supports(display:grid)]:grid
     "#
     );
     println!("TEXT - {}", test);

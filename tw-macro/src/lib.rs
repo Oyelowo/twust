@@ -819,8 +819,15 @@ fn arbitrary_back_selector_modifier(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
+// [@supports(display:grid)]:grid
+fn arbitrary_at_supports_rule_modifier(input: &str) -> IResult<&str, ()> {
+    let (input, _) = tag("[@supports(")(input)?;
+    let (input, _) = take_until(")")(input)?;
+    let (input, _) = tag(")]")(input)?;
+    Ok((input, ()))
+}
+
 //
-// flex [@supports(display:grid)]:grid
 // [@media(any-hover:hover){&:hover}]:opacity-100
 // group/edit invisible hover:bg-slate-200 group-hover/item:visible
 // hidden group-[.is-published]:block
@@ -856,6 +863,7 @@ fn modifier(input: &str) -> IResult<&str, ()> {
     alt((
         arbitrary_front_selector_modifier,
         arbitrary_back_selector_modifier,
+        arbitrary_at_supports_rule_modifier,
         predefined_modifier,
     ))(input)
 }
