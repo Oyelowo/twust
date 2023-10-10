@@ -16,7 +16,7 @@ fn main() {
         r#"[mask-type:alpha] [ mask-type:   alpha   ] before:content-['rerer  erer re rr r  \re  reFestivus']
     after:content-['I am a content'] after:content-['I am a content'] after:content-['I am a content']
         active:hover:text-[#bada55] active:hover:text-[  #ba5   ] text-[#bada55] hover:aria-checked:text-[22px]
-        text-[22.34e434cm]
+        text-[22.34434cm]
         before:content-['hello\_world']
     grid grid-cols-[fit-content(theme(spacing.32))]
     bg-[--my-color]
