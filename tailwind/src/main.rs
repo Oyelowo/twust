@@ -45,7 +45,13 @@ fn main() {
          group/edit invisible hover:bg-slate-200 group-hover/item:visible
 
      peer-checked/published:text-sky-500
+    
+after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700
 
+    before:content-[''] before:block
+
+
+    bg-black/75 supports-[backdrop-filter]:bg-black/25 supports-[backdrop-filter]:backdrop-blur
 
 
 

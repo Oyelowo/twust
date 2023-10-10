@@ -410,7 +410,7 @@ fn parse_predefined_tw_classname(input: &str) -> IResult<&str, ()> {
     let (input, class_name) = recognize(|i| {
         // Assuming a Tailwind class consists of alphanumeric, dashes, and colons
         nom::bytes::complete::is_a(
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-:",
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.",
         )(i)
     })(input)?;
 
@@ -980,9 +980,18 @@ fn group_modifier_selector(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
+// supports-[backdrop-filter]
+fn supports_arbitrary(input: &str) -> IResult<&str, ()> {
+    let (input, _) = tag("supports-[")(input)?;
+    let (input, _) = take_until("]")(input)?;
+    let (input, _) = tag("]")(input)?;
+    eprintln!("supports-arbitrary: {}", input);
+    Ok((input, ()))
+}
+
 //
-// after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700
-// before:content-[''] before:block
+//
+//
 // bg-black/75 supports-[backdrop-filter]:bg-black/25 supports-[backdrop-filter]:backdrop-blur
 // aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
 // group-aria-[sort=ascending]:rotate-0 group-aria-[sort=descending]:rotate-180
@@ -1032,6 +1041,7 @@ fn modifier(input: &str) -> IResult<&str, ()> {
         arbitrary_at_supports_rule_modifier,
         arbitrary_at_media_rule_modifier,
         predefined_modifier,
+        supports_arbitrary,
     ))(input)
 }
 
