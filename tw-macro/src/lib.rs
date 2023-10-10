@@ -1026,23 +1026,6 @@ fn min_max_arbitrary_modifier(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
-//
-//
-// top-[117px] lg:top-[344px]
-// bg-[#bada55] text-[22px] before:content-['Festivus']
-// grid grid-cols-[fit-content(theme(spacing.32))]
-// bg-[--my-color]
-// [mask-type:luminance] hover:[mask-type:alpha]
-// [--scroll-offset:56px] lg:[--scroll-offset:44px]
-// lg:[&:nth-child(3)]:hover:underline
-// bg-[url('/what_a_rush.png')]
-// before:content-['hello\_world']
-// text-[22px]
-// text-[#bada55]
-// text-[var(--my-var)]
-// text-[length:var(--my-var)]
-// text-[color:var(--my-var)]
-
 fn all_consuming_segment<'a, F, O>(parser: F) -> impl Fn(&'a str) -> IResult<&'a str, O>
 where
     F: Fn(&'a str) -> IResult<&'a str, O>,
