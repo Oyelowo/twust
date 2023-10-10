@@ -168,6 +168,10 @@ fn parse_length_unit(input: &str) -> IResult<&str, String> {
             tag("vw"),
             tag("vmin"),
             tag("vmax"),
+            // TODO: Should i allow unitless values? Would need something like this in caller
+            // location if so:
+            // let (input, _) = alt((parse_length_unit, parse_number))(input)?;
+            tag(""),
         ))
     }(input)?;
     Ok((input, format!("{}{}", number, unit)))
@@ -198,7 +202,8 @@ fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("[")(input)?;
     let (input, _) = multispace0(input)?;
     // is number
-    let (input, _) = alt((parse_length_unit, parse_number))(input)?;
+    // let (input, _) = alt((parse_length_unit, parse_number))(input)?;
+    let (input, _) = parse_length_unit(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
     eprintln!("lengthy_arbitrary_classname: {}", input);
