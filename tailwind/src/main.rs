@@ -9,44 +9,53 @@ use tw_macro::tw;
 use tw_macro::tww;
 
 fn main() {
-    let _ = tww!("btn btn");
+    // let _ = tww!("btn btn");
 
     // // aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
 
     let test = tww!(
         r#"[mask-type:alpha] [ mask-type:   alpha   ] before:content-['rerer  erer re rr r  \re  reFestivus']
-after:content-['I am a content'] after:content-['I am a content'] after:content-['I am a content']
-    active:hover:text-[#bada55] active:hover:text-[  #bada55   ] text-[#bada55] hover:aria-checked:text-[22px] 
-    text-[22.34e434cm]
-    before:content-['hello\_world']
-grid grid-cols-[fit-content(theme(spacing.32))]
-bg-[--my-color]
-    text-[var(--my-var)]
-    text-[length:var(--my-var)]
-    text-[color:var(--my-var)]
-    [--scroll-offset:56px] lg:[--scroll-offset:44px]
-    btn bg-[url('/img/down-arrow.svg')] ring-white/10   bg-black/25  bg-black/[100] bg-black/[0.75]    active:hover:collapse-arrow
+    after:content-['I am a content'] after:content-['I am a content'] after:content-['I am a content']
+        active:hover:text-[#bada55] active:hover:text-[  #bada55   ] text-[#bada55] hover:aria-checked:text-[22px]
+        text-[22.34e434cm]
+        before:content-['hello\_world']
+    grid grid-cols-[fit-content(theme(spacing.32))]
+    bg-[--my-color]
+        text-[var(--my-var)]
+        text-[length:var(--my-var)]
+        text-[color:var(--my-var)]
+        [--scroll-offset:56px] lg:[--scroll-offset:44px]
+        btn bg-[url('/img/down-arrow.svg')] ring-white/10   bg-black/25  bg-black/[100] bg-black/[0.75]    active:hover:collapse-arrow
 
 
-    lg:[&:nth-child(3)]:hover:underline
-    group-[:nth-of-type(3)_&]:block
- [&_p]:mt-4
-    
- flex [@supports(display:grid)]:grid
- flex active:hover:[@supports(display:grid)]:grid
+        lg:[&:nth-child(3)]:hover:underline
+        group-[:nth-of-type(3)_&]:block
+     [&_p]:mt-4
 
- [@media(any-hover:hover){&:hover}]:opacity-100
+     flex [@supports(display:grid)]:grid
+     flex active:hover:[@supports(display:grid)]:grid
 
-     group/edit invisible hover:bg-slate-200 group-hover/item:visible
-    
- peer-checked/published:text-sky-500
+     [@media(any-hover:hover){&:hover}]:opacity-100
+
+         hidden group-[.is-published]:block
+     group-[:nth-of-type(3)_&]:block
+     peer-[.is-dirty]:peer-required:block hidden
+     hidden peer-[:nth-of-type(3)_&]:block
+
+         group/edit invisible hover:bg-slate-200 group-hover/item:visible
+
+     peer-checked/published:text-sky-500
 
 
-    "#
+
+
+        "#
     );
+    // let test =
+    //     tww!("peer[.is-dirty]:peer-required:block hidden  hidden peer-[:nth-of-type(3)_&]:block");
     println!("TEXT - {}", test);
     let _ = tw!("btn collapse-arrow");
-    tww!("bg-gray-600 bg-sky-700 bg-midnight underline");
+    // tww!("bg-gray-600 bg-sky-700 bg-midnight underline");
     // tww!("bg-gray-600 aria-checked:bg-sky-700 aria-asc:bg-midnight data-checked:underline");
     let _classnames = tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-red-50");
     let _classnames = tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-purple bg-red-50 bg-tahiti-800 border-s-tahiti-800");

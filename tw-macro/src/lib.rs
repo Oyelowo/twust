@@ -416,6 +416,7 @@ fn parse_predefined_tw_classname(input: &str) -> IResult<&str, ()> {
 
     if is_valid_classname2(class_name) {
         // Ok((input, class_name))
+        eprintln!("parse_predefined_tw_classname: {}", input);
         Ok((input, ()))
     } else {
         Err(nom::Err::Error(nom::error::Error::new(
@@ -474,6 +475,7 @@ fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     }(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
+    eprintln!("lengthy_arbitrary_classname: {}", input);
     Ok((input, ()))
 }
 
@@ -517,6 +519,7 @@ fn colorful_arbitrary_baseclass(input: &str) -> IResult<&str, ()> {
     }?;
 
     let (input, _) = tag("]")(input)?;
+    eprintln!("colorful_arbitrary_baseclass: {}", input);
     Ok((input, ()))
 }
 // e.g: [mask-type:alpha]
@@ -540,6 +543,7 @@ fn kv_pair_classname(input: &str) -> IResult<&str, ()> {
     let (input, _) = take_while1(is_ident_char)(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
+    eprintln!("kv_pair_classname: {}", input);
     Ok((input, ()))
 }
 
@@ -548,6 +552,7 @@ fn arbitrary_content(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("content-['")(input)?;
     let (input, _) = take_until("']")(input)?;
     let (input, _) = tag("']")(input)?;
+    eprintln!("arbitrary_content: {}", input);
     Ok((input, ()))
 }
 
@@ -578,6 +583,7 @@ fn predefined_colorful_opacity(input: &str) -> IResult<&str, ()> {
             )))
         }
     };
+    eprintln!("predefined_colorful_opacity: {}", input);
 
     Ok((input, ()))
 }
@@ -610,6 +616,7 @@ fn arbitrary_opacity(input: &str) -> IResult<&str, ()> {
         }
     };
     let (input, _) = tag("]")(input)?;
+    eprintln!("arbitrary_opacity: {}", input);
     Ok((input, ()))
 }
 
@@ -635,6 +642,7 @@ fn bg_arbitrary_url(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("')")(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
+    eprintln!("bg_arbitrary_url: {}", input);
     Ok((input, ()))
 }
 
@@ -670,6 +678,7 @@ fn arbitrary_css_value(input: &str) -> IResult<&str, ()> {
     let (input, _) = take_until("]")(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
+    eprintln!("arbitrary_css_value: {}", input);
     Ok((input, ()))
 }
 
@@ -693,6 +702,7 @@ fn arbitrary_css_var(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("--")(input)?;
     let (input, _) = take_while1(|char| is_ident_char(char) && char != ']')(input)?;
     let (input, _) = tag("]")(input)?;
+    eprintln!("arbitrary_css_var: {}", input);
     Ok((input, ()))
 }
 // text-[var(--my-var)]
@@ -715,6 +725,7 @@ fn arbitrary_css_var2(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("var(--")(input)?;
     let (input, _) = take_while1(|char| is_ident_char(char) && char != ')')(input)?;
     let (input, _) = tag(")]")(input)?;
+    eprintln!("arbitrary_css_var2: {}", input);
     Ok((input, ()))
 }
 
@@ -741,6 +752,7 @@ fn arbitrary_css_var3(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("var(--")(input)?;
     let (input, _) = take_while1(|char| is_ident_char(char) && char != ')')(input)?;
     let (input, _) = tag(")]")(input)?;
+    eprintln!("arbitrary_css_var3: {}", input);
     Ok((input, ()))
 }
 
@@ -753,6 +765,7 @@ fn arbitrary_group_classname(input: &str) -> IResult<&str, ()> {
     ))(input)?;
     let (input, _) = tag("/")(input)?;
     let (input, _) = take_while1(|char| is_ident_char(char))(input)?;
+    eprintln!("arbitrary_group_classname: {}", input);
     Ok((input, ()))
 }
 
@@ -815,6 +828,7 @@ fn predefined_modifier(input: &str) -> IResult<&str, ()> {
     })(input)?;
 
     if is_valid_modifier2(modifier) {
+        eprintln!("predefined_modifier: {}", input);
         Ok((input, ()))
     } else {
         Err(nom::Err::Error(nom::error::Error::new(
@@ -824,21 +838,34 @@ fn predefined_modifier(input: &str) -> IResult<&str, ()> {
     }
 }
 
+// predefined special modifiers e.g peer-checked:p-4 group-hover:visible
+fn predefined_special_modifier(input: &str) -> IResult<&str, ()> {
+    let (input, _) = alt((
+        // peer-checked:p-4
+        tuple((tag("peer-"), predefined_modifier)),
+        // group-hover:visible
+        tuple((tag("group-"), predefined_modifier)),
+    ))(input)?;
+    Ok((input, ()))
+}
+
 // [&:nth-child(3)]:underline
 // [&_p]:mt-4
 fn arbitrary_front_selector_modifier(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("[&")(input)?;
     let (input, _) = take_until("]")(input)?;
     let (input, _) = tag("]")(input)?;
+    eprintln!("arbitrary_front_selector_modifier: {}", input);
     Ok((input, ()))
 }
 
 // group-[:nth-of-type(3)_&]:block
 fn arbitrary_back_selector_modifier(input: &str) -> IResult<&str, ()> {
     let (input, _) = take_while1(|char| is_ident_char(char) && char != '[')(input)?;
-    let (input, _) = tag("[")(input)?;
+    let (input, _) = tag("-[")(input)?;
     let (input, _) = take_until("&]")(input)?;
     let (input, _) = tag("&]")(input)?;
+    eprintln!("arbitrary_back_selector_modifier: {}", input);
     Ok((input, ()))
 }
 
@@ -847,6 +874,7 @@ fn arbitrary_at_supports_rule_modifier(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("[@supports(")(input)?;
     let (input, _) = take_until(")")(input)?;
     let (input, _) = tag(")]")(input)?;
+    eprintln!("arbitrary_at_supports_rule_modifier: {}", input);
     Ok((input, ()))
 }
 
@@ -856,6 +884,7 @@ fn arbitrary_at_media_rule_modifier(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("[@media(")(input)?;
     let (input, _) = take_until("]")(input)?;
     let (input, _) = tag("]")(input)?;
+    eprintln!("arbitrary_at_media_rule_modifier: {}", input);
     Ok((input, ()))
 }
 
@@ -869,15 +898,25 @@ fn group_peer_modifier(input: &str) -> IResult<&str, ()> {
         // tuple((tag("group"), |_| Ok(("", ())))),
     ))(input)?;
     let (input, _) = tag("/")(input)?;
-    let (input, _) = take_while1(|char| is_ident_char(char) && char != ':')(input)?;
+    let (input, _) = take_while1(is_ident_char)(input)?;
+    eprintln!("group_peer_modifier: {}", input);
     Ok((input, ()))
 }
 
-//
 // hidden group-[.is-published]:block
 // group-[:nth-of-type(3)_&]:block
 // peer-[.is-dirty]:peer-required:block hidden
 // hidden peer-[:nth-of-type(3)_&]:block
+fn group_modifier_selector(input: &str) -> IResult<&str, ()> {
+    let (input, _) = alt((tag("group"), tag("peer")))(input)?;
+    let (input, _) = tag("-[")(input)?;
+    let (input, _) = take_until("]")(input)?;
+    let (input, _) = tag("]")(input)?;
+    eprintln!("group_modifier_selector: {}", input);
+    Ok((input, ()))
+}
+
+//
 // after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700
 // before:content-[''] before:block
 // bg-black/75 supports-[backdrop-filter]:bg-black/25 supports-[backdrop-filter]:backdrop-blur
@@ -902,9 +941,28 @@ fn group_peer_modifier(input: &str) -> IResult<&str, ()> {
 // text-[length:var(--my-var)]
 // text-[color:var(--my-var)]
 
+fn all_consuming_segment<'a, F, O>(parser: F) -> impl Fn(&'a str) -> IResult<&'a str, O>
+where
+    F: Fn(&'a str) -> IResult<&'a str, O>,
+{
+    move |input: &str| {
+        let (input, output) = parser(input)?;
+        if input.is_empty() {
+            Ok((input, output))
+        } else {
+            Err(nom::Err::Error(nom::error::Error::new(
+                input,
+                nom::error::ErrorKind::Tag,
+            )))
+        }
+    }
+}
+
 fn modifier(input: &str) -> IResult<&str, ()> {
     alt((
+        group_modifier_selector,
         group_peer_modifier,
+        predefined_special_modifier,
         arbitrary_front_selector_modifier,
         arbitrary_back_selector_modifier,
         arbitrary_at_supports_rule_modifier,
