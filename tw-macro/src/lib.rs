@@ -992,6 +992,7 @@ fn supports_arbitrary(input: &str) -> IResult<&str, ()> {
 // aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')]
 // aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
 fn aria_arbitrary(input: &str) -> IResult<&str, ()> {
+    let (input, _) = opt(tag("group-"))(input)?;
     let (input, _) = tag("aria-[")(input)?;
     let (input, _) = take_while1(is_ident_char)(input)?;
     let (input, _) = tag("=")(input)?;
@@ -1003,9 +1004,6 @@ fn aria_arbitrary(input: &str) -> IResult<&str, ()> {
 //
 //
 //
-// aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
-// group-aria-[sort=ascending]:rotate-0 group-aria-[sort=descending]:rotate-180
-// data-[size=large]:p-8
 // open:bg-white dark:open:bg-slate-900 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-6 rounded-lg
 // lg:[&:nth-child(3)]:hover:underline
 // min-[320px]:text-center max-[600px]:bg-sky-300

@@ -55,6 +55,11 @@ after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium te
 
 aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
 
+
+ group-aria-[sort=ascending]:rotate-0 group-aria-[sort=descending]:rotate-180
+    
+ data-[size=large]:p-8
+
         "#
     );
     // let test =
