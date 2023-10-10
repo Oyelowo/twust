@@ -1,3 +1,9 @@
+/*
+ * Author: Oyelowo Oyedayo
+ * Email: oyelowo.oss@gmail.com
+ * Copyright (c) 2023 Oyelowo Oyedayo
+ * Licensed under the MIT license
+ */
 use std::str::FromStr;
 
 use nom::{
@@ -10,12 +16,6 @@ use nom::{
     sequence::{delimited, preceded, tuple},
     IResult,
 };
-/*
- * Author: Oyelowo Oyedayo
- * Email: oyelowo.oss@gmail.com
- * Copyright (c) 2023 Oyelowo Oyedayo
- * Licensed under the MIT license
- */
 use syn::{parse_macro_input, LitStr};
 mod config;
 mod plugins;
@@ -31,8 +31,6 @@ use proc_macro::TokenStream;
 use regex::{self, Regex};
 use tailwind::signable::SIGNABLES;
 // use tailwindcss_core::parser::{Extractor, ExtractorOptions};
-//
-// p-6 max-w-sm mx-auto bg-white rounded-xl shadow-lg flex items-center space-x-4
 
 fn setup(input: &LitStr) -> Result<(Vec<String>, Vec<String>), TokenStream> {
     let config = &(match read_tailwind_config() {
@@ -78,40 +76,6 @@ fn is_valid_modifier2(modifier: &str) -> bool {
     get_modifiers(&read_tailwind_config().unwrap()).contains(&modifier.to_string())
 }
 
-// [&:nth-child(3)]:underline
-// lg:[&:nth-child(3)]:hover:underline
-// [&_p]:mt-4
-// flex [@supports(display:grid)]:grid
-// [@media(any-hover:hover){&:hover}]:opacity-100
-// group/edit invisible hover:bg-slate-200 group-hover/item:visible
-// hidden group-[.is-published]:block
-// group-[:nth-of-type(3)_&]:block
-// peer-checked/published:text-sky-500
-// peer-[.is-dirty]:peer-required:block hidden
-// hidden peer-[:nth-of-type(3)_&]:block
-// after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700
-// before:content-[''] before:block
-// bg-black/75 supports-[backdrop-filter]:bg-black/25 supports-[backdrop-filter]:backdrop-blur
-// aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
-// group-aria-[sort=ascending]:rotate-0 group-aria-[sort=descending]:rotate-180
-// data-[size=large]:p-8
-// open:bg-white dark:open:bg-slate-900 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-6 rounded-lg
-// lg:[&:nth-child(3)]:hover:underline
-// min-[320px]:text-center max-[600px]:bg-sky-300
-// top-[117px] lg:top-[344px]
-// bg-[#bada55] text-[22px] before:content-['Festivus']
-// grid grid-cols-[fit-content(theme(spacing.32))]
-// bg-[--my-color]
-// [mask-type:luminance] hover:[mask-type:alpha]
-// [--scroll-offset:56px] lg:[--scroll-offset:44px]
-// lg:[&:nth-child(3)]:hover:underline
-// bg-[url('/what_a_rush.png')]
-// before:content-['hello\_world']
-// text-[22px]
-// text-[#bada55]
-// text-[var(--my-var)]
-// text-[length:var(--my-var)]
-// text-[color:var(--my-var)]
 fn parse_predefined_tw_classname(input: &str) -> IResult<&str, ()> {
     let (input, class_name) = recognize(|i| {
         // Assuming a Tailwind class consists of alphanumeric, dashes, and colons
@@ -121,7 +85,6 @@ fn parse_predefined_tw_classname(input: &str) -> IResult<&str, ()> {
     })(input)?;
 
     if is_valid_classname2(class_name.trim_start_matches("-")) {
-        // Ok((input, class_name))
         eprintln!("parse_predefined_tw_classname: {}", input);
         Ok((input, ()))
     } else {
@@ -140,14 +103,6 @@ fn is_lengthy_classname(class_name: &str) -> bool {
     LENGTHY.contains(&class_name.trim_start_matches("-"))
 }
 
-fn parse_till_em(input: &str) -> IResult<&str, &str> {
-    let (input, unit) = take_until("em")(input)?;
-    Ok((input, unit))
-}
-fn parse_till_rem(input: &str) -> IResult<&str, &str> {
-    let (input, unit) = take_until("rem")(input)?;
-    Ok((input, unit))
-}
 // Custom number parser that handles optional decimals and signs, and scientific notation
 fn float_strict(input: &str) -> IResult<&str, f64> {
     let (input, number) = recognize(tuple((
@@ -166,9 +121,7 @@ fn float_strict(input: &str) -> IResult<&str, f64> {
 }
 
 fn parse_length_unit(input: &str) -> IResult<&str, String> {
-    // let (input, number) = number::complete::double(input)?;
     let (input, number) = float_strict(input)?;
-    // let (input, number) = parse_number(input)?;
     let (input, unit) = {
         // px|em|rem|%|cm|mm|in|pt|pc|vh|vw|vmin|vmax
         alt((
@@ -194,11 +147,6 @@ fn parse_length_unit(input: &str) -> IResult<&str, String> {
     Ok((input, format!("{}{}", number, unit)))
 }
 
-fn parse_number(input: &str) -> IResult<&str, String> {
-    let (input, number) = digit1(input)?;
-    Ok((input, number.to_string()))
-}
-
 // text-[22px]
 fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     let (input, class_name) = take_until("-[")(input)?;
@@ -219,18 +167,12 @@ fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("[")(input)?;
     let (input, _) = multispace0(input)?;
     // is number
-    // let (input, _) = alt((parse_length_unit, parse_number))(input)?;
     let (input, _) = parse_length_unit(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
     eprintln!("lengthy_arbitrary_classname: {}", input);
     Ok((input, ()))
 }
-
-// fn is_hex_color(color: &str) -> bool {
-//     let re = regex::Regex::new(r"^#[0-9a-fA-F]{3,6}$").expect("Invalid regex");
-//     re.is_match(color)
-// }
 
 // #bada55
 fn parse_hex_color(input: &str) -> IResult<&str, String> {
@@ -336,16 +278,6 @@ fn colorful_arbitrary_baseclass(input: &str) -> IResult<&str, ()> {
 
 // e.g: [mask-type:alpha]
 fn kv_pair_classname(input: &str) -> IResult<&str, ()> {
-    // let Ok((input, _)) = delimited(
-    //     tag("["),
-    //     tuple((
-    //         take_while1(is_ident_char),
-    //         tag(":"),
-    //         take_while1(is_ident_char),
-    //     )),
-    //     tag("]"),
-    // )(input);
-    // Ok((input, ()))
     let (input, _) = tag("[")(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = take_while1(is_ident_char)(input)?;
@@ -570,27 +502,13 @@ fn arbitrary_css_var3(input: &str) -> IResult<&str, ()> {
 
 // group/edit
 fn arbitrary_group_classname(input: &str) -> IResult<&str, ()> {
-    let (input, _) = alt((
-        // tuple((tag("group-"), predefined_modifier)),
-        // tuple((tag("group"), |_| Ok(("", ())))),
-        tag("group"),
-    ))(input)?;
+    let (input, _) = alt((tag("group"),))(input)?;
     let (input, _) = tag("/")(input)?;
     let (input, _) = take_while1(|char| is_ident_char(char))(input)?;
     eprintln!("arbitrary_group_classname: {}", input);
     Ok((input, ()))
 }
 
-// [mask-type:luminance] hover:[mask-type:alpha]
-// [--scroll-offset:56px] lg:[--scroll-offset:44px]
-// lg:[&:nth-child(3)]:hover:underline
-// bg-[url('/what_a_rush.png')]
-// before:content-['hello\_world']
-// text-[22px]
-// text-[#bada55]
-// text-[var(--my-var)]
-// text-[length:var(--my-var)]
-// text-[color:var(--my-var)]
 fn parse_single_tw_classname(input: &str) -> IResult<&str, ()> {
     alt((
         // bg-[url('/what_a_rush.png')]
@@ -620,14 +538,6 @@ fn parse_single_tw_classname(input: &str) -> IResult<&str, ()> {
         // grid-cols-[fit-content(theme(spacing.32))]
         arbitrary_css_value,
     ))(input)
-}
-
-// rules: colon(:) preceeded by either valid identifier or closed bracket
-// // postceeded by either valid identifier or open bracket
-// // e.g
-fn modifier_separator(input: &str) -> IResult<&str, &str> {
-    let (input, _) = tag(":")(input)?;
-    Ok((input, ""))
 }
 
 // hover:underline
@@ -707,7 +617,6 @@ fn group_peer_modifier(input: &str) -> IResult<&str, ()> {
         // https://tailwindcss.com/docs/hover-focus-and-other-states#differentiating-peers
         // peer-checked/published:text-sky-500
         tuple((tag("peer-"), predefined_modifier)),
-        // tuple((tag("group"), |_| Ok(("", ())))),
     ))(input)?;
     let (input, _) = tag("/")(input)?;
     let (input, _) = take_while1(is_ident_char)(input)?;
@@ -769,23 +678,6 @@ fn min_max_arbitrary_modifier(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
-fn all_consuming_segment<'a, F, O>(parser: F) -> impl Fn(&'a str) -> IResult<&'a str, O>
-where
-    F: Fn(&'a str) -> IResult<&'a str, O>,
-{
-    move |input: &str| {
-        let (input, output) = parser(input)?;
-        if input.is_empty() {
-            Ok((input, output))
-        } else {
-            Err(nom::Err::Error(nom::error::Error::new(
-                input,
-                nom::error::ErrorKind::Tag,
-            )))
-        }
-    }
-}
-
 fn modifier(input: &str) -> IResult<&str, ()> {
     alt((
         group_modifier_selector,
@@ -804,45 +696,66 @@ fn modifier(input: &str) -> IResult<&str, ()> {
 }
 
 fn modifiers_chained(input: &str) -> IResult<&str, ()> {
-    let (input, modifiers) = separated_list0(tag(":"), modifier)(input)?;
+    let (input, _modifiers) = separated_list0(tag(":"), modifier)(input)?;
     Ok((input, ()))
 }
 
 fn parse_tw_full_classname(input: &str) -> IResult<&str, Vec<&str>> {
-    // Parses one or more Tailwind class names separated by spaces, allowing optional spaces before and after each class name
-    // let (input, class_names) = delimited(
-    //     multispace0,
-    //     separated_list0(multispace1, parse_single_tw_classname),
-    //     multispace0,
-    // )(input)?;
-
     let (input, class_names) = tuple((
         opt(tuple((modifiers_chained, tag(":")))),
         parse_single_tw_classname,
     ))(input)?;
 
-    // Ok((input, class_names))
     Ok((input, vec![]))
 }
 
+// Edge cases
+// [&:nth-child(3)]:underline
+// lg:[&:nth-child(3)]:hover:underline
+// [&_p]:mt-4
+// flex [@supports(display:grid)]:grid
+// [@media(any-hover:hover){&:hover}]:opacity-100
+// group/edit invisible hover:bg-slate-200 group-hover/item:visible
+// hidden group-[.is-published]:block
+// group-[:nth-of-type(3)_&]:block
+// peer-checked/published:text-sky-500
+// peer-[.is-dirty]:peer-required:block hidden
+// hidden peer-[:nth-of-type(3)_&]:block
+// after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700
+// before:content-[''] before:block
+// bg-black/75 supports-[backdrop-filter]:bg-black/25 supports-[backdrop-filter]:backdrop-blur
+// aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
+// group-aria-[sort=ascending]:rotate-0 group-aria-[sort=descending]:rotate-180
+// data-[size=large]:p-8
+// open:bg-white dark:open:bg-slate-900 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-6 rounded-lg
+// lg:[&:nth-child(3)]:hover:underline
+// min-[320px]:text-center max-[600px]:bg-sky-300
+// top-[117px] lg:top-[344px]
+// bg-[#bada55] text-[22px] before:content-['Festivus']
+// grid grid-cols-[fit-content(theme(spacing.32))]
+// bg-[--my-color]
+// [mask-type:luminance] hover:[mask-type:alpha]
+// [--scroll-offset:56px] lg:[--scroll-offset:44px]
+// lg:[&:nth-child(3)]:hover:underline
+// bg-[url('/what_a_rush.png')]
+// before:content-['hello\_world']
+// text-[22px]
+// text-[#bada55]
+// text-[var(--my-var)]
+// text-[length:var(--my-var)]
+// text-[color:var(--my-var)]
 fn parse_class_names(input: &str) -> IResult<&str, Vec<&str>> {
-    // let (input, _) = space0(input)?;
-    // let (input, class_names) = separated_list0(space1, parse_tw_full_classname)(input)?;
-    // let (input, class_names) = separated_list0(space1, tag("btn"))(input)?;
     let (input, _) = multispace0(input)?;
     let (input, class_names) = separated_list0(multispace1, parse_tw_full_classname)(input)?;
     let (input, _) = multispace0(input)?;
-    // let (input, _) = space0(input)?;
 
     Ok((input, vec![]))
 }
 
 fn parse_top(input: &str) -> IResult<&str, Vec<&str>> {
     all_consuming(parse_class_names)(input)
-    // parse_class_names(input)
 }
 
-// p-6 max-w-sm mx-auto bg-white rounded-xl shadow-lg flex items-center space-x-4
 #[proc_macro]
 pub fn tw(raw_input: TokenStream) -> TokenStream {
     let r_input = raw_input.clone();
@@ -866,9 +779,6 @@ pub fn tw(raw_input: TokenStream) -> TokenStream {
         }
     };
 
-    // for word in input.value().split_whitespace() {
-
-    // raw_input
     quote::quote! {
         #input
     }
