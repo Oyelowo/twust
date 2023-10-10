@@ -654,7 +654,16 @@ fn arbitrary_css_value(input: &str) -> IResult<&str, ()> {
     };
     let (input, _) = take_while1(|char| is_ident_char(char) && char != '[')(input)?;
     let (input, _) = tag("[")(input)?;
-    let (input, _) = not(alt((tag("--"), tag("var(--"))))(input)?;
+    let (input, _) = multispace0(input)?;
+    // ident, (, till ]
+    let (input, _) = take_while1(|char| is_ident_char(char) && char != '(')(input)?;
+    let (input, _) = not(alt((
+        tag("--"),
+        tag("var(--"),
+        // <ident>:var(--
+    )))(input)?;
+    let (input, _) = tag("(")(input)?;
+    let (input, _) = take_until(")]")(input)?;
 
     let (input, _) = multispace0(input)?;
     // allow anything inthe brackets
@@ -709,6 +718,32 @@ fn arbitrary_css_var2(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
+// text-[length:var(--my-var)]
+fn arbitrary_css_var3(input: &str) -> IResult<&str, ()> {
+    // is prefixed by valid base class
+    let input = if VALID_BASECLASS_NAMES
+        .iter()
+        .any(|cb| input.trim().starts_with(cb))
+    {
+        input
+    } else {
+        return Err(nom::Err::Error(nom::error::Error::new(
+            input,
+            nom::error::ErrorKind::Tag,
+        )));
+    };
+    let (input, _) = take_while1(|char| is_ident_char(char) && char != '[')(input)?;
+    let (input, _) = tag("[")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = take_while1(|char| is_ident_char(char) && char != ':')(input)?;
+    let (input, _) = tag(":")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = tag("var(--")(input)?;
+    let (input, _) = take_while1(|char| is_ident_char(char) && char != ')')(input)?;
+    let (input, _) = tag(")]")(input)?;
+    Ok((input, ()))
+}
+
 // [mask-type:luminance] hover:[mask-type:alpha]
 // [--scroll-offset:56px] lg:[--scroll-offset:44px]
 // lg:[&:nth-child(3)]:hover:underline
@@ -733,6 +768,8 @@ fn parse_single_tw_classname(input: &str) -> IResult<&str, ()> {
         arbitrary_css_var,
         // text-[var(--my-var)]
         arbitrary_css_var2,
+        // text-[length:var(--my-var)]
+        arbitrary_css_var3,
         arbitrary_css_value,
     ))(input)
 }
