@@ -989,10 +989,20 @@ fn supports_arbitrary(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
+// aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')]
+// aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
+fn aria_arbitrary(input: &str) -> IResult<&str, ()> {
+    let (input, _) = tag("aria-[")(input)?;
+    let (input, _) = take_while1(is_ident_char)(input)?;
+    let (input, _) = tag("=")(input)?;
+    let (input, _) = take_while1(is_ident_char)(input)?;
+    let (input, _) = tag("]")(input)?;
+    Ok((input, ()))
+}
+
 //
 //
 //
-// bg-black/75 supports-[backdrop-filter]:bg-black/25 supports-[backdrop-filter]:backdrop-blur
 // aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
 // group-aria-[sort=ascending]:rotate-0 group-aria-[sort=descending]:rotate-180
 // data-[size=large]:p-8
@@ -1042,6 +1052,7 @@ fn modifier(input: &str) -> IResult<&str, ()> {
         arbitrary_at_media_rule_modifier,
         predefined_modifier,
         supports_arbitrary,
+        aria_arbitrary,
     ))(input)
 }
 
