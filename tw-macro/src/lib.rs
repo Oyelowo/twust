@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use nom::{
     branch::alt,
     bytes::complete::{tag, take_until, take_while1},
@@ -549,8 +551,72 @@ fn arbitrary_content(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
+// bg-black/25
+fn predefined_colorful_opacity(input: &str) -> IResult<&str, ()> {
+    let input = if COLORFUL_BASECLASSES
+        .iter()
+        .any(|cb| input.trim().starts_with(cb))
+    {
+        input
+    } else {
+        return Err(nom::Err::Error(nom::error::Error::new(
+            input,
+            nom::error::ErrorKind::Tag,
+        )));
+    };
+    let (input, _) = take_while1(|char| is_ident_char(char) && char != '/')(input)?;
+    // let (input, _) = take_until("/")(input)?;
+    let (input, _) = tag("/")(input)?;
+
+    let (input, num) = number::complete::double(input)?;
+    let input = match num as u8 {
+        0..=100 => input,
+        _ => {
+            return Err(nom::Err::Error(nom::error::Error::new(
+                input,
+                nom::error::ErrorKind::Tag,
+            )))
+        }
+    };
+
+    Ok((input, ()))
+}
+
+// bg-black/[27]
+fn arbitrary_opacity(input: &str) -> IResult<&str, ()> {
+    let input = if COLORFUL_BASECLASSES
+        .iter()
+        .any(|cb| input.trim().starts_with(cb))
+    {
+        input
+    } else {
+        return Err(nom::Err::Error(nom::error::Error::new(
+            input,
+            nom::error::ErrorKind::Tag,
+        )));
+    };
+    let (input, _) = take_while1(|char| is_ident_char(char) && char != '/')(input)?;
+    let (input, _) = tag("/")(input)?;
+    let (input, _) = tag("[")(input)?;
+    // 0-100 integer
+    let (input, num) = number::complete::double(input)?;
+    let input = match num as u8 {
+        0..=100 => input,
+        _ => {
+            return Err(nom::Err::Error(nom::error::Error::new(
+                input,
+                nom::error::ErrorKind::Tag,
+            )))
+        }
+    };
+    let (input, _) = tag("]")(input)?;
+    Ok((input, ()))
+}
+
 fn parse_single_tw_classname(input: &str) -> IResult<&str, ()> {
     alt((
+        predefined_colorful_opacity,
+        arbitrary_opacity,
         parse_predefined_tw_classname,
         kv_pair_classname,
         lengthy_arbitrary_classname,
