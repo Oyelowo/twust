@@ -7,7 +7,7 @@ use nom::{
     combinator::{all_consuming, not, opt, recognize},
     multi::separated_list0,
     number,
-    sequence::{delimited, tuple},
+    sequence::{delimited, preceded, tuple},
     IResult,
 };
 /*
@@ -148,10 +148,29 @@ fn parse_till_rem(input: &str) -> IResult<&str, &str> {
     let (input, unit) = take_until("rem")(input)?;
     Ok((input, unit))
 }
+// Custom number parser that handles optional decimals and signs
+fn float_strict(input: &str) -> IResult<&str, f64> {
+    let (input, sign) = opt(tag("-"))(input)?;
+    // let sign = sign.unwrap_or("+");
+    let sign = sign.unwrap_or_default();
+
+    let (input, integer) = digit1(input)?;
+    let (input, decimals) = opt(preceded(tag("."), digit1))(input)?;
+
+    let float_str = if let Some(decimals) = decimals {
+        format!("{}{}.{}", sign, integer, decimals)
+    } else {
+        format!("{}{}", sign, integer)
+    };
+
+    let float_val: f64 = float_str.parse().unwrap();
+    Ok((input, float_val))
+}
 
 fn parse_length_unit(input: &str) -> IResult<&str, String> {
-    // let (input, numeric) = alt((parse_till_em, parse_till_rem))(input)?;
-    let (input, number) = number::complete::double(input)?;
+    // let (input, number) = number::complete::double(input)?;
+    let (input, number) = float_strict(input)?;
+    // let (input, number) = parse_number(input)?;
     let (input, unit) = {
         // px|em|rem|%|cm|mm|in|pt|pc|vh|vw|vmin|vmax
         alt((
