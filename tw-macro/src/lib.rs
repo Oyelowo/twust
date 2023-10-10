@@ -627,12 +627,36 @@ fn bg_arbitrary_url(input: &str) -> IResult<&str, ()> {
             nom::error::ErrorKind::Tag,
         )));
     };
-    let (input, _) = take_while1(|char| is_ident_char(char) && char != '/')(input)?;
+    let (input, _) = take_while1(|char| is_ident_char(char) && char != '[')(input)?;
     let (input, _) = tag("[")(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag("url('")(input)?;
     let (input, _) = take_until("')")(input)?;
     let (input, _) = tag("')")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = tag("]")(input)?;
+    Ok((input, ()))
+}
+
+// grid-cols-[fit-content(theme(spacing.32))]
+fn arbitrary_css_value(input: &str) -> IResult<&str, ()> {
+    // is prefixed by valid base class
+    let input = if VALID_BASECLASS_NAMES
+        .iter()
+        .any(|cb| input.trim().starts_with(cb))
+    {
+        input
+    } else {
+        return Err(nom::Err::Error(nom::error::Error::new(
+            input,
+            nom::error::ErrorKind::Tag,
+        )));
+    };
+    let (input, _) = take_while1(|char| is_ident_char(char) && char != '[')(input)?;
+    let (input, _) = tag("[")(input)?;
+    let (input, _) = multispace0(input)?;
+    // allow anything inthe brackets
+    let (input, _) = take_until("]")(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
     Ok((input, ()))
@@ -648,6 +672,7 @@ fn parse_single_tw_classname(input: &str) -> IResult<&str, ()> {
         lengthy_arbitrary_classname,
         colorful_arbitrary_baseclass,
         arbitrary_content,
+        arbitrary_css_value,
     ))(input)
 }
 
