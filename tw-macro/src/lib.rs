@@ -1001,6 +1001,16 @@ fn aria_arbitrary(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
+// data-[size=large]:p-8
+fn data_arbitrary(input: &str) -> IResult<&str, ()> {
+    let (input, _) = tag("data-[")(input)?;
+    let (input, _) = take_while1(is_ident_char)(input)?;
+    let (input, _) = tag("=")(input)?;
+    let (input, _) = take_while1(is_ident_char)(input)?;
+    let (input, _) = tag("]")(input)?;
+    Ok((input, ()))
+}
+
 //
 //
 //
@@ -1051,6 +1061,7 @@ fn modifier(input: &str) -> IResult<&str, ()> {
         predefined_modifier,
         supports_arbitrary,
         aria_arbitrary,
+        data_arbitrary,
     ))(input)
 }
 
