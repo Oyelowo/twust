@@ -66,26 +66,25 @@ fn setup(input: &LitStr) -> Result<(Vec<String>, Vec<String>), TokenStream> {
 
 fn get_classes_straight() -> Vec<String> {
     get_classes(&read_tailwind_config().unwrap())
-    // get_classes
 }
-fn is_valid_classname2(class_name: &str) -> bool {
+
+fn is_valid_classname(class_name: &str) -> bool {
     get_classes_straight().contains(&class_name.to_string())
 }
 
-fn is_valid_modifier2(modifier: &str) -> bool {
+fn is_valid_modifier(modifier: &str) -> bool {
     get_modifiers(&read_tailwind_config().unwrap()).contains(&modifier.to_string())
 }
 
 fn parse_predefined_tw_classname(input: &str) -> IResult<&str, ()> {
     let (input, class_name) = recognize(|i| {
-        // Assuming a Tailwind class consists of alphanumeric, dashes, and colons
+        // Considering a Tailwind class consists of alphanumeric, dashes, and slash
         nom::bytes::complete::is_a(
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-./",
         )(i)
     })(input)?;
 
-    if is_valid_classname2(class_name.trim_start_matches("-")) {
-        eprintln!("parse_predefined_tw_classname: {}", input);
+    if is_valid_classname(class_name.trim_start_matches("-")) {
         Ok((input, ()))
     } else {
         Err(nom::Err::Error(nom::error::Error::new(
@@ -151,9 +150,6 @@ fn parse_length_unit(input: &str) -> IResult<&str, String> {
 fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     let (input, class_name) = take_until("-[")(input)?;
     let ((input, _)) = if is_lengthy_classname(class_name) {
-        // if is_lengthy_classname(class_name) {
-        //     // Do something special for lengthy class names
-        // }
         Ok((input, ()))
     } else {
         Err(nom::Err::Error(nom::error::Error::new(
@@ -170,7 +166,6 @@ fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     let (input, _) = parse_length_unit(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
-    eprintln!("lengthy_arbitrary_classname: {}", input);
     Ok((input, ()))
 }
 
@@ -186,7 +181,6 @@ fn parse_hex_color(input: &str) -> IResult<&str, String> {
             nom::error::ErrorKind::Tag,
         )))
     }?;
-    eprintln!("parse_hex_color: {}", input);
     let color = format!("#{}", color);
     Ok((input, color))
 }
@@ -220,7 +214,6 @@ fn parse_rgb_color(input: &str) -> IResult<&str, String> {
     let (input, b) = parse_u8(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag(")")(input)?;
-    eprintln!("parse_rgb_color: {}", input);
     let color = format!("rgb({}, {}, {})", r, g, b);
     Ok((input, color))
 }
@@ -244,7 +237,6 @@ fn parse_rgba_color(input: &str) -> IResult<&str, String> {
     let (input, a) = number::complete::double(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag(")")(input)?;
-    eprintln!("parse_rgba_color: {}", input);
     let color = format!("rgba({}, {}, {}, {})", r, g, b, a);
     Ok((input, color))
 }
@@ -272,7 +264,6 @@ fn colorful_arbitrary_baseclass(input: &str) -> IResult<&str, ()> {
     let (input, _) = alt((parse_hex_color, parse_rgb_color, parse_rgba_color))(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
-    eprintln!("colorful_arbitrary_baseclass: {}", input);
     Ok((input, ()))
 }
 
@@ -287,7 +278,6 @@ fn kv_pair_classname(input: &str) -> IResult<&str, ()> {
     let (input, _) = take_while1(is_ident_char)(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
-    eprintln!("kv_pair_classname: {}", input);
     Ok((input, ()))
 }
 
@@ -296,7 +286,6 @@ fn arbitrary_content(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("content-['")(input)?;
     let (input, _) = take_until("']")(input)?;
     let (input, _) = tag("']")(input)?;
-    eprintln!("arbitrary_content: {}", input);
     Ok((input, ()))
 }
 
@@ -327,7 +316,6 @@ fn predefined_colorful_opacity(input: &str) -> IResult<&str, ()> {
             )))
         }
     };
-    eprintln!("predefined_colorful_opacity: {}", input);
 
     Ok((input, ()))
 }
@@ -360,7 +348,6 @@ fn arbitrary_opacity(input: &str) -> IResult<&str, ()> {
         }
     };
     let (input, _) = tag("]")(input)?;
-    eprintln!("arbitrary_opacity: {}", input);
     Ok((input, ()))
 }
 
@@ -386,7 +373,6 @@ fn bg_arbitrary_url(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("')")(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
-    eprintln!("bg_arbitrary_url: {}", input);
     Ok((input, ()))
 }
 
@@ -422,7 +408,6 @@ fn arbitrary_css_value(input: &str) -> IResult<&str, ()> {
     let (input, _) = take_until("]")(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
-    eprintln!("arbitrary_css_value: {}", input);
     Ok((input, ()))
 }
 
@@ -446,7 +431,6 @@ fn arbitrary_css_var(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("--")(input)?;
     let (input, _) = take_while1(|char| is_ident_char(char) && char != ']')(input)?;
     let (input, _) = tag("]")(input)?;
-    eprintln!("arbitrary_css_var: {}", input);
     Ok((input, ()))
 }
 // text-[var(--my-var)]
@@ -469,7 +453,6 @@ fn arbitrary_css_var2(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("var(--")(input)?;
     let (input, _) = take_while1(|char| is_ident_char(char) && char != ')')(input)?;
     let (input, _) = tag(")]")(input)?;
-    eprintln!("arbitrary_css_var2: {}", input);
     Ok((input, ()))
 }
 
@@ -496,7 +479,6 @@ fn arbitrary_css_var3(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("var(--")(input)?;
     let (input, _) = take_while1(|char| is_ident_char(char) && char != ')')(input)?;
     let (input, _) = tag(")]")(input)?;
-    eprintln!("arbitrary_css_var3: {}", input);
     Ok((input, ()))
 }
 
@@ -505,7 +487,6 @@ fn arbitrary_group_classname(input: &str) -> IResult<&str, ()> {
     let (input, _) = alt((tag("group"),))(input)?;
     let (input, _) = tag("/")(input)?;
     let (input, _) = take_while1(|char| is_ident_char(char))(input)?;
-    eprintln!("arbitrary_group_classname: {}", input);
     Ok((input, ()))
 }
 
@@ -549,8 +530,7 @@ fn predefined_modifier(input: &str) -> IResult<&str, ()> {
         )(i)
     })(input)?;
 
-    if is_valid_modifier2(modifier) {
-        eprintln!("predefined_modifier: {}", input);
+    if is_valid_modifier(modifier) {
         Ok((input, ()))
     } else {
         Err(nom::Err::Error(nom::error::Error::new(
@@ -577,8 +557,6 @@ fn arbitrary_front_selector_modifier(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("[&")(input)?;
     let (input, _) = take_until("]")(input)?;
     let (input, _) = tag("]")(input)?;
-    eprintln!("arbitrary_front_selector_modifier: {}", input);
-    Ok((input, ()))
 }
 
 // group-[:nth-of-type(3)_&]:block
@@ -587,7 +565,6 @@ fn arbitrary_back_selector_modifier(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("-[")(input)?;
     let (input, _) = take_until("&]")(input)?;
     let (input, _) = tag("&]")(input)?;
-    eprintln!("arbitrary_back_selector_modifier: {}", input);
     Ok((input, ()))
 }
 
@@ -596,7 +573,6 @@ fn arbitrary_at_supports_rule_modifier(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("[@supports(")(input)?;
     let (input, _) = take_until(")")(input)?;
     let (input, _) = tag(")]")(input)?;
-    eprintln!("arbitrary_at_supports_rule_modifier: {}", input);
     Ok((input, ()))
 }
 
@@ -606,7 +582,6 @@ fn arbitrary_at_media_rule_modifier(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("[@media(")(input)?;
     let (input, _) = take_until("]")(input)?;
     let (input, _) = tag("]")(input)?;
-    eprintln!("arbitrary_at_media_rule_modifier: {}", input);
     Ok((input, ()))
 }
 
@@ -620,7 +595,6 @@ fn group_peer_modifier(input: &str) -> IResult<&str, ()> {
     ))(input)?;
     let (input, _) = tag("/")(input)?;
     let (input, _) = take_while1(is_ident_char)(input)?;
-    eprintln!("group_peer_modifier: {}", input);
     Ok((input, ()))
 }
 
@@ -633,7 +607,6 @@ fn group_modifier_selector(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("-[")(input)?;
     let (input, _) = take_until("]")(input)?;
     let (input, _) = tag("]")(input)?;
-    eprintln!("group_modifier_selector: {}", input);
     Ok((input, ()))
 }
 
@@ -642,7 +615,6 @@ fn supports_arbitrary(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("supports-[")(input)?;
     let (input, _) = take_until("]")(input)?;
     let (input, _) = tag("]")(input)?;
-    eprintln!("supports-arbitrary: {}", input);
     Ok((input, ()))
 }
 
@@ -674,7 +646,6 @@ fn min_max_arbitrary_modifier(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("[")(input)?;
     let (input, _) = parse_length_unit(input)?;
     let (input, _) = tag("]")(input)?;
-    eprintln!("min_max_arbitrary_modifier: {}", input);
     Ok((input, ()))
 }
 
