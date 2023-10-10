@@ -4,7 +4,7 @@ use nom::{
     branch::alt,
     bytes::complete::{tag, take_until, take_while1},
     character::complete::{multispace0, multispace1, space0, space1},
-    combinator::{all_consuming, opt, recognize},
+    combinator::{all_consuming, not, opt, recognize},
     multi::separated_list0,
     number,
     sequence::{delimited, tuple},
@@ -654,6 +654,7 @@ fn arbitrary_css_value(input: &str) -> IResult<&str, ()> {
     };
     let (input, _) = take_while1(|char| is_ident_char(char) && char != '[')(input)?;
     let (input, _) = tag("[")(input)?;
+    let (input, _) = not(tag("--"))(input)?;
     let (input, _) = multispace0(input)?;
     // allow anything inthe brackets
     let (input, _) = take_until("]")(input)?;
@@ -662,6 +663,39 @@ fn arbitrary_css_value(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
+// bg-[--my-color]
+fn arbitrary_css_var(input: &str) -> IResult<&str, ()> {
+    // is prefixed by valid base class
+    let input = if VALID_BASECLASS_NAMES
+        .iter()
+        .any(|cb| input.trim().starts_with(cb))
+    {
+        input
+    } else {
+        return Err(nom::Err::Error(nom::error::Error::new(
+            input,
+            nom::error::ErrorKind::Tag,
+        )));
+    };
+    let (input, _) = take_while1(|char| is_ident_char(char) && char != '[')(input)?;
+    let (input, _) = tag("[")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = tag("--")(input)?;
+    let (input, _) = take_while1(|char| is_ident_char(char) && char != ']')(input)?;
+    let (input, _) = tag("]")(input)?;
+    Ok((input, ()))
+}
+
+// [mask-type:luminance] hover:[mask-type:alpha]
+// [--scroll-offset:56px] lg:[--scroll-offset:44px]
+// lg:[&:nth-child(3)]:hover:underline
+// bg-[url('/what_a_rush.png')]
+// before:content-['hello\_world']
+// text-[22px]
+// text-[#bada55]
+// text-[var(--my-var)]
+// text-[length:var(--my-var)]
+// text-[color:var(--my-var)]
 fn parse_single_tw_classname(input: &str) -> IResult<&str, ()> {
     alt((
         bg_arbitrary_url,
@@ -672,6 +706,8 @@ fn parse_single_tw_classname(input: &str) -> IResult<&str, ()> {
         lengthy_arbitrary_classname,
         colorful_arbitrary_baseclass,
         arbitrary_content,
+        // bg-[--my-color]
+        arbitrary_css_var,
         arbitrary_css_value,
     ))(input)
 }
