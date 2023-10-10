@@ -613,8 +613,34 @@ fn arbitrary_opacity(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
+// bg-[url('/img/down-arrow.svg')]
+fn bg_arbitrary_url(input: &str) -> IResult<&str, ()> {
+    // prefixed by baseclass
+    let input = if COLORFUL_BASECLASSES
+        .iter()
+        .any(|cb| input.trim().starts_with(cb))
+    {
+        input
+    } else {
+        return Err(nom::Err::Error(nom::error::Error::new(
+            input,
+            nom::error::ErrorKind::Tag,
+        )));
+    };
+    let (input, _) = take_while1(|char| is_ident_char(char) && char != '/')(input)?;
+    let (input, _) = tag("[")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = tag("url('")(input)?;
+    let (input, _) = take_until("')")(input)?;
+    let (input, _) = tag("')")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = tag("]")(input)?;
+    Ok((input, ()))
+}
+
 fn parse_single_tw_classname(input: &str) -> IResult<&str, ()> {
     alt((
+        bg_arbitrary_url,
         predefined_colorful_opacity,
         arbitrary_opacity,
         parse_predefined_tw_classname,
