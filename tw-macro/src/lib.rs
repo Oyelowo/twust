@@ -744,6 +744,18 @@ fn arbitrary_css_var3(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
+// group/edit
+fn arbitrary_group_classname(input: &str) -> IResult<&str, ()> {
+    let (input, _) = alt((
+        // tuple((tag("group-"), predefined_modifier)),
+        // tuple((tag("group"), |_| Ok(("", ())))),
+        tag("group"),
+    ))(input)?;
+    let (input, _) = tag("/")(input)?;
+    let (input, _) = take_while1(|char| is_ident_char(char))(input)?;
+    Ok((input, ()))
+}
+
 // [mask-type:luminance] hover:[mask-type:alpha]
 // [--scroll-offset:56px] lg:[--scroll-offset:44px]
 // lg:[&:nth-child(3)]:hover:underline
@@ -756,13 +768,23 @@ fn arbitrary_css_var3(input: &str) -> IResult<&str, ()> {
 // text-[color:var(--my-var)]
 fn parse_single_tw_classname(input: &str) -> IResult<&str, ()> {
     alt((
+        // bg-[url('/what_a_rush.png')]
         bg_arbitrary_url,
+        // bg-black/25
         predefined_colorful_opacity,
+        // group/edit
+        arbitrary_group_classname,
+        // bg-black/[27]
         arbitrary_opacity,
+        // btn
         parse_predefined_tw_classname,
+        // [mask-type:luminance] [mask-type:alpha]
         kv_pair_classname,
+        // text-[22px]
         lengthy_arbitrary_classname,
+        // text-[#bada55]
         colorful_arbitrary_baseclass,
+        // before:content-['Festivus']
         arbitrary_content,
         // bg-[--my-color]
         arbitrary_css_var,
@@ -770,6 +792,7 @@ fn parse_single_tw_classname(input: &str) -> IResult<&str, ()> {
         arbitrary_css_var2,
         // text-[length:var(--my-var)]
         arbitrary_css_var3,
+        // grid-cols-[fit-content(theme(spacing.32))]
         arbitrary_css_value,
     ))(input)
 }
@@ -836,11 +859,23 @@ fn arbitrary_at_media_rule_modifier(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
-//
 // group/edit invisible hover:bg-slate-200 group-hover/item:visible
+fn group_peer_modifier(input: &str) -> IResult<&str, ()> {
+    let (input, _) = alt((
+        tuple((tag("group-"), predefined_modifier)),
+        // https://tailwindcss.com/docs/hover-focus-and-other-states#differentiating-peers
+        // peer-checked/published:text-sky-500
+        tuple((tag("peer-"), predefined_modifier)),
+        // tuple((tag("group"), |_| Ok(("", ())))),
+    ))(input)?;
+    let (input, _) = tag("/")(input)?;
+    let (input, _) = take_while1(|char| is_ident_char(char) && char != ':')(input)?;
+    Ok((input, ()))
+}
+
+//
 // hidden group-[.is-published]:block
 // group-[:nth-of-type(3)_&]:block
-// peer-checked/published:text-sky-500
 // peer-[.is-dirty]:peer-required:block hidden
 // hidden peer-[:nth-of-type(3)_&]:block
 // after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700
@@ -869,6 +904,7 @@ fn arbitrary_at_media_rule_modifier(input: &str) -> IResult<&str, ()> {
 
 fn modifier(input: &str) -> IResult<&str, ()> {
     alt((
+        group_peer_modifier,
         arbitrary_front_selector_modifier,
         arbitrary_back_selector_modifier,
         arbitrary_at_supports_rule_modifier,

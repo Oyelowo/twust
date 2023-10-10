@@ -37,6 +37,11 @@ bg-[--my-color]
 
  [@media(any-hover:hover){&:hover}]:opacity-100
 
+     group/edit invisible hover:bg-slate-200 group-hover/item:visible
+    
+ peer-checked/published:text-sky-500
+
+
     "#
     );
     println!("TEXT - {}", test);
