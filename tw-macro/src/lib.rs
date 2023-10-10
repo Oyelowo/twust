@@ -148,22 +148,20 @@ fn parse_till_rem(input: &str) -> IResult<&str, &str> {
     let (input, unit) = take_until("rem")(input)?;
     Ok((input, unit))
 }
-// Custom number parser that handles optional decimals and signs
+// Custom number parser that handles optional decimals and signs, and scientific notation
 fn float_strict(input: &str) -> IResult<&str, f64> {
-    let (input, sign) = opt(tag("-"))(input)?;
-    // let sign = sign.unwrap_or("+");
-    let sign = sign.unwrap_or_default();
+    let (input, number) = recognize(tuple((
+        opt(alt((tag("-"), tag("+")))),
+        digit1,
+        opt(preceded(tag("."), digit1)),
+        opt(tuple((
+            alt((tag("e"), tag("E"))),
+            opt(alt((tag("-"), tag("+")))),
+            digit1,
+        ))),
+    )))(input)?;
 
-    let (input, integer) = digit1(input)?;
-    let (input, decimals) = opt(preceded(tag("."), digit1))(input)?;
-
-    let float_str = if let Some(decimals) = decimals {
-        format!("{}{}.{}", sign, integer, decimals)
-    } else {
-        format!("{}{}", sign, integer)
-    };
-
-    let float_val: f64 = float_str.parse().unwrap();
+    let float_val: f64 = number.parse().unwrap();
     Ok((input, float_val))
 }
 
