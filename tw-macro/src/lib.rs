@@ -479,9 +479,84 @@ fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
-fn is_hex_color(color: &str) -> bool {
-    let re = regex::Regex::new(r"^#[0-9a-fA-F]{3,6}$").expect("Invalid regex");
-    re.is_match(color)
+// fn is_hex_color(color: &str) -> bool {
+//     let re = regex::Regex::new(r"^#[0-9a-fA-F]{3,6}$").expect("Invalid regex");
+//     re.is_match(color)
+// }
+
+// #bada55
+fn parse_hex_color(input: &str) -> IResult<&str, String> {
+    let (input, _) = tag("#")(input)?;
+    let (input, color) = take_while1(|c: char| c.is_ascii_hexdigit())(input)?;
+    let ((input, _)) = if color.chars().count() == 3 || color.chars().count() == 6 {
+        Ok((input, ()))
+    } else {
+        Err(nom::Err::Error(nom::error::Error::new(
+            input,
+            nom::error::ErrorKind::Tag,
+        )))
+    }?;
+    eprintln!("parse_hex_color: {}", input);
+    let color = format!("#{}", color);
+    Ok((input, color))
+}
+
+fn parse_u8(input: &str) -> IResult<&str, u8> {
+    let (input, num) = number::complete::double(input)?;
+    let input = match num as u32 {
+        0..=255 => input,
+        _ => {
+            return Err(nom::Err::Error(nom::error::Error::new(
+                input,
+                nom::error::ErrorKind::Tag,
+            )))
+        }
+    };
+    Ok((input, num as u8))
+}
+
+// rgb(255, 255, 255)
+fn parse_rgb_color(input: &str) -> IResult<&str, String> {
+    let (input, _) = tag("rgb(")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, r) = parse_u8(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = tag(",")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, g) = parse_u8(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = tag(",")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, b) = parse_u8(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = tag(")")(input)?;
+    eprintln!("parse_rgb_color: {}", input);
+    let color = format!("rgb({}, {}, {})", r, g, b);
+    Ok((input, color))
+}
+
+// rgba(255, 255, 255, 0.5)
+fn parse_rgba_color(input: &str) -> IResult<&str, String> {
+    let (input, _) = tag("rgba(")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, r) = parse_u8(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = tag(",")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, g) = parse_u8(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = tag(",")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, b) = parse_u8(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = tag(",")(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, a) = number::complete::double(input)?;
+    let (input, _) = multispace0(input)?;
+    let (input, _) = tag(")")(input)?;
+    eprintln!("parse_rgba_color: {}", input);
+    let color = format!("rgba({}, {}, {}, {})", r, g, b, a);
+    Ok((input, color))
 }
 
 fn is_colorful_baseclass(class_name: &str) -> bool {
@@ -504,24 +579,13 @@ fn colorful_arbitrary_baseclass(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("-")(input)?;
     let (input, _) = tag("[")(input)?;
     let (input, _) = multispace0(input)?;
-    // is hex color
-    // let (input, _) = tag("#")(input)?;
-    // let (input, color) = take_while1(|c: char| c.is_ascii_hexdigit())(input)?;
-    // should be length 3 or 6
-    let (input, color) = take_until("]")(input)?;
-    let ((input, _)) = if is_hex_color(color.trim()) {
-        Ok((input, ()))
-    } else {
-        Err(nom::Err::Error(nom::error::Error::new(
-            input,
-            nom::error::ErrorKind::Tag,
-        )))
-    }?;
-
+    let (input, _) = alt((parse_hex_color, parse_rgb_color, parse_rgba_color))(input)?;
+    let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
     eprintln!("colorful_arbitrary_baseclass: {}", input);
     Ok((input, ()))
 }
+
 // e.g: [mask-type:alpha]
 fn kv_pair_classname(input: &str) -> IResult<&str, ()> {
     // let Ok((input, _)) = delimited(
