@@ -3,7 +3,7 @@ use std::str::FromStr;
 use nom::{
     branch::alt,
     bytes::complete::{tag, take_till, take_until, take_while1},
-    character::complete::{multispace0, multispace1, space0, space1},
+    character::complete::{digit1, multispace0, multispace1, space0, space1},
     combinator::{all_consuming, not, opt, recognize},
     multi::separated_list0,
     number,
@@ -173,6 +173,11 @@ fn parse_length_unit(input: &str) -> IResult<&str, String> {
     Ok((input, format!("{}{}", number, unit)))
 }
 
+fn parse_number(input: &str) -> IResult<&str, String> {
+    let (input, number) = digit1(input)?;
+    Ok((input, number.to_string()))
+}
+
 // text-[22px]
 fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     let (input, class_name) = take_until("-[")(input)?;
@@ -193,7 +198,7 @@ fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("[")(input)?;
     let (input, _) = multispace0(input)?;
     // is number
-    let (input, _) = parse_length_unit(input)?;
+    let (input, _) = alt((parse_length_unit, parse_number))(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
     eprintln!("lengthy_arbitrary_classname: {}", input);

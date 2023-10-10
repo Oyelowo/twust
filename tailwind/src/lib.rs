@@ -179,7 +179,7 @@ fn _happy_paths() {
         let _classnames = tw!("px-[-45mm]");
         let _classnames = tw!("px-[-45pc]");
         let _classnames = tw!("px-[0px]");
-        // let _classnames = tw!("px-[0]");
+        let _classnames = tw!("px-[0]");
         let _classnames = tw!("px-[45px]");
         let _classnames = tw!("px-[45cm]");
         let _classnames = tw!("px-[45rem]");
@@ -194,7 +194,7 @@ fn _happy_paths() {
         let _classnames = tw!("px-[45vmax]");
         let _classnames = tw!("px-[45.5mm]");
         let _classnames = tw!("px-[45pc]");
-        // let _classnames = tw!("py-[0]");
+        let _classnames = tw!("py-[0]");
         let _classnames = tw!("px-[45pc]");
         let _classnames = tw!("-px-[45pc]");
         let _classnames = tw!("hover:[mask-type:alpha]");
