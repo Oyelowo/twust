@@ -6,14 +6,13 @@
  * Licensed under the MIT license
  */
 use tw_macro::tw;
-use tw_macro::tww;
 
 fn main() {
     // let _ = tww!("btn btn");
 
     // // aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
 
-    let test = tww!(
+    let test = tw!(
         r#"[mask-type:alpha] [ mask-type:   alpha   ] before:content-['rerer  erer re rr r  \re  reFestivus']
     after:content-['I am a content'] after:content-['I am a content'] after:content-['I am a content']
         active:hover:text-[#bada55] active:hover:text-[  #ba5   ] text-[#bada55] hover:aria-checked:text-[22px]
@@ -87,8 +86,13 @@ aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-
  text-[var(--my-var)]
  text-[length:var(--my-var)]
  text-[color:var(--my-var)]
+
+
+     p-6 max-w-sm mx-auto bg-white rounded-xl shadow-lg flex items-center space-x-4
+
         "#
     );
+    tw!("bg-taxvhiti");
     // let test =
     //     tww!("peer[.is-dirty]:peer-required:block hidden  hidden peer-[:nth-of-type(3)_&]:block");
     println!("TEXT - {}", test);
@@ -143,7 +147,7 @@ aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-
     let _classnames = tw!("px-[-45px]");
     let _classnames = tw!("px-[-45cm]");
     let _classnames = tw!("px-[-45rem]");
-    let _classnames = tw!("px-[-45em]");
+    // let _classnames = tw!("px-[-45em]");
     let _classnames = tw!("px-[-45%]");
     let _classnames = tw!("px-[-45in]");
     let _classnames = tw!("px-[-45vh]");
@@ -156,7 +160,7 @@ aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-
     let _classnames = tw!("px-[45px]");
     let _classnames = tw!("px-[45cm]");
     let _classnames = tw!("px-[45rem]");
-    let _classnames = tw!("px-[45em]");
+    // let _classnames = tw!("px-[45em]");
     let _classnames = tw!("px-[45%]");
     let _classnames = tw!("px-[45in]");
     let _classnames = tw!("px-[45vh]");
