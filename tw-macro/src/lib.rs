@@ -84,7 +84,7 @@ fn parse_predefined_tw_classname(input: &str) -> IResult<&str, ()> {
         )(i)
     })(input)?;
 
-    if is_valid_classname(class_name.trim_start_matches("-")) {
+    if is_valid_classname(class_name.strip_prefix("-").unwrap_or(class_name)) {
         Ok((input, ()))
     } else {
         Err(nom::Err::Error(nom::error::Error::new(
@@ -99,7 +99,7 @@ fn is_ident_char(c: char) -> bool {
 }
 
 fn is_lengthy_classname(class_name: &str) -> bool {
-    LENGTHY.contains(&class_name.trim_start_matches("-"))
+    LENGTHY.contains(&class_name.strip_prefix("-").unwrap_or(class_name))
 }
 
 // Custom number parser that handles optional decimals and signs, and scientific notation
@@ -557,6 +557,7 @@ fn arbitrary_front_selector_modifier(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("[&")(input)?;
     let (input, _) = take_until("]")(input)?;
     let (input, _) = tag("]")(input)?;
+    Ok((input, ()))
 }
 
 // group-[:nth-of-type(3)_&]:block

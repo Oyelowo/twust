@@ -24,6 +24,7 @@ fn main() {
         [--scroll-offset:56px] lg:[--scroll-offset:44px]
         btn bg-[url('/img/down-arrow.svg')] ring-white/10   bg-black/25  bg-black/[100] bg-black/[0.75]    active:hover:collapse-arrow
 
+    -mt-4
 
         lg:[&:nth-child(3)]:hover:underline
         group-[:nth-of-type(3)_&]:block
