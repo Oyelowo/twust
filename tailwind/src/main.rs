@@ -19,7 +19,7 @@ after:content-['I am a content'] after:content-['I am a content'] after:content-
     active:hover:text-[#bada55] active:hover:text-[  #bada55   ] text-[#bada55] hover:aria-checked:text-[22px] 
     text-[22.34e434cm]
 grid grid-cols-[fit-content(theme(spacing.32))]
-
+bg-[--my-color]
     btn bg-[url('/img/down-arrow.svg')] ring-white/10   bg-black/25  bg-black/[100] bg-black/[0.75]    active:hover:collapse-arrow "
     );
     println!("TEXT - {}", test);
