@@ -60,6 +60,13 @@ aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-
     
  data-[size=large]:p-8
 
+    open:bg-white dark:open:bg-slate-900 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-6 rounded-lg
+    
+    lg:[&:nth-child(3)]:hover:underline
+
+     min-[320px]:text-center max-[600px]:bg-sky-300
+
+
         "#
     );
     // let test =

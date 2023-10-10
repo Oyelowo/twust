@@ -434,6 +434,29 @@ fn is_lengthy_classname(class_name: &str) -> bool {
     LENGTHY.contains(&class_name)
 }
 
+fn parse_length_unit(input: &str) -> IResult<&str, String> {
+    let (input, number) = number::complete::double(input)?;
+    let (input, unit) = {
+        // px|em|rem|%|cm|mm|in|pt|pc|vh|vw|vmin|vmax
+        alt((
+            tag("px"),
+            tag("em"),
+            tag("rem"),
+            tag("%"),
+            tag("cm"),
+            tag("mm"),
+            tag("in"),
+            tag("pt"),
+            tag("pc"),
+            tag("vh"),
+            tag("vw"),
+            tag("vmin"),
+            tag("vmax"),
+        ))
+    }(input)?;
+    Ok((input, format!("{}{}", number, unit)))
+}
+
 // text-[22px]
 fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     let (input, class_name) = take_until("-[")(input)?;
@@ -454,25 +477,7 @@ fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("[")(input)?;
     let (input, _) = multispace0(input)?;
     // is number
-    let (input, _) = number::complete::double(input)?;
-    let (input, _) = {
-        // px|em|rem|%|cm|mm|in|pt|pc|vh|vw|vmin|vmax
-        alt((
-            tag("px"),
-            tag("em"),
-            tag("rem"),
-            tag("%"),
-            tag("cm"),
-            tag("mm"),
-            tag("in"),
-            tag("pt"),
-            tag("pc"),
-            tag("vh"),
-            tag("vw"),
-            tag("vmin"),
-            tag("vmax"),
-        ))
-    }(input)?;
+    let (input, _) = parse_length_unit(input)?;
     let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
     eprintln!("lengthy_arbitrary_classname: {}", input);
@@ -1011,12 +1016,18 @@ fn data_arbitrary(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
-//
-//
-//
-// open:bg-white dark:open:bg-slate-900 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-6 rounded-lg
-// lg:[&:nth-child(3)]:hover:underline
 // min-[320px]:text-center max-[600px]:bg-sky-300
+fn min_max_arbitrary_modifier(input: &str) -> IResult<&str, ()> {
+    let (input, _) = alt((tag("min-"), tag("max-")))(input)?;
+    let (input, _) = tag("[")(input)?;
+    let (input, _) = parse_length_unit(input)?;
+    let (input, _) = tag("]")(input)?;
+    eprintln!("min_max_arbitrary_modifier: {}", input);
+    Ok((input, ()))
+}
+
+//
+//
 // top-[117px] lg:top-[344px]
 // bg-[#bada55] text-[22px] before:content-['Festivus']
 // grid grid-cols-[fit-content(theme(spacing.32))]
@@ -1062,6 +1073,7 @@ fn modifier(input: &str) -> IResult<&str, ()> {
         supports_arbitrary,
         aria_arbitrary,
         data_arbitrary,
+        min_max_arbitrary_modifier,
     ))(input)
 }
 
