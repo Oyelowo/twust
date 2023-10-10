@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use nom::{
     branch::alt,
-    bytes::complete::{tag, take_until, take_while1},
+    bytes::complete::{tag, take_till, take_until, take_while1},
     character::complete::{multispace0, multispace1, space0, space1},
     combinator::{all_consuming, not, opt, recognize},
     multi::separated_list0,
@@ -827,8 +827,16 @@ fn arbitrary_at_supports_rule_modifier(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
-//
 // [@media(any-hover:hover){&:hover}]:opacity-100
+fn arbitrary_at_media_rule_modifier(input: &str) -> IResult<&str, ()> {
+    // starts with [@media and ends with ]
+    let (input, _) = tag("[@media(")(input)?;
+    let (input, _) = take_until("]")(input)?;
+    let (input, _) = tag("]")(input)?;
+    Ok((input, ()))
+}
+
+//
 // group/edit invisible hover:bg-slate-200 group-hover/item:visible
 // hidden group-[.is-published]:block
 // group-[:nth-of-type(3)_&]:block
@@ -864,6 +872,7 @@ fn modifier(input: &str) -> IResult<&str, ()> {
         arbitrary_front_selector_modifier,
         arbitrary_back_selector_modifier,
         arbitrary_at_supports_rule_modifier,
+        arbitrary_at_media_rule_modifier,
         predefined_modifier,
     ))(input)
 }

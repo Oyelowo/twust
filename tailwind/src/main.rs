@@ -33,6 +33,10 @@ bg-[--my-color]
  [&_p]:mt-4
     
  flex [@supports(display:grid)]:grid
+ flex active:hover:[@supports(display:grid)]:grid
+
+ [@media(any-hover:hover){&:hover}]:opacity-100
+
     "#
     );
     println!("TEXT - {}", test);
