@@ -14,7 +14,7 @@ fn main() {
         "[mask-type:alpha] [ mask-type:   alpha   ] before:content-['rerer  erer re rr r  \re  reFestivus']    
 after:content-['I am a content'] after:content-['I am a content'] after:content-['I am a content']
     active:hover:text-[#bada55] active:hover:text-[  #bada55   ] text-[#bada55] hover:aria-checked:text-[22px] 
-    text-[22.34e434cm] btn     active:hover:collapse-arrow"
+    text-[22.34e434cm] btn   bg-black/25  bg-black/[100] bg-black/[0.75]    active:hover:collapse-arrow "
     );
     println!("TEXT - {}", test);
     let _ = tw!("btn collapse-arrow");
