@@ -782,7 +782,8 @@ fn modifier_separator(input: &str) -> IResult<&str, &str> {
     Ok((input, ""))
 }
 
-fn modifier(input: &str) -> IResult<&str, &str> {
+// hover:underline
+fn predefined_modifier(input: &str) -> IResult<&str, ()> {
     let (input, modifier) = recognize(|i| {
         // Assuming a Tailwind class consists of alphanumeric, dashes, and colons
         nom::bytes::complete::is_a(
@@ -791,7 +792,7 @@ fn modifier(input: &str) -> IResult<&str, &str> {
     })(input)?;
 
     if is_valid_modifier2(modifier) {
-        Ok((input, modifier))
+        Ok((input, ()))
     } else {
         Err(nom::Err::Error(nom::error::Error::new(
             input,
@@ -800,9 +801,68 @@ fn modifier(input: &str) -> IResult<&str, &str> {
     }
 }
 
-fn modifiers_chained(input: &str) -> IResult<&str, Vec<&str>> {
+// [&:nth-child(3)]:underline
+// [&_p]:mt-4
+fn arbitrary_front_selector_modifier(input: &str) -> IResult<&str, ()> {
+    let (input, _) = tag("[&")(input)?;
+    let (input, _) = take_until("]")(input)?;
+    let (input, _) = tag("]")(input)?;
+    Ok((input, ()))
+}
+
+// group-[:nth-of-type(3)_&]:block
+fn arbitrary_back_selector_modifier(input: &str) -> IResult<&str, ()> {
+    let (input, _) = take_while1(|char| is_ident_char(char) && char != '[')(input)?;
+    let (input, _) = tag("[")(input)?;
+    let (input, _) = take_until("&]")(input)?;
+    let (input, _) = tag("&]")(input)?;
+    Ok((input, ()))
+}
+
+//
+// flex [@supports(display:grid)]:grid
+// [@media(any-hover:hover){&:hover}]:opacity-100
+// group/edit invisible hover:bg-slate-200 group-hover/item:visible
+// hidden group-[.is-published]:block
+// group-[:nth-of-type(3)_&]:block
+// peer-checked/published:text-sky-500
+// peer-[.is-dirty]:peer-required:block hidden
+// hidden peer-[:nth-of-type(3)_&]:block
+// after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700
+// before:content-[''] before:block
+// bg-black/75 supports-[backdrop-filter]:bg-black/25 supports-[backdrop-filter]:backdrop-blur
+// aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
+// group-aria-[sort=ascending]:rotate-0 group-aria-[sort=descending]:rotate-180
+// data-[size=large]:p-8
+// open:bg-white dark:open:bg-slate-900 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg p-6 rounded-lg
+// lg:[&:nth-child(3)]:hover:underline
+// min-[320px]:text-center max-[600px]:bg-sky-300
+// top-[117px] lg:top-[344px]
+// bg-[#bada55] text-[22px] before:content-['Festivus']
+// grid grid-cols-[fit-content(theme(spacing.32))]
+// bg-[--my-color]
+// [mask-type:luminance] hover:[mask-type:alpha]
+// [--scroll-offset:56px] lg:[--scroll-offset:44px]
+// lg:[&:nth-child(3)]:hover:underline
+// bg-[url('/what_a_rush.png')]
+// before:content-['hello\_world']
+// text-[22px]
+// text-[#bada55]
+// text-[var(--my-var)]
+// text-[length:var(--my-var)]
+// text-[color:var(--my-var)]
+
+fn modifier(input: &str) -> IResult<&str, ()> {
+    alt((
+        arbitrary_front_selector_modifier,
+        arbitrary_back_selector_modifier,
+        predefined_modifier,
+    ))(input)
+}
+
+fn modifiers_chained(input: &str) -> IResult<&str, ()> {
     let (input, modifiers) = separated_list0(tag(":"), modifier)(input)?;
-    Ok((input, modifiers))
+    Ok((input, ()))
 }
 
 fn parse_tw_full_classname(input: &str) -> IResult<&str, Vec<&str>> {
