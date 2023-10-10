@@ -64,9 +64,29 @@ aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-
     
     lg:[&:nth-child(3)]:hover:underline
 
-     min-[320px]:text-center max-[600px]:bg-sky-300
+     min-[320rem]:text-center max-[600px]:bg-sky-300
+
+ top-[117px] lg:top-[344px]
+
+     bg-[#bada55] text-[22px] before:content-['Festivus']
 
 
+     grid grid-cols-[fit-content(theme(spacing.32))]
+
+     bg-[--my-color]
+
+ [mask-type:luminance] hover:[mask-type:alpha]
+
+ [--scroll-offset:56px] lg:[--scroll-offset:44px]
+
+ lg:[&:nth-child(3)]:hover:underline
+ bg-[url('/what_a_rush.png')]
+ before:content-['hello\_world']
+ text-[22px]
+ text-[#bada55]
+ text-[var(--my-var)]
+ text-[length:var(--my-var)]
+ text-[color:var(--my-var)]
         "#
     );
     // let test =
