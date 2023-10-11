@@ -4,7 +4,7 @@
  * Copyright (c) 2023 Oyelowo Oyedayo
  * Licensed under the MIT license
  */
-use tw_macro::tw;
+use twust::tw;
 
 /// Invalid character in class name.
 ///

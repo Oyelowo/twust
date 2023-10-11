@@ -1,13 +1,13 @@
-# `tw-macro`
+# `twust`
 
-A powerful Rust macro to validate TailwindCSS class names at compile-time.
+Twust is a powerful static checker in rust for TailwindCSS class names at
+compile-time.
 
-<!-- 
+<!--
 <img width="1048" alt="Screenshot 2023-09-09 at 19 51 17" src="https://github.com/Oyelowo/tailwind-rust/assets/31687368/14c79cae-b7f5-4ea2-b42f-5b54435b5e08">
 <img width="497" alt="Screenshot 2023-09-09 at 19 50 59" src="https://github.com/Oyelowo/tailwind-rust/assets/31687368/69fcf619-7f12-4e23-8a78-2d9f8fe83b4d">
 -->
- <img width="1490" alt="Screenshot 2023-09-09 at 19 51 09" src="https://github.com/Oyelowo/tailwind-rust/assets/31687368/9c9dd377-a696-42d1-bd69-251e76064b53"> 
-
+<img width="1490" alt="Screenshot 2023-09-09 at 19 51 09" src="https://github.com/Oyelowo/tailwind-rust/assets/31687368/9c9dd377-a696-42d1-bd69-251e76064b53">
 
 ## Table of Contents
 
@@ -25,18 +25,18 @@ A powerful Rust macro to validate TailwindCSS class names at compile-time.
 
 ## Overview
 
-`tw-macro` is a Rust procedural macro that provides compile-time validation for
-TailwindCSS class names. Leveraging the power of Rust's macro system, `tw-macro`
+`twust` is a Rust procedural macro that provides compile-time validation for
+TailwindCSS class names. Leveraging the power of Rust's macro system, `twust`
 ensures that you only use valid TailwindCSS class names, preventing runtime
 errors and promoting a more robust development experience.
 
 ## Installation
 
-Add `tw-macro` to your `Cargo.toml`:
+Add `twust` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-tw-macro = "0.1.0"
+twust = "0.1.0"
 ```
 
 ## Usage
@@ -92,24 +92,24 @@ applications. However, its flexibility can also lead to potential pitfalls:
 
 ## Solution
 
-`tw-macro` addresses these challenges by offering:
+`twust` addresses these challenges by offering:
 
 - **Compile-time Validation:** By checking the validity of TailwindCSS class
-  names at compile time, `tw-macro` prevents invalid class names from making
+  names at compile time, `twust` prevents invalid class names from making
   their way into the production code.
 
-- **Seamless Integration:** As a Rust macro, `tw-macro` integrates seamlessly
+- **Seamless Integration:** As a Rust macro, `twust` integrates seamlessly
   into your Rust workflow, offering immediate feedback without the need for
   external tools or manual validation.
 
-- **Plugin Support:** With tw-macro, you can easily integrate popular plugins
+- **Plugin Support:** With twust, you can easily integrate popular plugins
   like daisyui by merely specifying them as a feature, ensuring a consistent and
   extended development experience.
 - **Effortless Code Reusability:** The ability to copy-paste and reuse your
   TailwindCSS code without any manual mappings or transformations. Just wrap
   your code with the macro, and you're set.
 
-- **Optimized Builds:** By ensuring only valid class names are used, `tw-macro`
+- **Optimized Builds:** By ensuring only valid class names are used, `twust`
   helps in reducing the unnecessary bloat in the final CSS bundle.
 
 ## Features
@@ -168,16 +168,16 @@ nonexistent classes and code completion for available classes.
    adds an external dependency, which might not be suitable for all projects,
    especially those that want to minimize their dependency tree.
 
-### Approach with `tw-macro`
+### Approach with `twust`
 
-Our solution with `tw-macro` offers a more streamlined and integrated approach:
+Our solution with `twust` offers a more streamlined and integrated approach:
 
 - **Simpler Setup:** Just add the macro to your project and start using it. No
   need for external tools or additional configuration steps.
 - **Real-time Validation:** Instead of generating static Rust code from
-  TailwindCSS, `tw-macro` validates class names in real-time during the
+  TailwindCSS, `twust` validates class names in real-time during the
   compilation process.
-- **No External Dependencies:** `tw-macro` is self-contained, meaning you don't
+- **No External Dependencies:** `twust` is self-contained, meaning you don't
   need any external tools like the `tailwindcss` CLI.
 
 - **Extensive Coverage:** We support all standard TailwindCSS class names,
@@ -231,5 +231,5 @@ to contribute to the code, please open an issue or pull request.
 
 ## License
 
-`tw-macro` is licensed under the MIT license. See the `LICENSE` file for
+`twust` is licensed under the MIT license. See the `LICENSE` file for
 details.
