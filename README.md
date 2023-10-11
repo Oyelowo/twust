@@ -44,7 +44,7 @@ twust = "0.1.0"
 Simply prefix your TailwindCSS class strings with the `tw!` macro:
 
 ```rust
-use tw_macro::tw;
+use twust::tw;
 
 let classes = tw!("bg-blue-500 hover:bg-blue-700");
     // You can override/extend color/background color in tailwind.config.json
