@@ -123,8 +123,8 @@ aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-
     //     tw!("peer[.is-dirty]:peer-required:block hidden  hidden peer-[:nth-of-type(3)_&]:block");
     println!("TEXT - {}", test);
     let _ = tw!("btn collapse-arrow");
-    tw!("bg-gray-600 bg-sky-700 bg-midnight underline");
-    tw!("bg-gray-600 aria-checked:bg-sky-700 aria-asc:bg-midnight data-checked:underline");
+    let _ = tw!("bg-gray-600 bg-sky-700 bg-midnight underline");
+    let _ = tw!("bg-gray-600 aria-checked:bg-sky-700 aria-asc:bg-midnight data-checked:underline");
     let _classnames = tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-red-50");
     let _classnames = tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-purple bg-red-50 bg-tahiti-800 border-s-tahiti-800");
     let _classnames = tw!("md:text-red-50 text-slate-50 text-purple text-tahiti-500");
