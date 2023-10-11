@@ -263,7 +263,7 @@ fn kv_pair_classname(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("[")(input)?;
     let (input, _) = take_while1(is_ident_char)(input)?;
     let (input, _) = tag(":")(input)?;
-    let (input, _) = take_while1(is_ident_char)(input)?;
+    let (input, _) = take_until("]")(input)?;
     let (input, _) = tag("]")(input)?;
     Ok((input, ()))
 }

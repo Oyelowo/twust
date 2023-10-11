@@ -24,6 +24,12 @@ fn main() {
         [--scroll-offset:56px] lg:[--scroll-offset:44px]
         btn bg-[url('/img/down-arrow.svg')] ring-white/10   bg-black/25  bg-black/[80%] bg-black/[100] bg-black/[0.75]    active:hover:collapse-arrow
 
+    [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]
+
+    pt-8 text-base font-semibold leading-7
+
+    bg-[rgb(0,0,3)] absolute inset-0 bg-center 
+
     -mt-4
 
         lg:[&:nth-child(3)]:hover:underline
