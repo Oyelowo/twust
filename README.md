@@ -40,7 +40,7 @@ Add `twust` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-twust = "0.1.0"
+twust = "1.0.4"
 ```
 
 ## Usage
