@@ -5,7 +5,7 @@
  * Copyright (c) 2023 Oyelowo Oyedayo
  * Licensed under the MIT license
  */
-use tw_macro::tw;
+use twust::tw;
 
 fn main() {
     let _ = tw!("btn btn");

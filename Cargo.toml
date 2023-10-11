@@ -20,7 +20,7 @@ documentation = "https://codebreather.com/oyelowo"
 
 
 [workspace.dependencies]
-tw-macro = { path = "tw-macro" }
+twust = { path = "tw-macro" }
 # tailwind = { path = "tailwind" }
 
 proc-macro2 = "1.0.66"

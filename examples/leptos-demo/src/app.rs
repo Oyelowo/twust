@@ -1,7 +1,7 @@
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
-use tw_macro::tw;
+use twust::tw;
 
 #[component]
 pub fn App() -> impl IntoView {
