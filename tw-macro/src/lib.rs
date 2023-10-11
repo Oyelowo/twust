@@ -5,6 +5,8 @@
  * Licensed under the MIT license
  */
 
+use std::collections::HashSet;
+
 use nom::{
     branch::alt,
     bytes::complete::{tag, take_until, take_while1},
@@ -61,8 +63,10 @@ fn setup(input: &LitStr) -> Result<(Vec<String>, Vec<String>), TokenStream> {
     Ok((modifiers, valid_class_names))
 }
 
-fn get_classes_straight() -> Vec<String> {
-    get_classes(&read_tailwind_config().unwrap())
+fn get_classes_straight() -> HashSet<String> {
+    HashSet::from_iter(get_classes(
+        &read_tailwind_config().expect("Problem getting classes"),
+    ))
 }
 
 fn is_valid_classname(class_name: &str) -> bool {
@@ -70,7 +74,10 @@ fn is_valid_classname(class_name: &str) -> bool {
 }
 
 fn is_valid_modifier(modifier: &str) -> bool {
-    get_modifiers(&read_tailwind_config().unwrap()).contains(&modifier.to_string())
+    let modifiers: HashSet<String> = HashSet::from_iter(get_modifiers(
+        &read_tailwind_config().expect("Problem getting modifiers"),
+    ));
+    modifiers.contains(&modifier.to_string())
 }
 
 fn parse_predefined_tw_classname(input: &str) -> IResult<&str, ()> {
