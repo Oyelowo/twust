@@ -1,6 +1,6 @@
 [workspace]
 workspace.resolver = "2"
-members = ["tw-macro", "tailwind"]
+members = ["twust-macro", "tailwind"]
 
 
 [workspace.package]
@@ -19,7 +19,7 @@ license = "MIT/Apache-2.0"
 
 
 [workspace.dependencies]
-twust = { path = "tw-macro" }
+twust = { path = "twust-macro" }
 # tailwind = { path = "tailwind" }
 
 proc-macro2 = "1.0.66"
