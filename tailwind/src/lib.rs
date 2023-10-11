@@ -82,9 +82,9 @@ fn _unsupported_media_query() {}
 ///
 /// ```compile_fail
 /// use tw_macro::tw;
-/// tw!("px-[45]");
+/// tw!("px-45]");
 /// ```
-fn _missing_unit_after_arbitrary_value() {}
+fn malformed_arbitrary_value() {}
 
 /// Invalid group usage.
 ///
