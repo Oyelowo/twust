@@ -96,6 +96,11 @@ aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-
 
      p-6 max-w-sm mx-auto bg-white rounded-xl shadow-lg flex items-center space-x-4
 
+
+              w-[calc(100%_-_theme("spacing[1.5]))"]
+          shadow-[inset_0_-3em_3em_rgba(0,_0,_0,_0.1),_0_0_0_2px_rgb(255,_255,_255),_0.3em_0.3em_1em_rgba(0,_0,_0,_0.3)]
+
+
         "#
     );
     // 'content-[>]',
@@ -112,10 +117,6 @@ aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-
     //       'bg-[rgb(255_0_0)]',
     //
     //       // Examples with combinations
-    //       'w-[calc(100%_-_theme("spacing[1.5]))"]',
-    //       'fill-[oklab(59.69%_0.1007_0.1191_/_0.5)]/[33.7%]',
-    //       'fill-[color:oklab(59.69%_0.1007_0.1191_/_0.5)]/[33.7%]',
-    //       'shadow-[inset_0_-3em_3em_rgba(0,_0,_0,_0.1),_0_0_0_2px_rgb(255,_255,_255),_0.3em_0.3em_1em_rgba(0,_0,_0,_0.3)]'
     //
 
     // let test =
