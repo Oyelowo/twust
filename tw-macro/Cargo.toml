@@ -3,8 +3,13 @@ name = "twust"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
-description = { workspace = true }
+# description = { workspace = true }
 documentation = { workspace = true }
+license = { workspace = true }
+repository = "https://github.com/Oyelowo/twust"
+description = "Static checker for tailwindcss class names in rust for rust"
+readme = "../README.md"
+keywords = ["tailwindcss", "tailwind", "css", "leptos", "yew"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

@@ -726,28 +726,28 @@ fn parse_top(input: &str) -> IResult<&str, Vec<&str>> {
 #[proc_macro]
 pub fn tw(raw_input: TokenStream) -> TokenStream {
     let r_input = raw_input.clone();
-    let input = parse_macro_input!(r_input as LitStr);
-    let (_modifiers, _valid_class_names) = match setup(&input) {
+    let input_original = parse_macro_input!(r_input as LitStr);
+    let (_modifiers, _valid_class_names) = match setup(&input_original) {
         Ok(value) => value,
         Err(value) => {
-            return syn::Error::new_spanned(input, value)
+            return syn::Error::new_spanned(input_original, value)
                 .to_compile_error()
                 .into()
         }
     };
-    let full_classnames = input.value();
+    let full_classnames = input_original.value();
 
-    let (input, _class_names) = match parse_top(&full_classnames) {
+    let (_input, _class_names) = match parse_top(&full_classnames) {
         Ok(value) => value,
         Err(value) => {
-            return syn::Error::new_spanned(input, value)
+            return syn::Error::new_spanned(input_original, value)
                 .to_compile_error()
                 .into()
         }
     };
 
     quote::quote! {
-        #input
+        #input_original
     }
     .into()
 }
