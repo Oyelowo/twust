@@ -4,16 +4,15 @@
  * Copyright (c) 2023 Oyelowo Oyedayo
  * Licensed under the MIT license
  */
-use std::str::FromStr;
 
 use nom::{
     branch::alt,
-    bytes::complete::{tag, take_till, take_until, take_while1},
-    character::complete::{digit1, multispace0, multispace1, space0, space1},
+    bytes::complete::{tag, take_until, take_while1},
+    character::complete::{digit1, multispace0, multispace1},
     combinator::{all_consuming, not, opt, recognize},
     multi::separated_list0,
     number,
-    sequence::{delimited, preceded, tuple},
+    sequence::{preceded, tuple},
     IResult,
 };
 use syn::{parse_macro_input, LitStr};
@@ -21,14 +20,12 @@ mod config;
 mod plugins;
 mod tailwind;
 use tailwind::{
-    colorful::COLORFUL_BASECLASSES, default_classnames::TAILWIND_CSS, lengthy::LENGTHY,
-    modifiers::get_modifiers, tailwind_config::CustomisableClasses,
-    valid_baseclass_names::VALID_BASECLASS_NAMES,
+    colorful::COLORFUL_BASECLASSES, lengthy::LENGTHY, modifiers::get_modifiers,
+    tailwind_config::CustomisableClasses, valid_baseclass_names::VALID_BASECLASS_NAMES,
 };
 
 use config::{get_classes, noconfig::UNCONFIGURABLE, read_tailwind_config};
 use proc_macro::TokenStream;
-use regex::{self, Regex};
 use tailwind::signable::SIGNABLES;
 // use tailwindcss_core::parser::{Extractor, ExtractorOptions};
 
@@ -86,14 +83,14 @@ fn parse_predefined_tw_classname(input: &str) -> IResult<&str, ()> {
 
     let is_signable = SIGNABLES.iter().any(|s| {
         class_name
-            .strip_prefix("-")
+            .strip_prefix('-')
             .unwrap_or(class_name)
             .starts_with(s)
     });
 
-    if is_signable && is_valid_classname(class_name.strip_prefix("-").unwrap_or(class_name)) {
-        Ok((input, ()))
-    } else if !is_signable && is_valid_classname(class_name) {
+    if is_signable && is_valid_classname(class_name.strip_prefix('-').unwrap_or(class_name))
+        || !is_signable && is_valid_classname(class_name)
+    {
         Ok((input, ()))
     } else {
         Err(nom::Err::Error(nom::error::Error::new(
@@ -108,7 +105,7 @@ fn is_ident_char(c: char) -> bool {
 }
 
 fn is_lengthy_classname(class_name: &str) -> bool {
-    LENGTHY.contains(&class_name.strip_prefix("-").unwrap_or(class_name))
+    LENGTHY.contains(&class_name.strip_prefix('-').unwrap_or(class_name))
 }
 
 // Custom number parser that handles optional decimals and signs, and scientific notation
@@ -158,7 +155,7 @@ fn parse_length_unit(input: &str) -> IResult<&str, String> {
 // text-[22px]
 fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     let (input, class_name) = take_until("-[")(input)?;
-    let ((input, _)) = if is_lengthy_classname(class_name) {
+    let (input, _) = if is_lengthy_classname(class_name) {
         Ok((input, ()))
     } else {
         Err(nom::Err::Error(nom::error::Error::new(
@@ -180,7 +177,7 @@ fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
 fn parse_hex_color(input: &str) -> IResult<&str, String> {
     let (input, _) = tag("#")(input)?;
     let (input, color) = take_while1(|c: char| c.is_ascii_hexdigit())(input)?;
-    let ((input, _)) = if color.chars().count() == 3 || color.chars().count() == 6 {
+    let (input, _) = if color.chars().count() == 3 || color.chars().count() == 6 {
         Ok((input, ()))
     } else {
         Err(nom::Err::Error(nom::error::Error::new(
@@ -241,7 +238,7 @@ fn is_colorful_baseclass(class_name: &str) -> bool {
 // text-[#bada55]
 fn colorful_arbitrary_baseclass(input: &str) -> IResult<&str, ()> {
     let (input, class_name) = take_until("-[")(input)?;
-    let ((input, _)) = if is_colorful_baseclass(class_name) {
+    let (input, _) = if is_colorful_baseclass(class_name) {
         Ok((input, ()))
     } else {
         Err(nom::Err::Error(nom::error::Error::new(
@@ -475,7 +472,7 @@ fn arbitrary_css_var3(input: &str) -> IResult<&str, ()> {
 fn arbitrary_group_classname(input: &str) -> IResult<&str, ()> {
     let (input, _) = alt((tag("group"),))(input)?;
     let (input, _) = tag("/")(input)?;
-    let (input, _) = take_while1(|char| is_ident_char(char))(input)?;
+    let (input, _) = take_while1(is_ident_char)(input)?;
     Ok((input, ()))
 }
 
@@ -664,7 +661,7 @@ fn modifiers_chained(input: &str) -> IResult<&str, ()> {
 }
 
 fn parse_tw_full_classname(input: &str) -> IResult<&str, Vec<&str>> {
-    let (input, class_names) = tuple((
+    let (input, _class_names) = tuple((
         opt(tuple((modifiers_chained, tag(":")))),
         parse_single_tw_classname,
     ))(input)?;
@@ -723,7 +720,7 @@ fn parse_top(input: &str) -> IResult<&str, Vec<&str>> {
 pub fn tw(raw_input: TokenStream) -> TokenStream {
     let r_input = raw_input.clone();
     let input = parse_macro_input!(r_input as LitStr);
-    let (modifiers, valid_class_names) = match setup(&input) {
+    let (_modifiers, _valid_class_names) = match setup(&input) {
         Ok(value) => value,
         Err(value) => {
             return syn::Error::new_spanned(input, value)
@@ -733,7 +730,7 @@ pub fn tw(raw_input: TokenStream) -> TokenStream {
     };
     let full_classnames = input.value();
 
-    let (input, class_names) = match parse_top(&full_classnames) {
+    let (input, _class_names) = match parse_top(&full_classnames) {
         Ok(value) => value,
         Err(value) => {
             return syn::Error::new_spanned(input, value)
