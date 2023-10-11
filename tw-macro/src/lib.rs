@@ -84,7 +84,16 @@ fn parse_predefined_tw_classname(input: &str) -> IResult<&str, ()> {
         )(i)
     })(input)?;
 
-    if is_valid_classname(class_name.strip_prefix("-").unwrap_or(class_name)) {
+    let is_signable = SIGNABLES.iter().any(|s| {
+        class_name
+            .strip_prefix("-")
+            .unwrap_or(class_name)
+            .starts_with(s)
+    });
+
+    if is_signable && is_valid_classname(class_name.strip_prefix("-").unwrap_or(class_name)) {
+        Ok((input, ()))
+    } else if !is_signable && is_valid_classname(class_name) {
         Ok((input, ()))
     } else {
         Err(nom::Err::Error(nom::error::Error::new(

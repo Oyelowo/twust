@@ -45,4 +45,7 @@ pub const SIGNABLES: [&str; 40] = [
     "grid-auto-columns",
     "z",
     "order",
+    // "scroll-mx",
+    // "scroll-my",
+    // "scroll-m",
 ];
