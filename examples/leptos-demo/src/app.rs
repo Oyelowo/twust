@@ -22,14 +22,15 @@ pub fn App() -> impl IntoView {
 fn Home() -> impl IntoView {
     // Try to break mistype any of the class name and see what happens.
     // Daisyui classes are also ssupported via a feature flag
+    let x = tw!("my-5 mx-auto max-w-3xl text-center");
     view! {
         <div class=tw!("my-5 mx-auto max-w-3xl text-center")>
-            <h2 class=tw!("p-6 text-4xl")>"Tw-macro"</h2>
-            <i class=tw!("p-2 text-2xl")>"Check your tailwind classes instantly with tw-macro."</i>
+            <h2 class=tw!("p-6 text-4xl")>"Twust"</h2>
+            <i class=tw!("p-2 text-2xl")>"Check your tailwind classes instantly with twust."</i>
             <p class=tw!("p-2 text-2xl")>"We also support daisyui plugin."</p>
 
             <div class=tw!("mockup-code w-[50px] [margin:auto]")>
-                <pre data-prefix="$"><code>cargo add tw-macro</code></pre>
+                <pre data-prefix="$"><code>cargo add twust</code></pre>
                 <pre data-prefix=">" class=tw!("text-warning")><code>installing...</code></pre>
                 <pre data-prefix=">" class=tw!("text-success")><code>Done!</code></pre>
             </div>
