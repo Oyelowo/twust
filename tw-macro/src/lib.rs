@@ -211,17 +211,11 @@ fn parse_u8(input: &str) -> IResult<&str, u8> {
 // rgb(255, 255, 255) rgb(255_255_255)
 fn parse_rgb_color(input: &str) -> IResult<&str, String> {
     let (input, _) = tag("rgb(")(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, r) = parse_u8(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = alt((tag(","), tag("_")))(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, g) = parse_u8(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = alt((tag(","), tag("_")))(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, b) = parse_u8(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = tag(")")(input)?;
     let color = format!("rgb({}, {}, {})", r, g, b);
     Ok((input, color))
@@ -230,21 +224,13 @@ fn parse_rgb_color(input: &str) -> IResult<&str, String> {
 // rgba(255, 255, 255, 0.5) rgba(255_255_255_0.5)
 fn parse_rgba_color(input: &str) -> IResult<&str, String> {
     let (input, _) = tag("rgba(")(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, r) = parse_u8(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = alt((tag(","), tag("_")))(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, g) = parse_u8(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = alt((tag(","), tag("_")))(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, b) = parse_u8(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = alt((tag(","), tag("_")))(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, a) = number::complete::double(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = tag(")")(input)?;
     let color = format!("rgba({}, {}, {}, {})", r, g, b, a);
     Ok((input, color))
