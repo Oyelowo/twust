@@ -284,6 +284,16 @@ fn arbitrary_content(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
+// content-[>] content-[<]
+fn arbitrary_with_arrow(input: &str) -> IResult<&str, ()> {
+    let (input, _) = take_while1(is_ident_char)(input)?;
+    let (input, _) = tag("[")(input)?;
+    let (input, _) = alt((tag(">"), tag("<")))(input)?;
+    let (input, _) = take_until("]")(input)?;
+    let (input, _) = tag("]")(input)?;
+    Ok((input, ()))
+}
+
 // bg-black/25
 fn predefined_colorful_opacity(input: &str) -> IResult<&str, ()> {
     let input = if COLORFUL_BASECLASSES
@@ -506,6 +516,8 @@ fn parse_single_tw_classname(input: &str) -> IResult<&str, ()> {
         colorful_arbitrary_baseclass,
         // before:content-['Festivus']
         arbitrary_content,
+        // content-[>] content-[<]
+        arbitrary_with_arrow,
         // bg-[--my-color]
         arbitrary_css_var,
         // text-[var(--my-var)]

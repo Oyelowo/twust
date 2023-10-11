@@ -47,8 +47,9 @@ fn main() {
 after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700
 
     before:content-[''] before:block
-
-
+content-[>]
+content-[<]
+    
     bg-black/75 supports-[backdrop-filter]:bg-black/25 supports-[backdrop-filter]:backdrop-blur
 
 aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
@@ -91,6 +92,26 @@ aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')] aria-[sort=descending]:bg-
 
         "#
     );
+    // 'content-[>]',
+    //       //        ^
+    //       'content-[<]',
+    //       //        ^
+    //
+    //       // With functions and math expressions
+    //       'px-[calc(100%-1rem)]',
+    //       'px-[theme(spacing.1)]',
+    //       'px-[theme(spacing[1.5])]',
+    //
+    //       // With spaces (replaced by `_`)
+    //       'bg-[rgb(255_0_0)]',
+    //
+    //       // Examples with combinations
+    //       'w-[calc(100%_-_theme("spacing[1.5]))"]',
+    //       'fill-[oklab(59.69%_0.1007_0.1191_/_0.5)]/[33.7%]',
+    //       'fill-[color:oklab(59.69%_0.1007_0.1191_/_0.5)]/[33.7%]',
+    //       'shadow-[inset_0_-3em_3em_rgba(0,_0,_0,_0.1),_0_0_0_2px_rgb(255,_255,_255),_0.3em_0.3em_1em_rgba(0,_0,_0,_0.3)]'
+    //
+
     // let test =
     //     tw!("peer[.is-dirty]:peer-required:block hidden  hidden peer-[:nth-of-type(3)_&]:block");
     println!("TEXT - {}", test);
