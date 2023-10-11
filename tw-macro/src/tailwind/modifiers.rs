@@ -153,7 +153,7 @@ pub const ARIA_DEFAULT: [&str; 8] = [
 
 pub fn get_modifiers(config: &TailwindConfig) -> Vec<String> {
     let mut modifiers = Vec::new();
-    modifiers.extend(MODIFIERS.iter().map(|x| x.to_string()));
+    modifiers.extend(MODIFIERS.iter().map(ToString::to_string));
     let mut default_screens = vec![
         "sm", "md", "lg", "xl", "2xl", // "min-[…]",
         "max-sm", "max-md", "max-lg", "max-xl", "max-2xl",
