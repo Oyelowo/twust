@@ -170,10 +170,8 @@ fn lengthy_arbitrary_classname(input: &str) -> IResult<&str, ()> {
     // arbitrary value
     let (input, _) = tag("-")(input)?;
     let (input, _) = tag("[")(input)?;
-    let (input, _) = multispace0(input)?;
     // is number
     let (input, _) = parse_length_unit(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
     Ok((input, ()))
 }
@@ -255,9 +253,7 @@ fn colorful_arbitrary_baseclass(input: &str) -> IResult<&str, ()> {
     // arbitrary value
     let (input, _) = tag("-")(input)?;
     let (input, _) = tag("[")(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = alt((parse_hex_color, parse_rgb_color, parse_rgba_color))(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
     Ok((input, ()))
 }
@@ -265,13 +261,9 @@ fn colorful_arbitrary_baseclass(input: &str) -> IResult<&str, ()> {
 // e.g: [mask-type:alpha]
 fn kv_pair_classname(input: &str) -> IResult<&str, ()> {
     let (input, _) = tag("[")(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = take_while1(is_ident_char)(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = tag(":")(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = take_while1(is_ident_char)(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
     Ok((input, ()))
 }
@@ -325,7 +317,7 @@ fn predefined_colorful_opacity(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
-// bg-black/[27]
+// bg-black/[27] bg-black/[27%]
 fn arbitrary_opacity(input: &str) -> IResult<&str, ()> {
     let input = if COLORFUL_BASECLASSES
         .iter()
@@ -373,11 +365,9 @@ fn bg_arbitrary_url(input: &str) -> IResult<&str, ()> {
     };
     let (input, _) = take_while1(|char| is_ident_char(char) && char != '[')(input)?;
     let (input, _) = tag("[")(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = tag("url('")(input)?;
     let (input, _) = take_until("')")(input)?;
     let (input, _) = tag("')")(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
     Ok((input, ()))
 }
@@ -404,15 +394,12 @@ fn arbitrary_css_value(input: &str) -> IResult<&str, ()> {
         tag("var(--"),
         // <ident>:var(--
     )))(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = take_while1(|char| is_ident_char(char) && char != '(')(input)?;
     let (input, _) = tag("(")(input)?;
     let (input, _) = take_until(")]")(input)?;
 
-    let (input, _) = multispace0(input)?;
     // allow anything inthe brackets
     let (input, _) = take_until("]")(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = tag("]")(input)?;
     Ok((input, ()))
 }
@@ -433,7 +420,6 @@ fn arbitrary_css_var(input: &str) -> IResult<&str, ()> {
     };
     let (input, _) = take_while1(|char| is_ident_char(char) && char != '[')(input)?;
     let (input, _) = tag("[")(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = tag("--")(input)?;
     let (input, _) = take_while1(|char| is_ident_char(char) && char != ']')(input)?;
     let (input, _) = tag("]")(input)?;
@@ -455,7 +441,6 @@ fn arbitrary_css_var2(input: &str) -> IResult<&str, ()> {
     };
     let (input, _) = take_while1(|char| is_ident_char(char) && char != '[')(input)?;
     let (input, _) = tag("[")(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = tag("var(--")(input)?;
     let (input, _) = take_while1(|char| is_ident_char(char) && char != ')')(input)?;
     let (input, _) = tag(")]")(input)?;
@@ -478,10 +463,8 @@ fn arbitrary_css_var3(input: &str) -> IResult<&str, ()> {
     };
     let (input, _) = take_while1(|char| is_ident_char(char) && char != '[')(input)?;
     let (input, _) = tag("[")(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = take_while1(|char| is_ident_char(char) && char != ':')(input)?;
     let (input, _) = tag(":")(input)?;
-    let (input, _) = multispace0(input)?;
     let (input, _) = tag("var(--")(input)?;
     let (input, _) = take_while1(|char| is_ident_char(char) && char != ')')(input)?;
     let (input, _) = tag(")]")(input)?;
@@ -726,7 +709,7 @@ fn parse_tw_full_classname(input: &str) -> IResult<&str, Vec<&str>> {
 // text-[color:var(--my-var)]
 fn parse_class_names(input: &str) -> IResult<&str, Vec<&str>> {
     let (input, _) = multispace0(input)?;
-    let (input, class_names) = separated_list0(multispace1, parse_tw_full_classname)(input)?;
+    let (input, _class_names) = separated_list0(multispace1, parse_tw_full_classname)(input)?;
     let (input, _) = multispace0(input)?;
 
     Ok((input, vec![]))
