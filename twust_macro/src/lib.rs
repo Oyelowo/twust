@@ -5,8 +5,6 @@
  * Licensed under the MIT license
  */
 
-use std::collections::HashSet;
-
 use nom::{
     branch::alt,
     bytes::complete::{tag, take_until, take_while1},
@@ -17,6 +15,7 @@ use nom::{
     sequence::{preceded, tuple},
     IResult,
 };
+use std::collections::HashSet;
 use syn::{parse_macro_input, LitStr};
 mod config;
 mod plugins;
@@ -29,7 +28,6 @@ use tailwind::{
 use config::{get_classes, noconfig::UNCONFIGURABLE, read_tailwind_config};
 use proc_macro::TokenStream;
 use tailwind::signable::SIGNABLES;
-// use tailwindcss_core::parser::{Extractor, ExtractorOptions};
 
 fn setup(input: &LitStr) -> Result<(Vec<String>, Vec<String>), TokenStream> {
     let config = &(match read_tailwind_config() {
@@ -766,3 +764,40 @@ pub fn tw(raw_input: TokenStream) -> TokenStream {
     }
     .into()
 }
+
+// // Requires featues = full. Dont need it, can just use macrorules
+// #[proc_macro]
+// pub fn tws(raw_input: TokenStream) -> TokenStream {
+//     let input = parse_macro_input!(raw_input as Expr);
+//
+//     let mut all_classnames = Vec::new();
+//
+//     match input {
+//         Expr::Array(array) => {
+//             for expr in array.elems.iter() {
+//                 if let Expr::Lit(syn::ExprLit { lit: syn::Lit::Str(lit_str), .. }) = expr {
+//                     all_classnames.push(lit_str.value());
+//                 } else {
+//                     return syn::Error::new_spanned(expr, "Expected string literals in the array")
+//                         .to_compile_error()
+//                         .into();
+//                 }
+//             }
+//         }
+//         Expr::Lit(syn::ExprLit { lit: syn::Lit::Str(lit_str), .. }) => {
+//             all_classnames.push(lit_str.value());
+//         }
+//         _ => {
+//             return syn::Error::new_spanned(input, "Expected a string literal or an array of string literals")
+//                 .to_compile_error()
+//                 .into();
+//         }
+//     }
+//
+//     let concatenated = all_classnames.join(" ");
+//
+//     quote::quote! {
+//         #concatenated
+//     }
+//     .into()
+// }

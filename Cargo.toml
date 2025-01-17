@@ -37,11 +37,10 @@ keywords = [
 [workspace.dependencies]
 twust = { path = "twust" }
 twust_macro = { path = "twust_macro" }
-# tailwind = { path = "tailwind" }
-
 proc-macro2 = "1.0.69"
 quote = "1.0.33"
-syn = "2.0.38"
+syn = { version = "2.0.38" }
+# syn = { version = "2.0.38", features = ["full"] }
 nom = "7.1.3"
 static_assertions = "1.1.0"
 serde = { version = "1.0.188", features = ["derive"] }
