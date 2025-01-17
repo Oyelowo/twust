@@ -1,28 +1,11 @@
-use leptos::*;
-use leptos_meta::*;
-use leptos_router::*;
+use leptos::prelude::*;
 use twust::tw;
 
 #[component]
-pub fn App() -> impl IntoView {
-    provide_meta_context();
-
-    view! {
-        <Stylesheet id="leptos" href="/pkg/tailwind.css"/>
-        <Link rel="shortcut icon" type_="image/ico" href="/favicon.ico"/>
-        <Router>
-            <Routes>
-                <Route path="" view=  move || view! { <Home/> }/>
-            </Routes>
-        </Router>
-    }
-}
-
-#[component]
-fn Home() -> impl IntoView {
+pub fn Home() -> impl IntoView {
     // Try to break mistype any of the class name and see what happens.
     // Daisyui classes are also ssupported via a feature flag
-    let x = tw!("my-5 mx-auto max-w-3xl text-center");
+    let _x = tw!("my-5 mx-auto max-w-3xl text-center");
     view! {
         <div class=tw!("my-5 mx-auto max-w-3xl text-center")>
             <h2 class=tw!("p-6 text-4xl")>"Twust"</h2>
