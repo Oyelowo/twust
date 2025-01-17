@@ -77,7 +77,7 @@ fn is_valid_modifier(modifier: &str) -> bool {
     let modifiers: HashSet<String> = HashSet::from_iter(get_modifiers(
         &read_tailwind_config().expect("Problem getting modifiers"),
     ));
-    modifiers.contains(&modifier.to_string())
+    modifiers.contains(modifier)
 }
 
 fn parse_predefined_tw_classname(input: &str) -> IResult<&str, ()> {
