@@ -1,15 +1,14 @@
 [package]
-name = "twust"
+name = "twust_macro"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
-# description = { workspace = true }
 documentation = { workspace = true }
 license = { workspace = true }
-repository = "https://github.com/Oyelowo/twust"
-description = "Static checker for tailwindcss class names in rust for rust"
-readme = "../README.md"
-keywords = ["tailwindcss", "tailwind", "css", "leptos", "yew"]
+repository = { workspace = true }
+description = { workspace = true }
+readme = { workspace = true }
+keywords = { workspace = true }
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

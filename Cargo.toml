@@ -1,6 +1,6 @@
 [workspace]
 workspace.resolver = "2"
-members = ["twust-macro", "tailwind"]
+members = ["twust", "twust_macro", "tailwind"]
 
 
 [workspace.package]
@@ -12,6 +12,7 @@ email = ["oyelowo.oss@gmai.com"]
 readme = "README.md"
 documentation = "https://docs.rs/nom"
 # documentation = "https://codebreather.com/oyelowo"
+repository = "https://github.com/Oyelowo/twust"
 description = "Zero-config Static type-checker for Tailwind CSS"
 license = "MIT/Apache-2.0"
 categories = ["UI", "css", "tailwindcss", "web-programming"]
@@ -34,7 +35,8 @@ keywords = [
 
 
 [workspace.dependencies]
-twust = { path = "twust-macro" }
+twust = { path = "twust" }
+twust_macro = { path = "twust_macro" }
 # tailwind = { path = "tailwind" }
 
 proc-macro2 = "1.0.69"
