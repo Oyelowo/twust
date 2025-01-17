@@ -5,12 +5,12 @@ members = ["twust", "twust_macro", "tailwind"]
 
 [workspace.package]
 name = "twust"
-version = "1.0.5"
+version = "1.0.6"
 edition = "2021"
 authors = ["Oyelowo Oyedayo"]
 email = ["oyelowo.oss@gmai.com"]
 readme = "README.md"
-documentation = "https://docs.rs/nom"
+documentation = "https://docs.rs/twust"
 # documentation = "https://codebreather.com/oyelowo"
 repository = "https://github.com/Oyelowo/twust"
 description = "Zero-config Static type-checker for Tailwind CSS"
