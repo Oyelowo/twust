@@ -82,7 +82,8 @@ use crate::config::{add_classes_for_field, modifiers};
 
 use super::tailwind_config::TailwindConfig;
 
-const MODIFIERS: [&str; 49] = [
+const MODIFIERS: [&str; 50] = [
+    "*",
     "hover",
     "focus",
     "focus-within",
@@ -160,7 +161,7 @@ pub fn get_modifiers(config: &TailwindConfig) -> Vec<String> {
         // "max-[…]",
     ]
     .into_iter()
-    .map(|x| x.to_string())
+    .map(Into::into)
     .collect::<Vec<String>>();
 
     if let Some(ref screens) = config.theme.overrides.screens {
