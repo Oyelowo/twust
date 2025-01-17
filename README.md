@@ -49,8 +49,8 @@ Simply prefix your TailwindCSS class strings with the `tw!` macro:
 
 ```rust
 use twust::tw;
-
-let classes = tw!("bg-blue-500 hover:bg-blue-700");
+let classes_list = tw!["bg-blue-500 hover:bg-blue-700", "bg-purple", "py-sm md:py-md tablet:py-sm lg:py-lg xl:py-xl"];
+let classes_space_separated = tw!("bg-blue-500 hover:bg-blue-700");
     // You can override/extend color/background color in tailwind.config.json
 tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-purple bg-red-50 bg-tahiti-800 border-s-tahiti-800");
 tw!("md:text-red-50 text-slate-50 text-purple text-tahiti-500");
