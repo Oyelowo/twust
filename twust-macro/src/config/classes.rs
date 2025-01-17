@@ -516,6 +516,24 @@ define_tailwind_field!({
     variants: []
 });
 
+// 3. Placeholder
+// Placeholder Color
+// Placeholder Opacity
+define_tailwind_color_field!({
+    name: PlaceholderColor,
+    prefix: "placeholder-color",
+    field_name: placeholder_color,
+    variants: []
+});
+
+define_tailwind_field!({
+    name: PlaceholderOpacity,
+    prefix: "placeholder-opacity",
+    inherited: placeholder_opacity,
+    field_name: placeholder_opacity,
+    variants: []
+});
+
 // 3. Spacing
 // Padding
 // Margin

@@ -86,7 +86,7 @@ pub fn get_classes(config: &TailwindConfig) -> Vec<String> {
     // by the user.
 
     let mut classes = Vec::new();
-    let utilities: [Box<dyn TailwindField>; 175] = [
+    let utilities: [Box<dyn TailwindField>; 177] = [
         Box::new(AspectRatio),
         Box::new(Container),
         Box::new(Columns),
@@ -143,6 +143,8 @@ pub fn get_classes(config: &TailwindConfig) -> Vec<String> {
         Box::new(PlaceContent),
         Box::new(PlaceItems),
         Box::new(PlaceSelf),
+        Box::new(PlaceholderColor),
+        Box::new(PlaceholderOpacity),
         Box::new(Padding),
         Box::new(Margin),
         Box::new(SpaceBetween),
