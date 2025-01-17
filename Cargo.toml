@@ -5,12 +5,25 @@ members = ["twust-macro", "tailwind"]
 
 [workspace.package]
 name = "twust"
-version = "1.0.4"
+version = "1.0.5"
 edition = "2021"
 authors = ["Oyelowo Oyedayo"]
-description = "One codebase to rule them all"
-documentation = "https://codebreather.com/oyelowo"
+email = ["oyelowo.oss@gmai.com"]
+description = "Zero-config Static type-checker for Tailwind CSS"
+# documentation = "https://codebreather.com/oyelowo"
 license = "MIT/Apache-2.0"
+categories = ["UI", "css", "tailwindcss", "web-programming"]
+keywords = [
+  "tailwind",
+  "css",
+  "tailwindcss",
+  "frontend",
+  "ui",
+  "rust",
+  "web",
+  "twust",
+]
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
