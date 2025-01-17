@@ -16,16 +16,7 @@ repository = "https://github.com/Oyelowo/twust"
 description = "Zero-config Static type-checker for Tailwind CSS"
 license = "MIT/Apache-2.0"
 categories = ["UI", "css", "tailwindcss", "web-programming"]
-keywords = [
-  "tailwind",
-  "css",
-  "tailwindcss",
-  "frontend",
-  "ui",
-  "rust",
-  "web",
-  "twust",
-]
+keywords = ["tailwind", "css", "tailwindcss", "ui", "web"]
 
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
