@@ -71,7 +71,7 @@ pub(crate) fn read_tailwind_config() -> Result<TailwindConfig, std::io::Error> {
         return Err(std::io::Error::new(
             std::io::ErrorKind::NotFound,
             format!(
-                "tailwind.config.json was not found in the top-level directory - \n{config_path:?}. Ensure it exists."
+                "tailwind.config.json was not found in the top-level directory - \n{config_path:?}. Make sure it exists."
             ),
         ));
     }
