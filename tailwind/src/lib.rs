@@ -117,6 +117,11 @@ fn _invalid_group_usage_3() {}
 
 fn _happy_paths() {
     fn main() {
+        let _classnames = tw!("group-data-[selected=Right]:w-[30px]");
+        let _classnames = tw!("group-aria-[main-page=false]/main:hidden");
+        let _classnames = tw!("group-data-[main-page=false]/main:hidden");
+        let _classnames = tw!("*:overflow-scroll");
+
         let _classnames = tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-red-50");
         let _classnames = tw!("bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-purple bg-red-50 bg-tahiti-800 border-s-tahiti-800");
         let _classnames = tw!("md:text-red-50 text-slate-50 text-purple text-tahiti-500");
