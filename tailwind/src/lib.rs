@@ -216,3 +216,38 @@ fn _happy_paths() {
             tw!("h-full border-2 border-mana-53 border-opacity-60 rounded-lg overflow-hidden");
     }
 }
+
+fn _happy_paths_list() {
+    fn main() {
+        let _classnames = tw![
+            "group-data-[selected=Right]:w-[30px]",
+            "group-aria-[main-page=false]/main:hidden",
+            "group-data-[main-page=false]/main:hidden",
+            "*:overflow-scroll",
+            "bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-red-50",
+            "bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-purple bg-red-50 bg-tahiti-800 border-s-tahiti-800",
+            "md:text-red-50 text-slate-50 text-purple text-tahiti-500",
+            "py-sm md:py-md tablet:py-sm lg:py-lg xl:py-xl",
+            "group",
+            "text-sm font-medium text-slate-300 group-hover:text-white",
+            "text-sm font-medium text-slate-500 group-hover:text-slate-300",
+            "hover:-translate-y-0.5 transition motion-reduce:hover:translate-y-0 motion-reduce:transition-none",
+            "motion-safe:hover:-translate-x-0.5 motion-safe:transition"
+        ];
+    }
+}
+
+#[test]
+fn test() {
+    let classes = tw!("group-data-[selected=Right]:w-[30px]");
+    assert_eq!(classes, "group-data-[selected=Right]:w-[30px]");
+
+    let classes = tw!("group-aria-[main-page=false]/main:hidden");
+    assert_eq!(classes, "group-aria-[main-page=false]/main:hidden");
+
+    let classes = tw!("group-data-[main-page=false]/main:hidden");
+    assert_eq!(classes, "group-data-[main-page=false]/main:hidden");
+
+    let classlist = tw!["group-data-[selected=Right]:w-[30px]", "group-aria-[main-page=false]/main:hidden", "group-data-[main-page=false]/main:hidden", "*:overflow-scroll", "bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-red-50", "bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-purple bg-red-50 bg-tahiti-800 border-s-tahiti-800", "md:text-red-50 text-slate-50 text-purple text-tahiti-500", "py-sm md:py-md tablet:py-sm lg:py-lg xl:py-xl", "group", "text-sm font-medium text-slate-300 group-hover:text-white", "text-sm font-medium text-slate-500 group-hover:text-slate-300", "hover:-translate-y-0.5 transition motion-reduce:hover:translate-y-0 motion-reduce:transition-none", "motion-safe:hover:-translate-x-0.5 motion-safe:transition"];
+    assert_eq!(classlist, "group-data-[selected=Right]:w-[30px] group-aria-[main-page=false]/main:hidden group-data-[main-page=false]/main:hidden *:overflow-scroll bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-red-50 bg-taxvhiti bg-tahiti-500 bg-tahiti bg-midnight bg-purple bg-red-50 bg-tahiti-800 border-s-tahiti-800 md:text-red-50 text-slate-50 text-purple text-tahiti-500 py-sm md:py-md tablet:py-sm lg:py-lg xl:py-xl group text-sm font-medium text-slate-300 group-hover:text-white text-sm font-medium text-slate-500 group-hover:text-slate-300 hover:-translate-y-0.5 transition motion-reduce:hover:translate-y-0 motion-reduce:transition-none motion-safe:hover:-translate-x-0.5 motion-safe:transition ");
+}
