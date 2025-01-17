@@ -29,10 +29,8 @@ compile-time.
 
 ## Overview
 
-`twust` is a Rust procedural macro that provides compile-time validation for
-TailwindCSS class names. Leveraging the power of Rust's macro system, `twust`
-ensures that you only use valid TailwindCSS class names, preventing runtime
-errors and promoting a more robust development experience.
+`twust` is a zero-config static type-checker for tailwindcss classes.
+Catch your CSS errors instantly, not in production.
 
 ## Installation
 
@@ -40,7 +38,7 @@ Add `twust` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-twust = "1.0.4"
+twust = "1.0.6"
 ```
 
 ## Usage
