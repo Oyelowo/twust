@@ -32,8 +32,6 @@ pub use twust_macro::tw as twust;
 // }
 //
 
-
-
 /// Typechecks tailwindcss classnames at compile time.
 ///
 /// ## Features:
