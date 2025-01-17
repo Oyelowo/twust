@@ -1,4 +1,4 @@
-name: tw-macro
+name: twust
 
 on:
   # workflow_dispatch:
@@ -44,26 +44,12 @@ jobs:
       #     repo-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: Swatinem/rust-cache@v1
 
+      - name: cd tailwind
+        run: cd tailwind
+
       - name: Run cargo test
         run: cargo test --verbose
 
-  format:
-    name: Rustfmt
-    runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     working-directory: rust
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-
-      - run: rustup component add rustfmt
-
-      - run: cargo fmt
-      - run: cargo clippy --fix
 
   clippy:
     name: Clippy
