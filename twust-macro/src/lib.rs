@@ -70,7 +70,7 @@ fn get_classes_straight() -> HashSet<String> {
 }
 
 fn is_valid_classname(class_name: &str) -> bool {
-    get_classes_straight().contains(&class_name.to_string())
+    get_classes_straight().contains(class_name)
 }
 
 fn is_valid_modifier(modifier: &str) -> bool {
@@ -616,13 +616,16 @@ fn supports_arbitrary(input: &str) -> IResult<&str, ()> {
 
 // aria-[sort=ascending]:bg-[url('/img/down-arrow.svg')]
 // aria-[sort=descending]:bg-[url('/img/up-arrow.svg')]
-fn aria_arbitrary(input: &str) -> IResult<&str, ()> {
+// group-data-[selected=Right]:w-[30px]
+// group-aria-[main-page=false]/main:hidden / group-data-[main-page=false]/main:hidden
+fn aria_or_data_arbitrary(input: &str) -> IResult<&str, ()> {
     let (input, _) = opt(tag("group-"))(input)?;
-    let (input, _) = tag("aria-[")(input)?;
+    let (input, _) = alt((tag("aria-["), tag("data-[")))(input)?;
     let (input, _) = take_while1(is_ident_char)(input)?;
     let (input, _) = tag("=")(input)?;
     let (input, _) = take_while1(is_ident_char)(input)?;
     let (input, _) = tag("]")(input)?;
+    let (input, _) = opt(tuple((tag("/"), take_while1(is_ident_char))))(input)?;
     Ok((input, ()))
 }
 
@@ -645,6 +648,12 @@ fn min_max_arbitrary_modifier(input: &str) -> IResult<&str, ()> {
     Ok((input, ()))
 }
 
+// *:overflow-scroll
+fn wildcard_modifier(input: &str) -> IResult<&str, ()> {
+    let (input, _) = tag("*")(input)?;
+    Ok((input, ()))
+}
+
 fn modifier(input: &str) -> IResult<&str, ()> {
     alt((
         group_modifier_selector,
@@ -656,9 +665,10 @@ fn modifier(input: &str) -> IResult<&str, ()> {
         arbitrary_at_media_rule_modifier,
         predefined_modifier,
         supports_arbitrary,
-        aria_arbitrary,
+        aria_or_data_arbitrary,
         data_arbitrary,
         min_max_arbitrary_modifier,
+        wildcard_modifier,
     ))(input)
 }
 
@@ -721,6 +731,11 @@ fn parse_class_names(input: &str) -> IResult<&str, Vec<&str>> {
 
 fn parse_top(input: &str) -> IResult<&str, Vec<&str>> {
     all_consuming(parse_class_names)(input)
+}
+
+#[test]
+fn test_group_attr_arbitrary2() {
+    assert_eq!(parse_top("group-data-[selected=Right]"), Ok(("", vec![])));
 }
 
 #[proc_macro]
