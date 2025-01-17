@@ -6,11 +6,11 @@ edition = "2021"
 [workspace]
 
 [dependencies]
-leptos = { version = "0.5.0-beta2", features = ["csr", "nightly"] }
-leptos_meta = { version = "0.5.0-beta2", features = ["csr", "nightly"] }
-leptos_router = { version = "0.5.0-beta2", features = ["csr", "nightly"] }
-log = "0.4.2"
-gloo-net = { version = "0.4.0", features = ["http"] }
+leptos = { version = "0.7.4", features = ["csr"] }
+leptos_meta = { version = "0.7.4" }
+leptos_router = { version = "0.7.4" }
+log = "0.4.25"
+gloo-net = { version = "0.6.0", features = ["http"] }
 twust = { version = "*", features = ["daisyui"] }
 # twust = { git = "https://github.com/oyelowo/twust", features = ["daisyui"] }
 
