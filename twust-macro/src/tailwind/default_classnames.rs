@@ -7,6 +7,7 @@
 // placescreen_readers-shown
 // placeholder-slate-400
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Copy)]
 pub struct TailWindCssDefaultClassNames {
     pub aspect_ratio: [&'static str; 3],
