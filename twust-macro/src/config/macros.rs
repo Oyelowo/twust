@@ -54,7 +54,7 @@ macro_rules! define_tailwind_color_field {
             fn get_default(&self, config: &TailwindConfig) -> Vec<&str> {
                 if let Some(ref core_plugins) = config.core_plugins {
                     if let Some(enabled) = core_plugins.$default_field {
-                        if enabled == false {
+                        if !enabled {
                             return vec![];
                         }
                     }
@@ -65,7 +65,7 @@ macro_rules! define_tailwind_color_field {
             fn get_override(&self, config: &TailwindConfig) -> Vec<String> {
                 if let Some(ref core_plugins) = config.core_plugins {
                     if let Some(enabled) = core_plugins.$default_field {
-                        if enabled == false {
+                        if !enabled {
                             return vec![];
                         }
                     }
@@ -80,7 +80,7 @@ macro_rules! define_tailwind_color_field {
             fn get_extend(&self, config: &TailwindConfig) -> Vec<String> {
                 if let Some(ref core_plugins) = config.core_plugins {
                     if let Some(enabled) = core_plugins.$default_field {
-                        if enabled == false {
+                        if !enabled {
                             return vec![];
                         }
                     }
@@ -117,7 +117,7 @@ macro_rules! define_tailwind_field {
             fn get_default(&self, config: &TailwindConfig) -> Vec<&str> {
                 if let Some(ref core_plugins) = config.core_plugins {
                     if let Some(enabled) = core_plugins.$field_name {
-                        if enabled == false {
+                        if !enabled {
                             return vec![];
                         }
                     }
@@ -129,7 +129,7 @@ macro_rules! define_tailwind_field {
             fn get_override(&self, config: &TailwindConfig) -> Vec<String> {
                 if let Some(ref core_plugins) = config.core_plugins {
                     if let Some(enabled) = core_plugins.$field_name {
-                        if enabled == false {
+                        if !enabled {
                             return vec![];
                         }
                     }
@@ -144,7 +144,7 @@ macro_rules! define_tailwind_field {
             fn get_extend(&self, config: &TailwindConfig) -> Vec<String> {
                 if let Some(ref core_plugins) = config.core_plugins {
                     if let Some(enabled) = core_plugins.$field_name {
-                        if enabled == false {
+                        if !enabled {
                             return vec![];
                         }
                     }
