@@ -27,7 +27,8 @@ keywords = ["tailwind", "css", "tailwindcss", "ui", "web"]
 
 [workspace.dependencies]
 twust = { path = "twust" }
-twust_macro = { path = "twust_macro" }
+twust_macro = { version = "1.0.6" }
+# twust_macro = { path = "twust_macro" }
 proc-macro2 = "1.0.69"
 quote = "1.0.33"
 syn = { version = "2.0.38" }
