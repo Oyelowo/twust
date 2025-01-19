@@ -279,7 +279,11 @@ pub fn get_classes(config: &TailwindConfig) -> Vec<String> {
     classes.extend(allowed_extra_classes);
     classes.push("group".to_string());
 
-    classes.extend(daisyui::get_daisy_v3_classes().iter().map(ToString::to_string));
+    classes.extend(
+        daisyui::get_daisy_v3_classes()
+            .iter()
+            .map(ToString::to_string),
+    );
 
     classes
 }
