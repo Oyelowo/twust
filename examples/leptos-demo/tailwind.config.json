@@ -1,8 +1,0 @@
-{
-    "allowedLists": {
-        "classes": ["text-warning", "text-success"]
-    },
-    "theme":{
-        "extend":{}
-    }
-}
