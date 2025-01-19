@@ -1,10 +1,10 @@
 #[cfg(feature = "daisyui")]
-pub fn get_it() -> Vec<&'static str> {
+pub fn get_daisy_v3_classes() -> Vec<&'static str> {
     DAISY_UI_CLASSES.to_vec()
 }
 
 #[cfg(not(feature = "daisyui"))]
-pub fn get_it() -> Vec<&'static str> {
+pub fn get_daisy_v3_classes() -> Vec<&'static str> {
     Vec::new()
 }
 
