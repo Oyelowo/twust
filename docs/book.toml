@@ -1,0 +1,17 @@
+[book]
+title = "Twust Documentation"
+authors = ["oyelowo"]
+author = "Oyelowo Oyedayo"
+description = "Zero-config TailwindCSS static typechecker in Rust"
+language = "en"
+multilingual = false
+src = "src"
+
+[build]
+rustc-opts = ["--edition=2021"]
+
+[output.html]
+site-url = "/twust/"
+git-repository-url = "https://github.com/oyelowo/twust"
+default-theme = "light"
+preferred-dark-theme = "ayu"
