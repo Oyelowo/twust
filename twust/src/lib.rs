@@ -5,33 +5,8 @@
  * Licensed under the MIT license
  */
 
-pub use twust_macro::tw as twust;
-// // use twust_macro::xtw;
-//
-// #[macro_export]
-// macro_rules! tw {
-//     // Case: Single string
-//     ($single:literal) => {
-//         $single
-//     };
-//     ($($class:literal),*) => {
-//         concat!($($class, " "),*)
-//     };
-//
-//     ([$($class:expr),*]) => {
-//         concat!($($class, " "),*)
-//     };
-// }
-//
-// fn main() {
-//     let _classnames_single = tw!("scroll-m-14 flex supports-grid:grid supports-[display:grid]:grid");
-//     let _classnames_array = tw!["scroll-m-14", "flex", "supports-grid:grid", "supports-[display:grid]:grid"];
-//     let _classnames_array2 = tw!(["scroll-m-14", "flex", "supports-grid:grid", "supports-[display:grid]:grid"]);
-//     // let _classnames_array2 = twx!(["scroll-m-14", "flex", "supports-grid:grid", "supports-[display:grid]:grid"]);
-//     // let _classnames_array2 = twx!(["scroll-m-14", "flex", "supports-grid:grid", "supports-[display:grid]:grid"]);
-// }
-//
-
+// #[cfg(feature = "daisyui")]
+pub use twust_macro::{twust_one_class as tw1, twust_many_classes};
 /// Typechecks tailwindcss classnames at compile time.
 ///
 /// ## Features:
@@ -47,11 +22,9 @@ pub use twust_macro::tw as twust;
 ///
 /// let single_class = tw!("scroll-m-14 flex supports-grid:grid supports-[display:grid]:grid");
 /// let multiple_classes = tw!["scroll-m-14", "flex", "supports-grid:grid", "supports-[display:grid]:grid"];
-/// let array_classes = tw!(["scroll-m-14", "flex", "supports-grid:grid", "supports-[display:grid]:grid"]);
 ///
 /// assert_eq!(single_class, "scroll-m-14 flex supports-grid:grid supports-[display:grid]:grid");
 /// assert_eq!(multiple_classes, "scroll-m-14 flex supports-grid:grid supports-[display:grid]:grid");
-/// assert_eq!(array_classes, "scroll-m-14 flex supports-grid:grid supports-[display:grid]:grid");
 /// ```
 ///
 /// ## Notes
@@ -60,14 +33,29 @@ pub use twust_macro::tw as twust;
 #[macro_export]
 macro_rules! tw {
     ($single:literal) => {
-        $single
+        $crate::twust_many_classes!($single)
     };
 
+    ($first:literal $(, $rest:literal)*) => {
+        concat!($crate::twust_many_classes!($first), $(" ", $crate::twust_many_classes!($rest)),*)
+    };
+}
+
+// tws["scroll-m-14", "flex:]; // ["scroll-m-14", "flex"]
+/// Typechecks tailwindcss classnames at compile time.
+///
+/// ## Features:
+/// - Supports **multiple string arguments** (`tw!["class1", "class2"]`)
+#[macro_export]
+macro_rules! tws {
     ($($class:literal),*) => {
-        concat!($($class, " "),*)
+        [$($crate::twust_many_classes!($class)),*]
     };
+}
 
-    ([$($class:expr),*]) => {
-        concat!($($class, " "),*)
+#[macro_export]
+macro_rules! tws1 {
+    ($($class:literal),*) => {
+        [$($crate::tw1!($class)),*]
     };
 }

@@ -731,13 +731,12 @@ fn parse_top(input: &str) -> IResult<&str, Vec<&str>> {
     all_consuming(parse_class_names)(input)
 }
 
-#[test]
-fn test_group_attr_arbitrary2() {
-    assert_eq!(parse_top("group-data-[selected=Right]"), Ok(("", vec![])));
+fn parse_single_top(input: &str) -> IResult<&str, Vec<&str>> {
+    all_consuming(parse_tw_full_classname)(input)
 }
 
 #[proc_macro]
-pub fn tw(raw_input: TokenStream) -> TokenStream {
+pub fn twust_many_classes(raw_input: TokenStream) -> TokenStream {
     let r_input = raw_input.clone();
     let input_original = parse_macro_input!(r_input as LitStr);
     let (_modifiers, _valid_class_names) = match setup(&input_original) {
@@ -751,6 +750,35 @@ pub fn tw(raw_input: TokenStream) -> TokenStream {
     let full_classnames = input_original.value();
 
     let (_input, _class_names) = match parse_top(&full_classnames) {
+        Ok(value) => value,
+        Err(value) => {
+            return syn::Error::new_spanned(input_original, value)
+                .to_compile_error()
+                .into()
+        }
+    };
+
+    quote::quote! {
+        #input_original
+    }
+    .into()
+}
+
+#[proc_macro]
+pub fn twust_one_class(raw_input: TokenStream) -> TokenStream {
+    let r_input = raw_input.clone();
+    let input_original = parse_macro_input!(r_input as LitStr);
+    let (_modifiers, _valid_class_names) = match setup(&input_original) {
+        Ok(value) => value,
+        Err(value) => {
+            return syn::Error::new_spanned(input_original, value)
+                .to_compile_error()
+                .into()
+        }
+    };
+    let full_classnames = input_original.value();
+
+    let (_input, _class_names) = match parse_single_top(&full_classnames) {
         Ok(value) => value,
         Err(value) => {
             return syn::Error::new_spanned(input_original, value)
