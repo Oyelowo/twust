@@ -1,5 +1,5 @@
 # `twust`
-[Book](https://oyelowo.github.io/twust) | [doc.rs](https://docs.rs/twust/latest/twust/) | [Discord](https://discord.gg/xuA39Zpb)
+[Book](https://oyelowo.github.io/twust) | [doc.rs](https://docs.rs/twust/latest/twust/) | [Discord](https://discord.gg/Vrkq8KhGwN)
 
 Twust is a powerful static checker in Rust for TailwindCSS class names at compile-time. It ensures correctness by validating class names before runtime, preventing errors and improving developer experience.
 
